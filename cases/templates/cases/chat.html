@@ -1,0 +1,78 @@
+{% extends 'cases/base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-comments me-2"></i>Chat - {{ caso.titolo }}
+                </h5>
+                <a href="{% url 'dettaglio_caso' caso.id %}" class="btn btn-outline-secondary btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i>Torna al Caso
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="chat-messages" id="chatMessages" style="height: 400px; overflow-y: auto;">
+                    {% for message in messages %}
+                        <div class="mb-3 d-flex {% if message.is_ai %}justify-content-start{% else %}justify-content-end{% endif %}">
+                            <div class="card {% if message.is_ai %}bg-light{% else %}bg-primary text-white{% endif %}" 
+                                 style="max-width: 80%; border-radius: 15px;">
+                                <div class="card-body py-2 px-3">
+                                    <p class="mb-1">{{ message.content }}</p>
+                                    <small class="{% if message.is_ai %}text-muted{% else %}text-white-50{% endif %}">
+                                        {{ message.timestamp|date:"H:i" }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <form method="post" class="mt-3" id="chatForm">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <textarea name="message" class="form-control" rows="2" 
+                                placeholder="Scrivi un messaggio..." required></textarea>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane me-1"></i>Invia
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Case Details Card -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Dettagli del Caso</h5>
+            </div>
+            <div class="card-body">
+                <h6>Descrizione:</h6>
+                <p>{{ caso.descrizione }}</p>
+                {% if caso.analisi_ai %}
+                    <h6>Analisi AI:</h6>
+                    <p>{{ caso.analisi_ai }}</p>
+                {% endif %}
+                {% if caso.riferimenti_legali %}
+                    <h6>Riferimenti Legali:</h6>
+                    <p>{{ caso.riferimenti_legali }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatMessages = document.getElementById('chatMessages');
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    const chatForm = document.getElementById('chatForm');
+    chatForm.addEventListener('submit', function() {
+        const submitButton = this.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Invio...';
+    });
+});
+</script>
+{% endblock %}

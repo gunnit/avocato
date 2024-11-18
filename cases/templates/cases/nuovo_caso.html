@@ -1,0 +1,38 @@
+{% extends 'cases/base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h2 class="mb-4">Nuovo Caso</h2>
+        <div class="card">
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="titolo" class="form-label">Titolo del Caso</label>
+                        <input type="text" class="form-control" id="titolo" name="titolo" required>
+                        <div class="form-text">Inserisci un titolo breve ma descrittivo</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descrizione" class="form-label">Descrizione Dettagliata</label>
+                        <textarea class="form-control" id="descrizione" name="descrizione" rows="10" required></textarea>
+                        <div class="form-text">
+                            Fornisci tutti i dettagli rilevanti del caso, inclusi:
+                            <ul>
+                                <li>Cronologia degli eventi</li>
+                                <li>Persone coinvolte</li>
+                                <li>Eventuali azioni già intraprese</li>
+                                <li>Documentazione disponibile</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Analizza Caso</button>
+                        <a href="{% url 'lista_casi' %}" class="btn btn-outline-secondary">Annulla</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,368 @@
+<!-- Case Analysis Section -->
+{% if analisi_json %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="mb-0">Analisi del Caso</h3>
+    <a href="{% url 'rigenera_analisi' caso.id %}" class="btn btn-primary">
+        <i class="fas fa-sync-alt me-2"></i>Rigenera Analisi
+    </a>
+</div>
+<div class="accordion" id="analisiAccordion">
+    <!-- Analisi Legale -->
+    <div class="accordion-item mb-3">
+        <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#analisiLegale">
+                <i class="fas fa-balance-scale me-2"></i>1. Analisi Legale
+            </button>
+        </h2>
+        <div id="analisiLegale" class="accordion-collapse collapse show" data-bs-parent="#analisiAccordion">
+            <div class="accordion-body">
+                <h5>Inquadramento Giuridico</h5>
+                <p>{{ analisi_json.analisi_legale.inquadramento_giuridico }}</p>
+
+                <h5>Norme Applicabili</h5>
+                <ul class="list-group list-group-flush mb-3">
+                    {% for norma in analisi_json.analisi_legale.norme_applicabili %}
+                        <li class="list-group-item">{{ norma }}</li>
+                    {% endfor %}
+                </ul>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Aggravanti</h5>
+                        <ul class="list-group list-group-flush mb-3">
+                            {% for aggravante in analisi_json.analisi_legale.aggravanti %}
+                                <li class="list-group-item">{{ aggravante }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Attenuanti</h5>
+                        <ul class="list-group list-group-flush mb-3">
+                            {% for attenuante in analisi_json.analisi_legale.attenuanti %}
+                                <li class="list-group-item">{{ attenuante }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Strategie Difensive -->
+    <div class="accordion-item mb-3">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#strategieDifensive">
+                <i class="fas fa-shield-alt me-2"></i>2. Strategie Difensive
+            </button>
+        </h2>
+        <div id="strategieDifensive" class="accordion-collapse collapse" data-bs-parent="#analisiAccordion">
+            <div class="accordion-body">
+                <h5>Linee Principali</h5>
+                <ul class="list-group list-group-flush mb-3">
+                    {% for linea in analisi_json.strategie_difensive.linee_principali %}
+                        <li class="list-group-item">{{ linea }}</li>
+                    {% endfor %}
+                </ul>
+
+                <h5>Argomentazioni</h5>
+                <ul class="list-group list-group-flush mb-3">
+                    {% for arg in analisi_json.strategie_difensive.argomentazioni %}
+                        <li class="list-group-item">{{ arg }}</li>
+                    {% endfor %}
+                </ul>
+
+                <h5>Eccezioni Procedurali</h5>
+                <ul class="list-group list-group-flush mb-3">
+                    {% for ecc in analisi_json.strategie_difensive.eccezioni_procedurali %}
+                        <li class="list-group-item">{{ ecc }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gestione Prove -->
+    <div class="accordion-item mb-3">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gestioneProve">
+                <i class="fas fa-search me-2"></i>3. Gestione Prove
+            </button>
+        </h2>
+        <div id="gestioneProve" class="accordion-collapse collapse" data-bs-parent="#analisiAccordion">
+            <div class="accordion-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Prove da Raccogliere</h5>
+                        <ul class="list-group list-group-flush mb-3">
+                            {% for prova in analisi_json.gestione_prove.prove_da_raccogliere %}
+                                <li class="list-group-item">{{ prova }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Documenti Necessari</h5>
+                        <ul class="list-group list-group-flush mb-3">
+                            {% for doc in analisi_json.gestione_prove.documenti_necessari %}
+                                <li class="list-group-item">{{ doc }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                
+                <h5>Tempistiche</h5>
+                <p class="alert alert-info">{{ analisi_json.gestione_prove.tempistiche }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Azioni Immediate -->
+    <div class="accordion-item mb-3">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#azioniImmediate">
+                <i class="fas fa-bolt me-2"></i>4. Azioni Immediate
+            </button>
+        </h2>
+        <div id="azioniImmediate" class="accordion-collapse collapse" data-bs-parent="#analisiAccordion">
+            <div class="accordion-body">
+                <div class="alert alert-warning">
+                    <h5>Passi Urgenti</h5>
+                    <ul class="list-unstyled mb-0">
+                        {% for passo in analisi_json.azioni_immediate.passi_urgenti %}
+                            <li><i class="fas fa-exclamation-circle me-2"></i>{{ passo }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <h5>Misure Cautelari</h5>
+                <ul class="list-group list-group-flush mb-3">
+                    {% for misura in analisi_json.azioni_immediate.misure_cautelari %}
+                        <li class="list-group-item">{{ misura }}</li>
+                    {% endfor %}
+                </ul>
+
+                <h5>Azioni Preventive</h5>
+                <ul class="list-group list-group-flush mb-3">
+                    {% for azione in analisi_json.azioni_immediate.azioni_preventive %}
+                        <li class="list-group-item">{{ azione }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="accordion-item mb-3">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#timeline">
+                <i class="fas fa-clock me-2"></i>5. Timeline
+            </button>
+        </h2>
+        <div id="timeline" class="accordion-collapse collapse" data-bs-parent="#analisiAccordion">
+            <div class="accordion-body">
+                <h5>Tempistiche Procedurali</h5>
+                <p class="alert alert-info">{{ analisi_json.timeline.tempistiche_procedurali }}</p>
+
+                <h5>Date Chiave</h5>
+                <ul class="list-group list-group-flush mb-3">
+                    {% for data in analisi_json.timeline.date_chiave %}
+                        <li class="list-group-item">{{ data }}</li>
+                    {% endfor %}
+                </ul>
+
+                <h5>Termini Perentori</h5>
+                <ul class="list-group list-group-flush mb-3">
+                    {% for termine in analisi_json.timeline.termini_perentori %}
+                        <li class="list-group-item">{{ termine }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analisi Rischi -->
+    <div class="accordion-item mb-3">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#analisiRischi">
+                <i class="fas fa-exclamation-triangle me-2"></i>6. Analisi dei Rischi
+            </button>
+        </h2>
+        <div id="analisiRischi" class="accordion-collapse collapse" data-bs-parent="#analisiAccordion">
+            <div class="accordion-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="alert alert-success">
+                            <h5>Scenario Migliore</h5>
+                            <p>{{ analisi_json.analisi_rischi.scenario_migliore }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="alert alert-danger">
+                            <h5>Scenario Peggiore</h5>
+                            <p>{{ analisi_json.analisi_rischi.scenario_peggiore }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h5>Fattori Critici</h5>
+                <ul class="list-group list-group-flush mb-3">
+                    {% for fattore in analisi_json.analisi_rischi.fattori_critici %}
+                        <li class="list-group-item">{{ fattore }}</li>
+                    {% endfor %}
+                </ul>
+
+                <h5>Strategie di Mitigazione</h5>
+                <ul class="list-group list-group-flush">
+                    {% for strategia in analisi_json.analisi_rischi.strategie_mitigazione %}
+                        <li class="list-group-item">{{ strategia }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supporto e Risorse -->
+    <div class="accordion-item mb-3">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#supportoRisorse">
+                <i class="fas fa-hands-helping me-2"></i>7. Supporto e Risorse
+            </button>
+        </h2>
+        <div id="supportoRisorse" class="accordion-collapse collapse" data-bs-parent="#analisiAccordion">
+            <div class="accordion-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Professionisti</h5>
+                        <ul class="list-group list-group-flush mb-3">
+                            {% for prof in analisi_json.supporto_risorse.professionisti %}
+                                <li class="list-group-item">{{ prof }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Servizi di Supporto</h5>
+                        <ul class="list-group list-group-flush mb-3">
+                            {% for servizio in analisi_json.supporto_risorse.servizi_supporto %}
+                                <li class="list-group-item">{{ servizio }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                <h5>Contatti Utili</h5>
+                <ul class="list-group list-group-flush">
+                    {% for contatto in analisi_json.supporto_risorse.contatti_utili %}
+                        <li class="list-group-item">{{ contatto }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Raccomandazioni -->
+    <div class="accordion-item mb-3">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#raccomandazioni">
+                <i class="fas fa-user-check me-2"></i>8. Raccomandazioni
+            </button>
+        </h2>
+        <div id="raccomandazioni" class="accordion-collapse collapse" data-bs-parent="#analisiAccordion">
+            <div class="accordion-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="alert alert-success">
+                            <h5>Comportamenti da Adottare</h5>
+                            <ul class="list-unstyled mb-0">
+                                {% for comp in analisi_json.raccomandazioni.comportamenti_da_adottare %}
+                                    <li><i class="fas fa-check me-2"></i>{{ comp }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="alert alert-danger">
+                            <h5>Comportamenti da Evitare</h5>
+                            <ul class="list-unstyled mb-0">
+                                {% for comp in analisi_json.raccomandazioni.comportamenti_da_evitare %}
+                                    <li><i class="fas fa-times me-2"></i>{{ comp }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <h5>Gestione Comunicazione</h5>
+                <ul class="list-group list-group-flush">
+                    {% for com in analisi_json.raccomandazioni.gestione_comunicazione %}
+                        <li class="list-group-item">{{ com }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Aspetti Economici -->
+    <div class="accordion-item mb-3">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aspettiEconomici">
+                <i class="fas fa-euro-sign me-2"></i>9. Aspetti Economici
+            </button>
+        </h2>
+        <div id="aspettiEconomici" class="accordion-collapse collapse" data-bs-parent="#analisiAccordion">
+            <div class="accordion-body">
+                <h5>Stima dei Costi</h5>
+                <p class="alert alert-info">{{ analisi_json.aspetti_economici.stima_costi }}</p>
+
+                <h5>Sanzioni Possibili</h5>
+                <ul class="list-group list-group-flush mb-3">
+                    {% for sanzione in analisi_json.aspetti_economici.sanzioni_possibili %}
+                        <li class="list-group-item">{{ sanzione }}</li>
+                    {% endfor %}
+                </ul>
+
+                <h5>Supporto Finanziario</h5>
+                <ul class="list-group list-group-flush">
+                    {% for supporto in analisi_json.aspetti_economici.supporto_finanziario %}
+                        <li class="list-group-item">{{ supporto }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prospettive -->
+    <div class="accordion-item mb-3">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#prospettive">
+                <i class="fas fa-flag-checkered me-2"></i>10. Prospettive di Risoluzione
+            </button>
+        </h2>
+        <div id="prospettive" class="accordion-collapse collapse" data-bs-parent="#analisiAccordion">
+            <div class="accordion-body">
+                <h5>Possibili Esiti</h5>
+                <ul class="list-group list-group-flush mb-3">
+                    {% for esito in analisi_json.prospettive_risoluzione.possibili_esiti %}
+                        <li class="list-group-item">{{ esito }}</li>
+                    {% endfor %}
+                </ul>
+
+                <h5>Opzioni di Patteggiamento</h5>
+                <ul class="list-group list-group-flush mb-3">
+                    {% for opzione in analisi_json.prospettive_risoluzione.opzioni_patteggiamento %}
+                        <li class="list-group-item">{{ opzione }}</li>
+                    {% endfor %}
+                </ul>
+
+                <h5>Tempistiche Stimate</h5>
+                <p class="alert alert-info">{{ analisi_json.prospettive_risoluzione.tempistiche_stimate }}</p>
+
+                <h5>Strategie di Negoziazione</h5>
+                <ul class="list-group list-group-flush">
+                    {% for strategia in analisi_json.prospettive_risoluzione.strategie_negoziazione %}
+                        <li class="list-group-item">{{ strategia }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}

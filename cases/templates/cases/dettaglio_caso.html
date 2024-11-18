@@ -1,0 +1,21 @@
+{% extends 'cases/base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>{{ caso.titolo }}</h2>
+            <span class="badge bg-info fs-6">{{ caso.stato }}</span>
+        </div>
+
+        {% include 'cases/components/case_info.html' %}
+        {% include 'cases/components/case_analysis.html' %}
+
+        <div class="text-end mt-4">
+            <a href="{% url 'lista_casi' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Torna alla Lista
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
