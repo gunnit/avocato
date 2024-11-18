@@ -1,0 +1,94 @@
+{% extends 'cases/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">Documento N° {{ document.exhibit_number }}</h2>
+                <div class="btn-group">
+                    <a href="{% url 'documentary_evidence_edit' caso.id document.id %}" class="btn btn-warning">
+                        <i class="fas fa-edit"></i> Modifica
+                    </a>
+                    {% if document.document_file %}
+                    <a href="{{ document.document_file.url }}" class="btn btn-secondary" target="_blank">
+                        <i class="fas fa-download"></i> Scarica
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <h3 class="card-title">{{ document.title }}</h3>
+                    
+                    <div class="mb-4">
+                        <h5>Descrizione</h5>
+                        <p class="card-text">{{ document.description }}</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5>Note sull'Autenticazione</h5>
+                        <p class="card-text">
+                            {% if document.authentication_notes %}
+                            {{ document.authentication_notes }}
+                            {% else %}
+                            <em>Nessuna nota sull'autenticazione</em>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Informazioni</h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <strong>Stato Autenticazione:</strong><br>
+                                    {% if document.authentication_status == 'pending' %}
+                                    <span class="badge bg-warning">In Attesa</span>
+                                    {% elif document.authentication_status == 'authenticated' %}
+                                    <span class="badge bg-success">Autenticato</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">Non Richiesto</span>
+                                    {% endif %}
+                                </li>
+                                <li class="mb-2">
+                                    <strong>Data Aggiunta:</strong><br>
+                                    {{ document.date_added|date:"d/m/Y H:i" }}
+                                </li>
+                                <li class="mb-2">
+                                    <strong>Ultima Modifica:</strong><br>
+                                    {{ document.date_updated|date:"d/m/Y H:i" }}
+                                </li>
+                                <li>
+                                    <strong>File:</strong><br>
+                                    {% if document.document_file %}
+                                    <small class="text-muted">{{ document.document_file.name }}</small>
+                                    {% else %}
+                                    <em>Nessun file caricato</em>
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'documentary_evidence_list' caso.id %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Torna alla Lista
+                </a>
+                <a href="{% url 'dettaglio_caso' caso.id %}" class="btn btn-primary">
+                    <i class="fas fa-folder"></i> Vai al Caso
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

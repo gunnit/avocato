@@ -26,3 +26,27 @@ class ChatMessage(models.Model):
 
     def __str__(self):
         return f"{'AI' if self.is_ai else 'User'} message for {self.caso.titolo}"
+
+class DocumentaryEvidence(models.Model):
+    caso = models.ForeignKey(Caso, on_delete=models.CASCADE, related_name='documentary_evidences')
+    exhibit_number = models.IntegerField()
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    document_file = models.FileField(upload_to='documentary_evidences/')
+    authentication_status = models.CharField(max_length=50, choices=[
+        ('pending', 'In attesa di autenticazione'),
+        ('authenticated', 'Autenticato'),
+        ('not_required', 'Autenticazione non necessaria')
+    ], default='pending')
+    authentication_notes = models.TextField(blank=True)
+    date_added = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['exhibit_number']
+        unique_together = ['caso', 'exhibit_number']
+        verbose_name = 'Produzione Documentale'
+        verbose_name_plural = 'Produzioni Documentali'
+
+    def __str__(self):
+        return f"Doc. {self.exhibit_number} - {self.title}"
