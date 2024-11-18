@@ -1,11 +1,28 @@
 {% extends 'cases/base.html' %}
 
+{% block breadcrumb_items %}
+<li class="breadcrumb-item active">{{ caso.titolo }}</li>
+{% endblock %}
+
 {% block content %}
 <div class="row">
     <div class="col-md-12">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>{{ caso.titolo }}</h2>
             <span class="badge bg-info fs-6">{{ caso.stato }}</span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex justify-content-end gap-2 mb-4">
+            <a href="{% url 'chat_caso' caso.id %}" class="btn btn-outline-primary">
+                <i class="fas fa-comments me-2"></i>Chat
+            </a>
+            <a href="{% url 'memoria_difensiva' caso.id %}" class="btn btn-outline-success">
+                <i class="fas fa-gavel me-2"></i>Memoria Difensiva
+            </a>
+            <a href="{% url 'rigenera_analisi' caso.id %}" class="btn btn-outline-info">
+                <i class="fas fa-sync me-2"></i>Rigenera Analisi
+            </a>
         </div>
 
         {% include 'cases/components/case_info.html' %}

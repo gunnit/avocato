@@ -1,5 +1,10 @@
 {% extends 'cases/base.html' %}
 
+{% block breadcrumb_items %}
+<li class="breadcrumb-item"><a href="{% url 'dettaglio_caso' caso.id %}">{{ caso.titolo }}</a></li>
+<li class="breadcrumb-item active">Chat</li>
+{% endblock %}
+
 {% block content %}
 <div class="row">
     <div class="col-md-12">
