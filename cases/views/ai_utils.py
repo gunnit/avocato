@@ -1,10 +1,16 @@
 import anthropic
 from ..models import Caso
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 def analizza_caso(caso_id):
     caso = Caso.objects.get(id=caso_id)
     
-    client = anthropic.Anthropic()
+    client = anthropic.Anthropic(
+        api_key=os.getenv('ANTHROPIC_API_KEY')
+    )
     
     prompt = f"""
     Analizza il seguente caso secondo la legge italiana e fornisci una risposta in formato JSON strutturato come segue:

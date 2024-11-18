@@ -2,6 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from ..models import Caso, ChatMessage
 import anthropic
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 def chat_caso(request, caso_id):
     caso = get_object_or_404(Caso, id=caso_id)
@@ -18,7 +22,9 @@ def chat_caso(request, caso_id):
             )
 
             try:
-                client = anthropic.Anthropic()
+                client = anthropic.Anthropic(
+                    api_key=os.getenv('ANTHROPIC_API_KEY')
+                )
                 
                 # Create context from case details
                 context = f"""
