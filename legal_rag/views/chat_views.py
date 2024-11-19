@@ -1,13 +1,11 @@
-import os
 import json
 import requests
 import tempfile
+import os
 from typing import List
 from django.conf import settings
 from django.http import JsonResponse
-from django.views.generic import TemplateView
-from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
-from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Chroma
@@ -15,11 +13,6 @@ from langchain_anthropic import ChatAnthropic
 from langchain.chains import ConversationalRetrievalChain
 from langchain_openai import OpenAIEmbeddings
 from PyPDF2 import PdfReader
-
-@method_decorator(ensure_csrf_cookie, name='dispatch')
-class RagAssistantView(TemplateView):
-    """View for rendering the RAG assistant interface"""
-    template_name = 'legal_rag/index.html'
 
 class RagSystem:
     """RAG system implementation"""

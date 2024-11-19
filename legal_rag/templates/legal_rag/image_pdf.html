@@ -1,0 +1,105 @@
+{% extends 'cases/base.html' %}
+{% load static %}
+
+{% block title %}Assistente PDF Immagini{% endblock %}
+
+{% block page_title %}Assistente PDF Immagini{% endblock %}
+
+{% block content %}
+<div class="flex-lg-row-fluid">
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">
+                <h3 class="card-title">Estrazione Testo da PDF Immagini</h3>
+            </div>
+        </div>
+        <div class="card-body">
+            <!-- Info Box -->
+            <div class="alert alert-info mb-5">
+                <div class="d-flex flex-column">
+                    <h4 class="mb-1 text-dark">Come Funziona</h4>
+                    <p>Questo strumento utilizza l'intelligenza artificiale di OpenAI per estrarre testo da PDF contenenti immagini o documenti scansionati.</p>
+                    <ul class="list-unstyled">
+                        <li>• Carica un PDF contenente immagini o scansioni</li>
+                        <li>• Il sistema analizzerà ogni pagina</li>
+                        <li>• Il testo estratto verrà mostrato sotto</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Upload Form -->
+            <form id="pdfUploadForm" class="mb-5">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="pdfFile" class="form-label">Seleziona PDF</label>
+                    <input type="file" class="form-control" id="pdfFile" name="pdf" accept=".pdf" required>
+                </div>
+                <button type="submit" class="btn btn-primary" id="uploadButton">
+                    <span class="indicator-label">Elabora PDF</span>
+                    <span class="indicator-progress" style="display: none">
+                        Elaborazione in corso... 
+                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                    </span>
+                </button>
+            </form>
+
+            <!-- Results Section -->
+            <div id="resultsSection" style="display: none;">
+                <h4 class="mb-3">Testo Estratto</h4>
+                <div class="border rounded p-3 bg-light">
+                    <pre id="extractedText" class="mb-0" style="white-space: pre-wrap;"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('pdfUploadForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const button = document.getElementById('uploadButton');
+    const label = button.querySelector('.indicator-label');
+    const progress = button.querySelector('.indicator-progress');
+    const resultsSection = document.getElementById('resultsSection');
+    const extractedText = document.getElementById('extractedText');
+
+    try {
+        // Show loading state
+        button.disabled = true;
+        label.style.display = 'none';
+        progress.style.display = 'inline-flex';
+        resultsSection.style.display = 'none';
+
+        const response = await fetch('/legal-rag/process-image-pdf/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            throw new Error(data.error);
+        }
+
+        // Display results
+        extractedText.textContent = data.text;
+        resultsSection.style.display = 'block';
+
+    } catch (error) {
+        alert('Errore: ' + error.message);
+    } finally {
+        // Reset button state
+        button.disabled = false;
+        label.style.display = 'inline-flex';
+        progress.style.display = 'none';
+    }
+});
+</script>
+{% endblock %}

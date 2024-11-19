@@ -11,3 +11,4 @@ chromadb
 tiktoken
 requests
 django-environ
+PyMuPDF
