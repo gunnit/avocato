@@ -7,6 +7,9 @@
             <div class="d-flex justify-content-between align-items-center">
                 <h2 class="mb-0">Documento N° {{ document.exhibit_number }}</h2>
                 <div class="btn-group">
+                    <button id="analyzeBtn" class="btn btn-info me-2" onclick="analyzeEvidence({{ caso.id }}, {{ document.id }})">
+                        <i class="fas fa-brain"></i> Analizza Documento
+                    </button>
                     <a href="{% url 'documentary_evidence_edit' caso.id document.id %}" class="btn btn-warning">
                         <i class="fas fa-edit"></i> Modifica
                     </a>
@@ -38,6 +41,16 @@
                             <em>Nessuna nota sull'autenticazione</em>
                             {% endif %}
                         </p>
+                    </div>
+
+                    <!-- Analysis Results Section -->
+                    <div id="analysisResults" class="mb-4 d-none">
+                        <h5>Analisi Legale</h5>
+                        <div class="card">
+                            <div class="card-body">
+                                <pre id="analysisContent" class="bg-light p-3" style="white-space: pre-wrap;"></pre>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -91,4 +104,51 @@
         </div>
     </div>
 </div>
+
+<script>
+function analyzeEvidence(casoId, documentId) {
+    const button = document.getElementById('analyzeBtn');
+    const resultsDiv = document.getElementById('analysisResults');
+    const analysisContent = document.getElementById('analysisContent');
+    
+    button.disabled = true;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analisi in corso...';
+    
+    fetch(`/${casoId}/documentary-evidence/${documentId}/analyze/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        analysisContent.textContent = JSON.stringify(data, null, 2);
+        resultsDiv.classList.remove('d-none');
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Si è verificato un errore durante l\'analisi del documento.');
+    })
+    .finally(() => {
+        button.disabled = false;
+        button.innerHTML = '<i class="fas fa-brain"></i> Analizza Documento';
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
 {% endblock %}
