@@ -1,0 +1,190 @@
+{% extends 'cases/base.html' %}
+{% load static %}
+
+{% block title %}Assistente Codice Penale Italiano{% endblock %}
+
+{% block page_title %}Assistente Codice Penale{% endblock %}
+
+{% block content %}
+<div class="flex-lg-row-fluid">
+    <!--begin::Messenger-->
+    <div class="card" id="kt_chat_messenger">
+        <!--begin::Card header-->
+        <div class="card-header" id="kt_chat_messenger_header">
+            <!--begin::Title-->
+            <div class="card-title">
+                <!--begin::User-->
+                <div class="d-flex justify-content-center flex-column me-3">
+                    <a href="#" class="fs-4 fw-bold text-gray-900 text-hover-primary me-1 mb-2 lh-1">Assistente Codice Penale</a>
+                    <!--begin::Info-->
+                    <div class="mb-0 lh-1">
+                        <span class="badge badge-success badge-circle w-10px h-10px me-1"></span>
+                        <span class="fs-7 fw-semibold text-muted">Attivo</span>
+                    </div>
+                    <!--end::Info-->
+                </div>
+                <!--end::User-->
+            </div>
+            <!--end::Title-->
+        </div>
+        <!--end::Card header-->
+
+        <!--begin::Card body-->
+        <div class="card-body" id="kt_chat_messenger_body">
+            <!--begin::Messages-->
+            <div class="scroll-y me-n5 pe-5" data-kt-element="messages" data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_header, #kt_app_header, #kt_app_toolbar, #kt_toolbar, #kt_footer, #kt_app_footer, #kt_chat_messenger_header, #kt_chat_messenger_footer" data-kt-scroll-wrappers="#kt_content, #kt_app_content, #kt_chat_messenger_body" data-kt-scroll-offset="5px" id="chatMessages">
+                
+                <!-- Info Box -->
+                <div class="d-flex justify-content-start mb-10">
+                    <div class="d-flex flex-column align-items-start">
+                        <div class="p-5 rounded bg-light-warning text-dark fw-semibold mw-lg-400px text-start">
+                            <h5 class="fw-bold mb-3">Importante: Limitazione dell'Ambito</h5>
+                            <ul class="list-unstyled">
+                                <li>• Questo assistente risponde SOLO a domande sul Codice Penale Italiano</li>
+                                <li>• Non fornisce informazioni da altre fonti</li>
+                                <li>• Cita sempre gli articoli specifici del Codice</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example Questions -->
+                <div class="d-flex justify-content-start mb-10">
+                    <div class="d-flex flex-column align-items-start">
+                        <div class="p-5 rounded bg-light-info text-dark fw-semibold mw-lg-400px text-start">
+                            <h5 class="fw-bold mb-3">Esempi di Domande:</h5>
+                            <ul class="list-unstyled">
+                                <li>• "Cosa dice l'articolo 575 sull'omicidio?"</li>
+                                <li>• "Come definisce il Codice Penale il furto?"</li>
+                                <li>• "Quali sono le pene previste per la truffa?"</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!--end::Messages-->
+        </div>
+        <!--end::Card body-->
+
+        <!--begin::Card footer-->
+        <div class="card-footer pt-4" id="kt_chat_messenger_footer">
+            <form id="chatForm">
+                {% csrf_token %}
+                <!--begin::Input-->
+                <textarea class="form-control form-control-flush mb-3" rows="1" id="userInput" 
+                    placeholder="Fai una domanda sul Codice Penale Italiano..."></textarea>
+                <!--end::Input-->
+
+                <!--begin:Toolbar-->
+                <div class="d-flex flex-stack">
+                    <!--begin::Actions-->
+                    <div class="d-flex align-items-center me-2">
+                        <div id="loading" style="display: none;">
+                            <span class="spinner-border spinner-border-sm text-primary me-2"></span>
+                            <span class="text-muted">Elaborazione...</span>
+                        </div>
+                    </div>
+                    <!--end::Actions-->
+
+                    <!--begin::Send-->
+                    <button class="btn btn-primary" type="submit">Invia</button>
+                    <!--end::Send-->
+                </div>
+                <!--end::Toolbar-->
+            </form>
+        </div>
+        <!--end::Card footer-->
+    </div>
+    <!--end::Messenger-->
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let chatMessages = document.getElementById('chatMessages');
+    let userInput = document.getElementById('userInput');
+    let chatForm = document.getElementById('chatForm');
+    let loading = document.getElementById('loading');
+
+    function appendMessage(content, isUser) {
+        const messageHtml = `
+            <div class="d-flex justify-content-${isUser ? 'end' : 'start'} mb-10">
+                <div class="d-flex flex-column align-items-${isUser ? 'end' : 'start'}">
+                    <div class="d-flex align-items-center mb-2">
+                        ${isUser ? `
+                            <div class="me-3">
+                                <span class="text-muted fs-7 mb-1">Just now</span>
+                            </div>
+                        ` : `
+                            <div class="ms-3">
+                                <span class="text-muted fs-7 mb-1">Assistente</span>
+                            </div>
+                        `}
+                    </div>
+                    <div class="p-5 rounded bg-light-${isUser ? 'primary' : 'info'} text-dark fw-semibold mw-lg-400px text-${isUser ? 'end' : 'start'}" data-kt-element="message-text">
+                        ${content}
+                    </div>
+                </div>
+            </div>
+        `;
+        chatMessages.insertAdjacentHTML('beforeend', messageHtml);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    chatForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const message = userInput.value.trim();
+        if (!message) return;
+
+        // Disable input and show loading
+        userInput.disabled = true;
+        loading.style.display = 'block';
+
+        // Add user message to chat
+        appendMessage(message, true);
+        userInput.value = '';
+
+        try {
+            const response = await fetch('/legal-rag/chat/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify({ message })
+            });
+
+            const data = await response.json();
+            
+            if (data.error) {
+                appendMessage('Errore: ' + data.error, false);
+            } else {
+                appendMessage(data.response, false);
+            }
+        } catch (error) {
+            appendMessage('Errore: Impossibile connettersi al server', false);
+        } finally {
+            // Re-enable input and hide loading
+            userInput.disabled = false;
+            loading.style.display = 'none';
+        }
+    });
+
+    // Allow sending message with Enter key
+    userInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            chatForm.dispatchEvent(new Event('submit'));
+        }
+    });
+
+    // Add initial message
+    window.addEventListener('load', function() {
+        appendMessage(
+            "Benvenuto! Sono l'assistente specializzato nel Codice Penale Italiano. Posso aiutarti a trovare informazioni specifiche sugli articoli, le definizioni e le pene presenti nel Codice. Fai una domanda per iniziare.",
+            false
+        );
+    });
+</script>
+{% endblock %}

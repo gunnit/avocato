@@ -6,6 +6,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('cases.urls')),
+    path('legal-rag/', include('legal_rag.urls')),  # Add the legal RAG system URLs
 ]
 
 if settings.DEBUG:
