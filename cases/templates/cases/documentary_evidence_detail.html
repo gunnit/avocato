@@ -1,154 +1,35 @@
 {% extends 'cases/base.html' %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="card">
-        <div class="card-header">
-            <div class="d-flex justify-content-between align-items-center">
-                <h2 class="mb-0">Documento N° {{ document.exhibit_number }}</h2>
-                <div class="btn-group">
-                    <button id="analyzeBtn" class="btn btn-info me-2" onclick="analyzeEvidence({{ caso.id }}, {{ document.id }})">
-                        <i class="fas fa-brain"></i> Analizza Documento
-                    </button>
-                    <a href="{% url 'documentary_evidence_edit' caso.id document.id %}" class="btn btn-warning">
-                        <i class="fas fa-edit"></i> Modifica
-                    </a>
-                    {% if document.document_file %}
-                    <a href="{{ document.document_file.url }}" class="btn btn-secondary" target="_blank">
-                        <i class="fas fa-download"></i> Scarica
-                    </a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
+<!--begin::Container-->
+<div class="container-xxl" id="kt_content_container">
+    <!--begin::Card-->
+    <div class="card card-flush h-lg-100">
+        {% include 'cases/components/documentary_evidence/header.html' %}
         
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-8">
-                    <h3 class="card-title">{{ document.title }}</h3>
-                    
-                    <div class="mb-4">
-                        <h5>Descrizione</h5>
-                        <p class="card-text">{{ document.description }}</p>
-                    </div>
-
-                    <div class="mb-4">
-                        <h5>Note sull'Autenticazione</h5>
-                        <p class="card-text">
-                            {% if document.authentication_notes %}
-                            {{ document.authentication_notes }}
-                            {% else %}
-                            <em>Nessuna nota sull'autenticazione</em>
-                            {% endif %}
-                        </p>
-                    </div>
-
-                    <!-- Analysis Results Section -->
-                    <div id="analysisResults" class="mb-4 d-none">
-                        <h5>Analisi Legale</h5>
-                        <div class="card">
-                            <div class="card-body">
-                                <pre id="analysisContent" class="bg-light p-3" style="white-space: pre-wrap;"></pre>
-                            </div>
-                        </div>
-                    </div>
+        <!--begin::Card body-->
+        <div class="card-body pt-6">
+            <div class="row g-6">
+                <!--begin::Content-->
+                <div class="col-xl-8">
+                    {% include 'cases/components/documentary_evidence/description.html' %}
                 </div>
+                <!--end::Content-->
 
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Informazioni</h5>
-                            <ul class="list-unstyled">
-                                <li class="mb-2">
-                                    <strong>Stato Autenticazione:</strong><br>
-                                    {% if document.authentication_status == 'pending' %}
-                                    <span class="badge bg-warning">In Attesa</span>
-                                    {% elif document.authentication_status == 'authenticated' %}
-                                    <span class="badge bg-success">Autenticato</span>
-                                    {% else %}
-                                    <span class="badge bg-secondary">Non Richiesto</span>
-                                    {% endif %}
-                                </li>
-                                <li class="mb-2">
-                                    <strong>Data Aggiunta:</strong><br>
-                                    {{ document.date_added|date:"d/m/Y H:i" }}
-                                </li>
-                                <li class="mb-2">
-                                    <strong>Ultima Modifica:</strong><br>
-                                    {{ document.date_updated|date:"d/m/Y H:i" }}
-                                </li>
-                                <li>
-                                    <strong>File:</strong><br>
-                                    {% if document.document_file %}
-                                    <small class="text-muted">{{ document.document_file.name }}</small>
-                                    {% else %}
-                                    <em>Nessun file caricato</em>
-                                    {% endif %}
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                <!--begin::Sidebar-->
+                <div class="col-xl-4">
+                    {% include 'cases/components/documentary_evidence/sidebar.html' %}
                 </div>
+                <!--end::Sidebar-->
             </div>
         </div>
+        <!--end::Card body-->
 
-        <div class="card-footer">
-            <div class="d-flex justify-content-between">
-                <a href="{% url 'documentary_evidence_list' caso.id %}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Torna alla Lista
-                </a>
-                <a href="{% url 'dettaglio_caso' caso.id %}" class="btn btn-primary">
-                    <i class="fas fa-folder"></i> Vai al Caso
-                </a>
-            </div>
-        </div>
+        {% include 'cases/components/documentary_evidence/footer.html' %}
     </div>
+    <!--end::Card-->
 </div>
+<!--end::Container-->
 
-<script>
-function analyzeEvidence(casoId, documentId) {
-    const button = document.getElementById('analyzeBtn');
-    const resultsDiv = document.getElementById('analysisResults');
-    const analysisContent = document.getElementById('analysisContent');
-    
-    button.disabled = true;
-    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analisi in corso...';
-    
-    fetch(`/${casoId}/documentary-evidence/${documentId}/analyze/`, {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': getCookie('csrftoken'),
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        analysisContent.textContent = JSON.stringify(data, null, 2);
-        resultsDiv.classList.remove('d-none');
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Si è verificato un errore durante l\'analisi del documento.');
-    })
-    .finally(() => {
-        button.disabled = false;
-        button.innerHTML = '<i class="fas fa-brain"></i> Analizza Documento';
-    });
-}
-
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-</script>
+{% include 'cases/components/documentary_evidence/scripts.html' %}
 {% endblock %}

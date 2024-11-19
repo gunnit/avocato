@@ -1,0 +1,35 @@
+{% load static %}
+<!--begin::Content-->
+<div class="d-flex flex-column gap-7 gap-lg-10">
+    <!--begin::Title-->
+    <div class="card card-flush py-4">
+        <div class="card-header">
+            <div class="card-title">
+                <h3 class="fw-bold">{{ document.title }}</h3>
+            </div>
+        </div>
+        <div class="card-body pt-0">
+            <div class="mb-10">
+                <h4 class="fw-bold text-gray-800 mb-3">Descrizione</h4>
+                <div class="text-gray-600 fw-semibold fs-6">{{ document.description }}</div>
+            </div>
+
+            <div class="mb-10">
+                <h4 class="fw-bold text-gray-800 mb-3">Note sull'Autenticazione</h4>
+                <div class="text-gray-600 fw-semibold fs-6">
+                    {% if document.authentication_notes %}
+                    {{ document.authentication_notes }}
+                    {% else %}
+                    <em>Nessuna nota sull'autenticazione</em>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end::Title-->
+
+    <!--begin::Analysis-->
+    {% include 'cases/components/documentary_evidence/analysis.html' %}
+    <!--end::Analysis-->
+</div>
+<!--end::Content-->

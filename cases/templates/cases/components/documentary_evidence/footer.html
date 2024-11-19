@@ -1,0 +1,23 @@
+{% load static %}
+<!--begin::Card footer-->
+<div class="card-footer pt-5">
+    <!--begin::Actions-->
+    <div class="d-flex flex-stack">
+        <a href="{% url 'documentary_evidence_list' caso.id %}" class="btn btn-light me-3">
+            <i class="ki-duotone ki-arrow-left fs-2">
+                <span class="path1"></span>
+                <span class="path2"></span>
+            </i>
+            Torna alla Lista
+        </a>
+        <a href="{% url 'dettaglio_caso' caso.id %}" class="btn btn-primary">
+            <i class="ki-duotone ki-folder fs-2">
+                <span class="path1"></span>
+                <span class="path2"></span>
+            </i>
+            Vai al Caso
+        </a>
+    </div>
+    <!--end::Actions-->
+</div>
+<!--end::Card footer-->

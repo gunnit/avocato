@@ -1,0 +1,40 @@
+{% load static %}
+<!--begin::Card header-->
+<div class="card-header pt-7">
+    <!--begin::Title-->
+    <div class="card-title">
+        <h2 class="fw-bold">Documento N° {{ document.exhibit_number }}</h2>
+    </div>
+    <!--end::Title-->
+
+    <!--begin::Toolbar-->
+    <div class="card-toolbar">
+        <div class="d-flex flex-stack flex-wrap gap-4">
+            <button id="analyzeBtn" class="btn btn-light-primary" onclick="analyzeEvidence({{ caso.id }}, {{ document.id }})">
+                <i class="ki-duotone ki-brain fs-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                </i>
+                Analizza Documento
+            </button>
+            <a href="{% url 'documentary_evidence_edit' caso.id document.id %}" class="btn btn-light-warning">
+                <i class="ki-duotone ki-pencil fs-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                </i>
+                Modifica
+            </a>
+            {% if document.document_file %}
+            <a href="{{ document.document_file.url }}" class="btn btn-light-info" target="_blank">
+                <i class="ki-duotone ki-document fs-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                </i>
+                Scarica
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    <!--end::Toolbar-->
+</div>
+<!--end::Card header-->

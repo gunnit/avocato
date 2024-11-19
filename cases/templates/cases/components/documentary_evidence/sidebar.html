@@ -1,0 +1,53 @@
+{% load static %}
+<!--begin::Sidebar-->
+<div class="card card-flush py-4">
+    <!--begin::Card header-->
+    <div class="card-header">
+        <div class="card-title">
+            <h3 class="fw-bold">Informazioni</h3>
+        </div>
+    </div>
+    <!--end::Card header-->
+
+    <!--begin::Card body-->
+    <div class="card-body pt-0">
+        <div class="d-flex flex-column gap-5">
+            <!--begin::Status-->
+            <div class="d-flex flex-column">
+                <div class="fw-bold text-gray-800 mb-2">Stato Autenticazione</div>
+                {% if document.authentication_status == 'pending' %}
+                <span class="badge badge-warning">In Attesa</span>
+                {% elif document.authentication_status == 'authenticated' %}
+                <span class="badge badge-success">Autenticato</span>
+                {% else %}
+                <span class="badge badge-secondary">Non Richiesto</span>
+                {% endif %}
+            </div>
+            <!--end::Status-->
+
+            <!--begin::Dates-->
+            <div class="d-flex flex-column">
+                <div class="fw-bold text-gray-800 mb-2">Data Aggiunta</div>
+                <div class="text-gray-600">{{ document.date_added|date:"d/m/Y H:i" }}</div>
+            </div>
+            <div class="d-flex flex-column">
+                <div class="fw-bold text-gray-800 mb-2">Ultima Modifica</div>
+                <div class="text-gray-600">{{ document.date_updated|date:"d/m/Y H:i" }}</div>
+            </div>
+            <!--end::Dates-->
+
+            <!--begin::File-->
+            <div class="d-flex flex-column">
+                <div class="fw-bold text-gray-800 mb-2">File</div>
+                {% if document.document_file %}
+                <div class="text-gray-600 fs-7">{{ document.document_file.name }}</div>
+                {% else %}
+                <div class="text-gray-600 fst-italic">Nessun file caricato</div>
+                {% endif %}
+            </div>
+            <!--end::File-->
+        </div>
+    </div>
+    <!--end::Card body-->
+</div>
+<!--end::Sidebar-->

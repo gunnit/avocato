@@ -1,0 +1,68 @@
+{% load static %}
+<script>
+function analyzeEvidence(casoId, documentId) {
+    const button = document.getElementById('analyzeBtn');
+    const resultsDiv = document.getElementById('analysisResults');
+    const analysisContent = document.getElementById('analysisContent');
+    
+    // Update button state
+    button.disabled = true;
+    button.innerHTML = `
+        <span class="indicator-label">
+            <i class="ki-duotone ki-spinner ki-spin fs-2">
+                <span class="path1"></span>
+                <span class="path2"></span>
+                <span class="path3"></span>
+            </i>
+            Analisi in corso...
+        </span>
+    `;
+    
+    fetch(`/${casoId}/documentary-evidence/${documentId}/analyze/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        analysisContent.textContent = JSON.stringify(data, null, 2);
+        resultsDiv.classList.remove('d-none');
+        
+        // Show success notification
+        toastr.success('Analisi completata con successo');
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // Show error notification
+        toastr.error('Si è verificato un errore durante l\'analisi del documento');
+    })
+    .finally(() => {
+        // Reset button state
+        button.disabled = false;
+        button.innerHTML = `
+            <i class="ki-duotone ki-brain fs-2">
+                <span class="path1"></span>
+                <span class="path2"></span>
+            </i>
+            Analizza Documento
+        `;
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
