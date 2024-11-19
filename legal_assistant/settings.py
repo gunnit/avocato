@@ -127,3 +127,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # API Keys for RAG system
 ANTHROPIC_API_KEY = env('ANTHROPIC_API_KEY', default='')
 OPENAI_API_KEY = env('OPENAI_API_KEY', default='')  # For embeddings
+
+# Authentication settings
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'lista_casi'
+LOGOUT_REDIRECT_URL = 'login'

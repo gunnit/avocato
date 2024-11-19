@@ -1,13 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from ..models import Caso
 from .ai_utils import analizza_caso
 import json
 
+@login_required
 def lista_casi(request):
     casi = Caso.objects.all().order_by('-data_creazione')
     return render(request, 'cases/lista_casi.html', {'casi': casi})
 
+@login_required
 def nuovo_caso(request):
     if request.method == 'POST':
         titolo = request.POST.get('titolo')
@@ -31,6 +34,7 @@ def nuovo_caso(request):
     
     return render(request, 'cases/nuovo_caso.html')
 
+@login_required
 def dettaglio_caso(request, caso_id):
     caso = get_object_or_404(Caso, id=caso_id)
     try:
@@ -39,6 +43,7 @@ def dettaglio_caso(request, caso_id):
         analisi_json = None
     return render(request, 'cases/dettaglio_caso.html', {'caso': caso, 'analisi_json': analisi_json})
 
+@login_required
 def rigenera_analisi(request, caso_id):
     caso = get_object_or_404(Caso, id=caso_id)
     try:
