@@ -13,12 +13,12 @@
     <!--end::Fonts-->
 
     <!--begin::Vendor Stylesheets(used for this page only)-->
-    <link href="{% static 'plugins/custom/datatables/datatables.bundle.css' %}" rel="stylesheet" type="text/css">
+    <link href="/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css">
     <!--end::Vendor Stylesheets-->
 
     <!--begin::Global Stylesheets Bundle(mandatory for all pages)-->
-    <link href="{% static 'plugins/global/plugins.bundle.css' %}" rel="stylesheet" type="text/css">
-    <link href="{% static 'css/style.bundle.css' %}" rel="stylesheet" type="text/css">
+    <link href="/assets/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/style.bundle.css" rel="stylesheet" type="text/css">
     <!--end::Global Stylesheets Bundle-->
 </head>
 
@@ -46,7 +46,7 @@
                     <!--begin::Mobile logo-->
                     <div class="d-flex align-items-center flex-grow-1 flex-lg-grow-0">
                         <a href="{% url 'lista_casi' %}" class="d-lg-none">
-                            <img alt="Logo" src="{% static 'media/logos/default-small.svg' %}" class="h-30px">
+                            <img alt="Logo" src="/assets/media/logos/default-small.svg" class="h-30px">
                         </a>
                     </div>
                     <!--end::Mobile logo-->
@@ -100,8 +100,8 @@
                     <div class="app-sidebar-logo px-6" id="kt_app_sidebar_logo">
                         <!--begin::Logo image-->
                         <a href="{% url 'lista_casi' %}">
-                            <img alt="Logo" src="{% static 'media/logos/default-dark.svg' %}" class="h-25px app-sidebar-logo-default">
-                            <img alt="Logo" src="{% static 'media/logos/default-small.svg' %}" class="h-20px app-sidebar-logo-minimize">
+                            <img alt="Logo" src="/assets/media/logos/default-dark.svg" class="h-25px app-sidebar-logo-default">
+                            <img alt="Logo" src="/assets/media/logos/default-small.svg" class="h-20px app-sidebar-logo-minimize">
                         </a>
                         <!--end::Logo image-->
                     </div>
@@ -157,19 +157,19 @@
     <!--end::Scrolltop-->
 
     <!--begin::Javascript-->
-    <script>var hostUrl = "{% static '' %}";</script>
+    <script>var hostUrl = "/assets/";</script>
     <!--begin::Global Javascript Bundle(mandatory for all pages)-->
-    <script src="{% static 'plugins/global/plugins.bundle.js' %}"></script>
-    <script src="{% static 'js/scripts.bundle.js' %}"></script>
+    <script src="/assets/plugins/global/plugins.bundle.js"></script>
+    <script src="/assets/js/scripts.bundle.js"></script>
     <!--end::Global Javascript Bundle-->
     
     <!--begin::Vendors Javascript(used for this page only)-->
-    <script src="{% static 'plugins/custom/datatables/datatables.bundle.js' %}"></script>
+    <script src="/assets/plugins/custom/datatables/datatables.bundle.js"></script>
     <!--end::Vendors Javascript-->
     
     <!--begin::Custom Javascript(used for this page only)-->
-    <script src="{% static 'js/widgets.bundle.js' %}"></script>
-    <script src="{% static 'js/custom/widgets.js' %}"></script>
+    <script src="/assets/js/widgets.bundle.js"></script>
+    <script src="/assets/js/custom/widgets.js"></script>
     <!--end::Custom Javascript-->
     <!--end::Javascript-->
 
