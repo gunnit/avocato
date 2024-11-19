@@ -1,97 +1,149 @@
 {% extends 'cases/base.html' %}
 
-{% block content %}
-<div class="container mt-4">
-    <h2>
-        {% if action == 'add' %}
-        Aggiungi Nuovo Documento
-        {% else %}
-        Modifica Documento
-        {% endif %}
-        - {{ caso.titolo }}
-    </h2>
+{% block page_title %}
+{% if action == 'add' %}
+Nuovo Documento - {{ caso.titolo }}
+{% else %}
+Modifica Documento - {{ caso.titolo }}
+{% endif %}
+{% endblock %}
 
-    {% if messages %}
-    <div class="messages mb-4">
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">
-            {{ message }}
-        </div>
-        {% endfor %}
-    </div>
+{% block breadcrumbs %}
+<!--begin::Item-->
+<li class="breadcrumb-item">
+    <span class="bullet bg-gray-500 w-5px h-2px"></span>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item text-muted">
+    <a href="{% url 'dettaglio_caso' caso.id %}" class="text-muted text-hover-primary">{{ caso.titolo }}</a>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item">
+    <span class="bullet bg-gray-500 w-5px h-2px"></span>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item text-muted">
+    <a href="{% url 'documentary_evidence_list' caso.id %}" class="text-muted text-hover-primary">Documenti</a>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item">
+    <span class="bullet bg-gray-500 w-5px h-2px"></span>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item text-muted">
+    {% if action == 'add' %}
+    Nuovo Documento
+    {% else %}
+    Modifica Documento
     {% endif %}
+</li>
+<!--end::Item-->
+{% endblock %}
 
-    <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
-        {% csrf_token %}
-        
-        <div class="mb-3">
-            <label for="title" class="form-label">Titolo del Documento*</label>
-            <input type="text" class="form-control" id="title" name="title" 
-                   value="{{ document.title|default:'' }}" required>
-            <div class="invalid-feedback">
-                Inserisci un titolo per il documento.
-            </div>
-        </div>
-
-        <div class="mb-3">
-            <label for="description" class="form-label">Descrizione*</label>
-            <textarea class="form-control" id="description" name="description" 
-                      rows="4" required>{{ document.description|default:'' }}</textarea>
-            <div class="invalid-feedback">
-                Inserisci una descrizione per il documento.
-            </div>
-        </div>
-
-        <div class="mb-3">
-            <label for="document_file" class="form-label">
-                File del Documento{% if action == 'add' %}*{% endif %}
-            </label>
-            {% if document and document.document_file %}
-            <div class="mb-2">
-                <small class="text-muted">File attuale: {{ document.document_file.name }}</small>
+{% block content %}
+<div class="container-xxl" id="kt_content_container">
+    <div class="card">
+        <div class="card-body">
+            {% if messages %}
+            <div class="messages mb-4">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
             </div>
             {% endif %}
-            <input type="file" class="form-control" id="document_file" name="document_file"
-                   {% if action == 'add' %}required{% endif %}>
-            <div class="invalid-feedback">
-                Seleziona un file da caricare.
-            </div>
-        </div>
 
-        <div class="mb-3">
-            <label for="authentication_status" class="form-label">Stato Autenticazione*</label>
-            <select class="form-select" id="authentication_status" name="authentication_status" required>
-                <option value="pending" {% if document.authentication_status == 'pending' %}selected{% endif %}>
-                    In attesa di autenticazione
-                </option>
-                <option value="authenticated" {% if document.authentication_status == 'authenticated' %}selected{% endif %}>
-                    Autenticato
-                </option>
-                <option value="not_required" {% if document.authentication_status == 'not_required' %}selected{% endif %}>
-                    Autenticazione non necessaria
-                </option>
-            </select>
-        </div>
+            <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="title" class="form-label">Titolo del Documento*</label>
+                    <input type="text" class="form-control" id="title" name="title" 
+                           value="{{ document.title|default:'' }}" required>
+                    <div class="invalid-feedback">
+                        Inserisci un titolo per il documento.
+                    </div>
+                </div>
 
-        <div class="mb-3">
-            <label for="authentication_notes" class="form-label">Note sull'Autenticazione</label>
-            <textarea class="form-control" id="authentication_notes" name="authentication_notes" 
-                      rows="3">{{ document.authentication_notes|default:'' }}</textarea>
-        </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Descrizione*</label>
+                    <textarea class="form-control" id="description" name="description" 
+                              rows="4" required>{{ document.description|default:'' }}</textarea>
+                    <div class="invalid-feedback">
+                        Inserisci una descrizione per il documento.
+                    </div>
+                </div>
 
-        <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-primary">
-                {% if action == 'add' %}
-                <i class="fas fa-plus"></i> Aggiungi Documento
-                {% else %}
-                <i class="fas fa-save"></i> Salva Modifiche
-                {% endif %}
-            </button>
-            <a href="{% url 'documentary_evidence_list' caso.id %}" class="btn btn-secondary">
-                <i class="fas fa-times"></i> Annulla
-            </a>
+                <div class="mb-3">
+                    <label for="document_file" class="form-label">
+                        File del Documento{% if action == 'add' %}*{% endif %}
+                    </label>
+                    {% if document and document.document_file %}
+                    <div class="mb-2">
+                        <small class="text-muted">File attuale: {{ document.document_file.name }}</small>
+                    </div>
+                    {% endif %}
+                    <input type="file" class="form-control" id="document_file" name="document_file"
+                           {% if action == 'add' %}required{% endif %}>
+                    <div class="invalid-feedback">
+                        Seleziona un file da caricare.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="authentication_status" class="form-label">Stato Autenticazione*</label>
+                    <select class="form-select" id="authentication_status" name="authentication_status" required>
+                        <option value="pending" {% if document.authentication_status == 'pending' %}selected{% endif %}>
+                            In attesa di autenticazione
+                        </option>
+                        <option value="authenticated" {% if document.authentication_status == 'authenticated' %}selected{% endif %}>
+                            Autenticato
+                        </option>
+                        <option value="not_required" {% if document.authentication_status == 'not_required' %}selected{% endif %}>
+                            Autenticazione non necessaria
+                        </option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="authentication_notes" class="form-label">Note sull'Autenticazione</label>
+                    <textarea class="form-control" id="authentication_notes" name="authentication_notes" 
+                              rows="3">{{ document.authentication_notes|default:'' }}</textarea>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        {% if action == 'add' %}
+                        <i class="ki-duotone ki-plus fs-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        Aggiungi Documento
+                        {% else %}
+                        <i class="ki-duotone ki-save-2 fs-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        Salva Modifiche
+                        {% endif %}
+                    </button>
+                    <a href="{% url 'documentary_evidence_list' caso.id %}" class="btn btn-secondary">
+                        <i class="ki-duotone ki-cross-square fs-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        Annulla
+                    </a>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
 
 {% block extra_js %}

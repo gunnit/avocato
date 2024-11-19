@@ -1,5 +1,38 @@
 {% extends 'cases/base.html' %}
 
+{% block page_title %}Documento N° {{ document.exhibit_number }} - {{ caso.titolo }}{% endblock %}
+
+{% block breadcrumbs %}
+<!--begin::Item-->
+<li class="breadcrumb-item">
+    <span class="bullet bg-gray-500 w-5px h-2px"></span>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item text-muted">
+    <a href="{% url 'dettaglio_caso' caso.id %}" class="text-muted text-hover-primary">{{ caso.titolo }}</a>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item">
+    <span class="bullet bg-gray-500 w-5px h-2px"></span>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item text-muted">
+    <a href="{% url 'documentary_evidence_list' caso.id %}" class="text-muted text-hover-primary">Documenti</a>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item">
+    <span class="bullet bg-gray-500 w-5px h-2px"></span>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item text-muted">Documento N° {{ document.exhibit_number }}</li>
+<!--end::Item-->
+{% endblock %}
+
 {% block content %}
 <!--begin::Container-->
 <div class="container-xxl" id="kt_content_container">
