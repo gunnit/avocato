@@ -7,6 +7,7 @@ from .views.documentary_evidence_views import (
     documentary_evidence_edit,
     analyze_evidence
 )
+from .views.user_views import profile
 
 urlpatterns = [
     path('', views.lista_casi, name='lista_casi'),
@@ -23,4 +24,7 @@ urlpatterns = [
     path('<int:caso_id>/documentary-evidence/<int:doc_id>/', documentary_evidence_detail, name='documentary_evidence_detail'),
     path('<int:caso_id>/documentary-evidence/<int:doc_id>/edit/', documentary_evidence_edit, name='documentary_evidence_edit'),
     path('<int:caso_id>/documentary-evidence/<int:doc_id>/analyze/', analyze_evidence, name='analyze_evidence'),
+
+    # User URLs
+    path('profile/', profile, name='profile'),
 ]
