@@ -1,81 +1,185 @@
 {% extends 'cases/base.html' %}
 
+{% block page_title %}Produzioni Documentali - {{ caso.titolo }}{% endblock %}
+
+{% block breadcrumbs %}
+<!--begin::Item-->
+<li class="breadcrumb-item">
+    <span class="bullet bg-gray-500 w-5px h-2px"></span>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item text-muted">
+    <a href="{% url 'lista_casi' %}" class="text-muted text-hover-primary">Lista Casi</a>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item">
+    <span class="bullet bg-gray-500 w-5px h-2px"></span>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item text-muted">
+    <a href="{% url 'dettaglio_caso' caso.id %}" class="text-muted text-hover-primary">{{ caso.titolo }}</a>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item">
+    <span class="bullet bg-gray-500 w-5px h-2px"></span>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item text-muted">Produzioni Documentali</li>
+<!--end::Item-->
+{% endblock %}
+
+{% block page_actions %}
+<div class="d-flex align-items-center gap-2">
+    <a href="{% url 'documentary_evidence_add' caso.id %}" class="btn btn-sm btn-light-primary">
+        <i class="ki-duotone ki-plus-square fs-2">
+            <span class="path1"></span>
+            <span class="path2"></span>
+            <span class="path3"></span>
+        </i>
+        Aggiungi Documento
+    </a>
+    <a href="{% url 'dettaglio_caso' caso.id %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-2">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        Torna al Caso
+    </a>
+</div>
+{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Produzioni Documentali - {{ caso.titolo }}</h2>
-        <a href="{% url 'documentary_evidence_add' caso.id %}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Aggiungi Documento
-        </a>
-    </div>
-
-    {% if messages %}
-    <div class="messages">
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">
-            {{ message }}
+<!--begin::Card-->
+<div class="card">
+    <!--begin::Card header-->
+    <div class="card-header border-0 pt-6">
+        <!--begin::Card title-->
+        <div class="card-title">
+            <!--begin::Search-->
+            <div class="d-flex align-items-center position-relative my-1">
+                <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-5">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                </i>
+                <input type="text" data-kt-docs-table-filter="search" class="form-control form-control-solid w-250px ps-12" placeholder="Cerca documenti">
+            </div>
+            <!--end::Search-->
         </div>
-        {% endfor %}
+        <!--end::Card title-->
     </div>
-    {% endif %}
+    <!--end::Card header-->
 
-    {% if documents %}
-    <div class="table-responsive">
-        <table class="table table-striped">
+    <!--begin::Card body-->
+    <div class="card-body py-4">
+        {% if documents %}
+        <!--begin::Table-->
+        <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_docs_table">
             <thead>
-                <tr>
+                <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
                     <th>N° Esibito</th>
                     <th>Titolo</th>
                     <th>Stato Autenticazione</th>
                     <th>Data Aggiunta</th>
-                    <th>Azioni</th>
+                    <th class="text-end">Azioni</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="fw-semibold text-gray-600">
                 {% for doc in documents %}
                 <tr>
                     <td>{{ doc.exhibit_number }}</td>
                     <td>{{ doc.title }}</td>
                     <td>
                         {% if doc.authentication_status == 'pending' %}
-                        <span class="badge bg-warning">In Attesa</span>
+                        <span class="badge badge-light-warning">In Attesa</span>
                         {% elif doc.authentication_status == 'authenticated' %}
-                        <span class="badge bg-success">Autenticato</span>
+                        <span class="badge badge-light-success">Autenticato</span>
                         {% else %}
-                        <span class="badge bg-secondary">Non Richiesto</span>
+                        <span class="badge badge-light">Non Richiesto</span>
                         {% endif %}
                     </td>
                     <td>{{ doc.date_added|date:"d/m/Y H:i" }}</td>
-                    <td>
-                        <div class="btn-group">
-                            <a href="{% url 'documentary_evidence_detail' caso.id doc.id %}" class="btn btn-sm btn-info">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                            <a href="{% url 'documentary_evidence_edit' caso.id doc.id %}" class="btn btn-sm btn-warning">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            {% if doc.document_file %}
-                            <a href="{{ doc.document_file.url }}" class="btn btn-sm btn-secondary" target="_blank">
-                                <i class="fas fa-download"></i>
-                            </a>
-                            {% endif %}
-                        </div>
+                    <td class="text-end">
+                        <a href="{% url 'documentary_evidence_detail' caso.id doc.id %}" class="btn btn-icon btn-light-info btn-sm me-1">
+                            <i class="ki-duotone ki-eye fs-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                            </i>
+                        </a>
+                        <a href="{% url 'documentary_evidence_edit' caso.id doc.id %}" class="btn btn-icon btn-light-warning btn-sm me-1">
+                            <i class="ki-duotone ki-pencil fs-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                        </a>
+                        {% if doc.document_file %}
+                        <a href="{{ doc.document_file.url }}" class="btn btn-icon btn-light-primary btn-sm" target="_blank">
+                            <i class="ki-duotone ki-document fs-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                        </a>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        <!--end::Table-->
+        {% else %}
+        <!--begin::No documents-->
+        <div class="card-px text-center py-20 my-10">
+            <h2 class="fs-2x fw-bold mb-10">Nessun Documento</h2>
+            <p class="text-gray-400 fs-4 fw-semibold mb-10">Non ci sono ancora documenti per questo caso.<br>Usa il pulsante "Aggiungi Documento" per iniziare.</p>
+            <a href="{% url 'documentary_evidence_add' caso.id %}" class="btn btn-primary">
+                <i class="ki-duotone ki-plus-square fs-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                </i>
+                Aggiungi Documento
+            </a>
+        </div>
+        <!--end::No documents-->
+        {% endif %}
     </div>
-    {% else %}
-    <div class="alert alert-info">
-        Non ci sono ancora documenti per questo caso. Usa il pulsante "Aggiungi Documento" per iniziare.
-    </div>
-    {% endif %}
-
-    <div class="mt-4">
-        <a href="{% url 'dettaglio_caso' caso.id %}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Torna al Caso
-        </a>
-    </div>
+    <!--end::Card body-->
 </div>
+<!--end::Card-->
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Initialize DataTable
+    const table = $("#kt_docs_table").DataTable({
+        "info": false,
+        "order": [],
+        "pageLength": 10,
+        "lengthChange": false,
+        "searching": true,
+        "ordering": true,
+        "language": {
+            "search": "",
+            "searchPlaceholder": "Cerca...",
+            "zeroRecords": "Nessun risultato trovato",
+            "paginate": {
+                "next": "Succ",
+                "previous": "Prec"
+            }
+        }
+    });
+
+    // Handle search
+    const filterSearch = document.querySelector('[data-kt-docs-table-filter="search"]');
+    filterSearch.addEventListener('keyup', function (e) {
+        table.search(e.target.value).draw();
+    });
+});
+</script>
 {% endblock %}
