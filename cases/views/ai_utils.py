@@ -22,24 +22,40 @@ def analizza_caso(caso_id):
     La risposta deve essere un oggetto JSON valido con la seguente struttura:
     {{
         "analisi_legale": {{
-            "inquadramento_giuridico": "string",
-            "norme_applicabili": ["string"],
-            "giurisprudenza_rilevante": ["string"],
-            "aggravanti": ["string"],
-            "attenuanti": ["string"]
+            "quadro_normativo": [
+                {{"titolo": "string", "descrizione": "string"}}
+            ],
+            "precedenti_rilevanti": [
+                {{"riferimento": "string", "esito": "string"}}
+            ],
+            "giurisprudenza": [
+                {{"riferimento": "string", "principio": "string"}}
+            ],
+            "punti_chiave": ["string"]
         }},
-        "strategie_difensive": {{
-            "linee_principali": ["string"],
-            "argomentazioni": ["string"],
-            "eccezioni_procedurali": ["string"],
-            "strategie_alternative": ["string"]
+        "strategie_difesa": {{
+            "argomenti_principali": ["string"],
+            "contro_argomentazioni": [
+                {{"argomento": "string", "risposta": "string"}}
+            ],
+            "punti_forza": ["string"],
+            "approccio_difensivo": [
+                {{"titolo": "string", "descrizione": "string"}}
+            ],
+            "criticita": ["string"]
         }},
         "gestione_prove": {{
-            "prove_da_raccogliere": ["string"],
-            "documenti_necessari": ["string"],
-            "testimonianze": ["string"],
-            "perizie_tecniche": ["string"],
-            "tempistiche": "string"
+            "prove_documentali": [
+                {{"titolo": "string", "descrizione": "string", "rilevanza": "Alta|Media|Bassa"}}
+            ],
+            "testimonianze": [
+                {{"testimone": "string", "dichiarazione": "string", "affidabilita": "Alta|Media|Bassa"}}
+            ],
+            "analisi_prove": ["string"],
+            "prove_da_acquisire": [
+                {{"descrizione": "string", "priorita": "Alta|Media|Bassa"}}
+            ],
+            "criticita_probatorie": ["string"]
         }},
         "azioni_immediate": {{
             "passi_urgenti": ["string"],
@@ -79,10 +95,11 @@ def analizza_caso(caso_id):
             "gestione_spese": ["string"]
         }},
         "prospettive_risoluzione": {{
-            "possibili_esiti": ["string"],
-            "opzioni_patteggiamento": ["string"],
-            "tempistiche_stimate": "string",
-            "strategie_negoziazione": ["string"]
+            "esito_favorevole": "string",
+            "esito_intermedio": "string",
+            "esito_sfavorevole": "string",
+            "strategie_risoluzione": ["string"],
+            "prossimi_passi": ["string"]
         }}
     }}
 

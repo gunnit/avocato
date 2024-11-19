@@ -1,0 +1,124 @@
+<!--begin::Evidence Management-->
+<div class="accordion-item mb-5 border rounded-3 shadow-sm">
+    <h2 class="accordion-header">
+        <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#gestioneProve">
+            <i class="ki-duotone ki-document fs-2 me-3">
+                <span class="path1"></span>
+                <span class="path2"></span>
+            </i>
+            3. Gestione delle Prove
+        </button>
+    </h2>
+    <div id="gestioneProve" class="accordion-collapse collapse" data-bs-parent="#analisiAccordion">
+        <div class="accordion-body">
+            <div class="row g-5 mb-8">
+                <div class="col-md-6">
+                    <h3 class="fs-4 fw-bold mb-4">Prove Documentali</h3>
+                    <div class="bg-light rounded p-4">
+                        {% for doc in analisi_json.gestione_prove.prove_documentali %}
+                            <div class="d-flex align-items-center border-bottom py-3">
+                                <i class="ki-duotone ki-file fs-2 me-3 text-primary">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                <div>
+                                    <span class="fs-6 fw-bold d-block">{{ doc.titolo }}</span>
+                                    <span class="fs-7 text-gray-600">{{ doc.descrizione }}</span>
+                                    {% if doc.rilevanza %}
+                                        <span class="badge badge-light-{% if doc.rilevanza == 'Alta' %}success{% elif doc.rilevanza == 'Media' %}warning{% else %}danger{% endif %} fw-bold ms-2">
+                                            {{ doc.rilevanza }}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h3 class="fs-4 fw-bold mb-4">Testimonianze</h3>
+                    <div class="bg-light rounded p-4">
+                        {% for test in analisi_json.gestione_prove.testimonianze %}
+                            <div class="d-flex align-items-center border-bottom py-3">
+                                <i class="ki-duotone ki-profile-user fs-2 me-3 text-primary">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                </i>
+                                <div>
+                                    <span class="fs-6 fw-bold d-block">{{ test.testimone }}</span>
+                                    <span class="fs-7 text-gray-600">{{ test.dichiarazione }}</span>
+                                    {% if test.affidabilita %}
+                                        <span class="badge badge-light-{% if test.affidabilita == 'Alta' %}success{% elif test.affidabilita == 'Media' %}warning{% else %}danger{% endif %} fw-bold ms-2">
+                                            {{ test.affidabilita }}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="fs-4 fw-bold mb-4">Analisi delle Prove</h3>
+                <div class="notice d-flex bg-light-primary rounded border-primary border border-dashed p-6">
+                    <i class="ki-duotone ki-search fs-2tx text-primary me-4">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                        <span class="path3"></span>
+                    </i>
+                    <div class="d-flex flex-stack flex-grow-1">
+                        <div class="fw-semibold">
+                            <div class="fs-6 text-gray-700">
+                                <ul class="list-unstyled mb-0">
+                                    {% for analisi in analisi_json.gestione_prove.analisi_prove %}
+                                        <li class="d-flex align-items-center py-2">
+                                            <span class="bullet bullet-dot bg-primary me-3"></span>
+                                            <span class="fs-6">{{ analisi }}</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-5">
+                <div class="col-md-6">
+                    <h3 class="fs-4 fw-bold mb-4">Prove da Acquisire</h3>
+                    <div class="bg-light-warning rounded p-4">
+                        {% for prova in analisi_json.gestione_prove.prove_da_acquisire %}
+                            <div class="d-flex align-items-center border-bottom py-3">
+                                <i class="ki-duotone ki-plus-square fs-2 me-3 text-warning">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                </i>
+                                <div>
+                                    <span class="fs-6 fw-bold d-block">{{ prova.descrizione }}</span>
+                                    <span class="fs-7 text-gray-600">Priorità: {{ prova.priorita }}</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h3 class="fs-4 fw-bold mb-4">Criticità Probatorie</h3>
+                    <div class="bg-light-danger rounded p-4">
+                        {% for criticita in analisi_json.gestione_prove.criticita_probatorie %}
+                            <div class="d-flex align-items-center border-bottom py-3">
+                                <i class="ki-duotone ki-warning-2 fs-2 me-3 text-danger">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                <span class="fs-6">{{ criticita }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--end::Evidence Management-->

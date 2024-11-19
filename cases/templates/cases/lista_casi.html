@@ -1,36 +1,168 @@
 {% extends 'cases/base.html' %}
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col">
-        <h2>Lista Casi</h2>
-    </div>
-    <div class="col text-end">
-        <a href="{% url 'nuovo_caso' %}" class="btn btn-primary">Nuovo Caso</a>
-    </div>
-</div>
-
-{% if casi %}
-    <div class="row">
-        {% for caso in casi %}
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ caso.titolo }}</h5>
-                        <p class="card-text text-muted">Data: {{ caso.data_creazione|date:"d/m/Y H:i" }}</p>
-                        <p class="card-text">{{ caso.descrizione|truncatewords:30 }}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-info">{{ caso.stato }}</span>
-                            <a href="{% url 'dettaglio_caso' caso.id %}" class="btn btn-outline-primary">Visualizza</a>
+<!--begin::Content container-->
+<div id="kt_app_content_container" class="app-container container-xxl">
+    <!--begin::Row-->
+    <div class="row g-5 g-xl-10 mb-5 mb-xl-10">
+        <!--begin::Col-->
+        <div class="col-md-6 col-lg-6 col-xl-6 col-xxl-3 mb-md-5 mb-xl-10">
+            <!--begin::Card widget 20-->
+            <div class="card card-flush h-md-50 mb-5 mb-xl-10 bg-danger">
+                <!--begin::Header-->
+                <div class="card-header pt-5">
+                    <!--begin::Title-->
+                    <div class="card-title d-flex flex-column">
+                        <!--begin::Amount-->
+                        <span class="fs-2hx fw-bold text-white me-2 lh-1 ls-n2">{{ casi.count }}</span>
+                        <!--end::Amount-->
+                        <!--begin::Subtitle-->
+                        <span class="text-white opacity-75 pt-1 fw-semibold fs-6">Casi Totali</span>
+                        <!--end::Subtitle-->
+                    </div>
+                    <!--end::Title-->
+                </div>
+                <!--end::Header-->
+                <!--begin::Card body-->
+                <div class="card-body d-flex align-items-end pt-0">
+                    <!--begin::Progress-->
+                    <div class="d-flex align-items-center flex-column mt-3 w-100">
+                        <div class="d-flex justify-content-between fw-bold fs-6 text-white opacity-75 w-100 mt-auto mb-2">
+                            <span>In Corso</span>
+                            <span>{{ casi_in_corso }}%</span>
+                        </div>
+                        <div class="h-8px mx-3 w-100 bg-white bg-opacity-50 rounded">
+                            <div class="bg-white rounded h-8px" role="progressbar" style="width: {{ casi_in_corso }}%;" aria-valuenow="{{ casi_in_corso }}" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
+                    <!--end::Progress-->
                 </div>
+                <!--end::Card body-->
             </div>
-        {% endfor %}
+            <!--end::Card widget 20-->
+        </div>
+        <!--end::Col-->
+
+        <!--begin::Col-->
+        <div class="col-md-6 col-lg-6 col-xl-6 col-xxl-3 mb-md-5 mb-xl-10">
+            <!--begin::Card widget 20-->
+            <div class="card card-flush h-md-50 mb-5 mb-xl-10 bg-success">
+                <!--begin::Header-->
+                <div class="card-header pt-5">
+                    <!--begin::Title-->
+                    <div class="card-title d-flex flex-column">
+                        <!--begin::Amount-->
+                        <span class="fs-2hx fw-bold text-white me-2 lh-1 ls-n2">{{ casi_completati }}</span>
+                        <!--end::Amount-->
+                        <!--begin::Subtitle-->
+                        <span class="text-white opacity-75 pt-1 fw-semibold fs-6">Casi Completati</span>
+                        <!--end::Subtitle-->
+                    </div>
+                    <!--end::Title-->
+                </div>
+                <!--end::Header-->
+            </div>
+            <!--end::Card widget 20-->
+        </div>
+        <!--end::Col-->
     </div>
-{% else %}
-    <div class="alert alert-info">
-        Non ci sono casi registrati. <a href="{% url 'nuovo_caso' %}">Crea il primo caso</a>.
+    <!--end::Row-->
+
+    <!--begin::Row-->
+    <div class="row g-5 g-xl-10">
+        <div class="col-12">
+            <div class="card card-flush">
+                <!--begin::Card header-->
+                <div class="card-header pt-7">
+                    <!--begin::Title-->
+                    <h3 class="card-title align-items-start flex-column">
+                        <span class="card-label fw-bold text-gray-800">Lista Casi</span>
+                        <span class="text-gray-500 mt-1 fw-semibold fs-6">Gestione e monitoraggio dei casi legali</span>
+                    </h3>
+                    <!--end::Title-->
+                    <!--begin::Toolbar-->
+                    <div class="card-toolbar">
+                        <a href="{% url 'nuovo_caso' %}" class="btn btn-sm fw-bold btn-primary">
+                            <i class="ki-duotone ki-plus fs-2"></i>Nuovo Caso
+                        </a>
+                    </div>
+                    <!--end::Toolbar-->
+                </div>
+                <!--end::Card header-->
+
+                <!--begin::Card body-->
+                <div class="card-body pt-5">
+                    {% if casi %}
+                    <div class="row">
+                        {% for caso in casi %}
+                        <div class="col-md-6 mb-4">
+                            <div class="card card-flush h-xl-100 shadow-sm">
+                                <div class="card-body py-5">
+                                    <div class="d-flex flex-stack">
+                                        <div class="d-flex align-items-center flex-row-fluid flex-wrap">
+                                            <div class="flex-grow-1 me-2">
+                                                <a href="{% url 'dettaglio_caso' caso.id %}" class="text-gray-800 text-hover-primary fs-4 fw-bold mb-1 text-truncate d-block">{{ caso.titolo }}</a>
+                                                <span class="text-gray-500 fw-semibold d-block fs-7">
+                                                    <i class="ki-duotone ki-calendar fs-7 me-1">
+                                                        <span class="path1"></span>
+                                                        <span class="path2"></span>
+                                                    </i>{{ caso.data_creazione|date:"d/m/Y H:i" }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        {% if caso.stato == 'In corso' %}
+                                            <span class="badge badge-light-primary py-3 px-4 fs-7 rounded-pill">{{ caso.stato }}</span>
+                                        {% elif caso.stato == 'Completato' %}
+                                            <span class="badge badge-light-success py-3 px-4 fs-7 rounded-pill">{{ caso.stato }}</span>
+                                        {% else %}
+                                            <span class="badge badge-light-warning py-3 px-4 fs-7 rounded-pill">{{ caso.stato }}</span>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="separator my-5"></div>
+
+                                    <div class="text-gray-600 fw-semibold mb-5 line-clamp-3">{{ caso.descrizione|truncatewords:30 }}</div>
+
+                                    <div class="d-flex flex-stack">
+                                        <div class="d-flex align-items-center">
+                                            <i class="ki-duotone ki-document fs-2 me-2 text-gray-500">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                            </i>
+                                            <span class="text-gray-700 fw-bold">ID: {{ caso.id }}</span>
+                                        </div>
+                                        <a href="{% url 'dettaglio_caso' caso.id %}" class="btn btn-sm btn-light-primary">
+                                            <i class="ki-duotone ki-eye fs-7 me-1">
+                                                <span class="path1"></span>
+                                                <span class="path2"></span>
+                                                <span class="path3"></span>
+                                            </i>Visualizza
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="alert alert-primary d-flex align-items-center p-5 mb-10">
+                        <i class="ki-duotone ki-information-5 fs-2hx text-primary me-4">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                        </i>
+                        <div class="d-flex flex-column">
+                            <h4 class="mb-1 text-primary">Nessun caso</h4>
+                            <span>Non ci sono casi registrati. <a href="{% url 'nuovo_caso' %}" class="fw-bold">Crea il primo caso</a>.</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <!--end::Card body-->
+            </div>
+        </div>
     </div>
-{% endif %}
+    <!--end::Row-->
+</div>
+<!--end::Content container-->
 {% endblock %}

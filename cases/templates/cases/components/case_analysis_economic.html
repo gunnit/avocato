@@ -1,0 +1,66 @@
+<!--begin::Economic Aspects-->
+<div class="accordion-item mb-5 border rounded-3 shadow-sm">
+    <h2 class="accordion-header">
+        <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#aspettiEconomici">
+            <i class="ki-duotone ki-dollar fs-2 me-3">
+                <span class="path1"></span>
+                <span class="path2"></span>
+            </i>
+            9. Aspetti Economici
+        </button>
+    </h2>
+    <div id="aspettiEconomici" class="accordion-collapse collapse" data-bs-parent="#analisiAccordion">
+        <div class="accordion-body">
+            <div class="mb-8">
+                <h3 class="fs-4 fw-bold mb-4">Stima dei Costi</h3>
+                <div class="notice d-flex bg-light-primary rounded border-primary border border-dashed p-6">
+                    <i class="ki-duotone ki-calculator fs-2tx text-primary me-4">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                        <span class="path3"></span>
+                        <span class="path4"></span>
+                    </i>
+                    <div class="d-flex flex-stack flex-grow-1">
+                        <div class="fw-semibold">
+                            <h4 class="text-gray-900 fw-bold">Previsione Spese</h4>
+                            <div class="fs-6 text-gray-700">{{ analisi_json.aspetti_economici.stima_costi }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-5">
+                <div class="col-md-6">
+                    <h3 class="fs-4 fw-bold mb-4">Sanzioni Possibili</h3>
+                    <div class="bg-light-danger rounded p-4">
+                        {% for sanzione in analisi_json.aspetti_economici.sanzioni_possibili %}
+                            <div class="d-flex align-items-center border-bottom py-3">
+                                <i class="ki-duotone ki-bank fs-2 me-3 text-danger">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                <span class="fs-6">{{ sanzione }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h3 class="fs-4 fw-bold mb-4">Supporto Finanziario</h3>
+                    <div class="bg-light-success rounded p-4">
+                        {% for supporto in analisi_json.aspetti_economici.supporto_finanziario %}
+                            <div class="d-flex align-items-center border-bottom py-3">
+                                <i class="ki-duotone ki-dollar-circle fs-2 me-3 text-success">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                </i>
+                                <span class="fs-6">{{ supporto }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--end::Economic Aspects-->

@@ -1,0 +1,96 @@
+<!--begin::Stats-->
+<div class="row g-5 g-xl-8 mb-5 mb-xl-10">
+    <!--begin::Col-->
+    <div class="col-xl-3">
+        <!--begin::Stat Card-->
+        <div class="card bg-light-success card-xl-stretch mb-5 mb-xl-8">
+            <!--begin::Body-->
+            <div class="card-body my-3">
+                <a href="#" class="card-title fw-bold text-success fs-5 mb-3 d-block">Probabilità di Successo</a>
+                <div class="py-1">
+                    <span class="text-dark fs-1 fw-bold me-2">{{ analisi_json.statistiche.probabilita_successo }}%</span>
+                </div>
+                <div class="progress h-7px bg-success bg-opacity-50 mt-7">
+                    <div class="progress-bar bg-success" role="progressbar" data-progress="{{ analisi_json.statistiche.probabilita_successo }}" aria-valuenow="{{ analisi_json.statistiche.probabilita_successo }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+            <!--end::Body-->
+        </div>
+        <!--end::Stat Card-->
+    </div>
+    <!--end::Col-->
+
+    <!--begin::Col-->
+    <div class="col-xl-3">
+        <!--begin::Stat Card-->
+        <div class="card bg-light-warning card-xl-stretch mb-5 mb-xl-8">
+            <!--begin::Body-->
+            <div class="card-body my-3">
+                <a href="#" class="card-title fw-bold text-warning fs-5 mb-3 d-block">Complessità del Caso</a>
+                <div class="py-1">
+                    <span class="text-dark fs-1 fw-bold me-2">{{ analisi_json.statistiche.complessita }}</span>
+                    <span class="fw-semibold text-muted fs-7">/10</span>
+                </div>
+                <div class="progress h-7px bg-warning bg-opacity-50 mt-7">
+                    <div class="progress-bar bg-warning" role="progressbar" data-progress="{{ analisi_json.statistiche.complessita }}" aria-valuenow="{{ analisi_json.statistiche.complessita }}" aria-valuemin="0" aria-valuemax="10"></div>
+                </div>
+            </div>
+            <!--end::Body-->
+        </div>
+        <!--end::Stat Card-->
+    </div>
+    <!--end::Col-->
+
+    <!--begin::Col-->
+    <div class="col-xl-3">
+        <!--begin::Stat Card-->
+        <div class="card bg-light-primary card-xl-stretch mb-5 mb-xl-8">
+            <!--begin::Body-->
+            <div class="card-body my-3">
+                <a href="#" class="card-title fw-bold text-primary fs-5 mb-3 d-block">Documenti Rilevanti</a>
+                <div class="py-1">
+                    <span class="text-dark fs-1 fw-bold me-2">{{ analisi_json.statistiche.documenti_rilevanti }}</span>
+                </div>
+                <span class="fs-7 fw-semibold text-gray-600">{{ analisi_json.statistiche.documenti_totali }} Totali</span>
+            </div>
+            <!--end::Body-->
+        </div>
+        <!--end::Stat Card-->
+    </div>
+    <!--end::Col-->
+
+    <!--begin::Col-->
+    <div class="col-xl-3">
+        <!--begin::Stat Card-->
+        <div class="card bg-light-info card-xl-stretch mb-5 mb-xl-8">
+            <!--begin::Body-->
+            <div class="card-body my-3">
+                <a href="#" class="card-title fw-bold text-info fs-5 mb-3 d-block">Tempo Stimato</a>
+                <div class="py-1">
+                    <span class="text-dark fs-1 fw-bold me-2">{{ analisi_json.statistiche.tempo_stimato }}</span>
+                    <span class="fw-semibold text-muted fs-7">mesi</span>
+                </div>
+                <span class="fs-7 fw-semibold text-gray-600">{{ analisi_json.statistiche.tempo_trascorso }} mesi trascorsi</span>
+            </div>
+            <!--end::Body-->
+        </div>
+        <!--end::Stat Card-->
+    </div>
+    <!--end::Col-->
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set progress bar widths based on data attributes
+    document.querySelectorAll('.progress-bar').forEach(function(bar) {
+        const progress = bar.getAttribute('data-progress');
+        if (bar.parentElement.classList.contains('bg-warning')) {
+            // For complexity, convert from 0-10 to percentage
+            bar.style.width = (progress * 10) + '%';
+        } else {
+            bar.style.width = progress + '%';
+        }
+    });
+});
+</script>
+<!--end::Stats-->

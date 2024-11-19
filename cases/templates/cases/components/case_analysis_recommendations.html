@@ -1,0 +1,80 @@
+<!--begin::Recommendations-->
+<div class="accordion-item mb-5 border rounded-3 shadow-sm">
+    <h2 class="accordion-header">
+        <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#raccomandazioni">
+            <i class="ki-duotone ki-check-circle fs-2 me-3">
+                <span class="path1"></span>
+                <span class="path2"></span>
+            </i>
+            8. Raccomandazioni
+        </button>
+    </h2>
+    <div id="raccomandazioni" class="accordion-collapse collapse" data-bs-parent="#analisiAccordion">
+        <div class="accordion-body">
+            <div class="row g-5 mb-8">
+                <div class="col-md-6">
+                    <div class="notice d-flex bg-light-success rounded border-success border border-dashed p-6">
+                        <i class="ki-duotone ki-check-square fs-2tx text-success me-4">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        <div class="d-flex flex-stack flex-grow-1">
+                            <div class="fw-semibold">
+                                <h4 class="text-gray-900 fw-bold">Comportamenti da Adottare</h4>
+                                <div class="fs-6 text-gray-700">
+                                    <ul class="list-unstyled mb-0">
+                                        {% for comp in analisi_json.raccomandazioni.comportamenti_da_adottare %}
+                                            <li class="d-flex align-items-center py-2">
+                                                <span class="bullet bullet-dot bg-success me-3"></span>
+                                                <span>{{ comp }}</span>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="notice d-flex bg-light-danger rounded border-danger border border-dashed p-6">
+                        <i class="ki-duotone ki-cross-square fs-2tx text-danger me-4">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        <div class="d-flex flex-stack flex-grow-1">
+                            <div class="fw-semibold">
+                                <h4 class="text-gray-900 fw-bold">Comportamenti da Evitare</h4>
+                                <div class="fs-6 text-gray-700">
+                                    <ul class="list-unstyled mb-0">
+                                        {% for comp in analisi_json.raccomandazioni.comportamenti_da_evitare %}
+                                            <li class="d-flex align-items-center py-2">
+                                                <span class="bullet bullet-dot bg-danger me-3"></span>
+                                                <span>{{ comp }}</span>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-0">
+                <h3 class="fs-4 fw-bold mb-4">Gestione Comunicazione</h3>
+                <div class="bg-light rounded p-4">
+                    {% for com in analisi_json.raccomandazioni.gestione_comunicazione %}
+                        <div class="d-flex align-items-center border-bottom py-3">
+                            <i class="ki-duotone ki-message-text fs-2 me-3 text-primary">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            <span class="fs-6">{{ com }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--end::Recommendations-->

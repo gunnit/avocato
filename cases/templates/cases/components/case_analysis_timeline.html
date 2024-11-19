@@ -1,0 +1,67 @@
+<!--begin::Timeline-->
+<div class="accordion-item mb-5 border rounded-3 shadow-sm">
+    <h2 class="accordion-header">
+        <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#timeline">
+            <i class="ki-duotone ki-timer fs-2 me-3">
+                <span class="path1"></span>
+                <span class="path2"></span>
+            </i>
+            5. Timeline
+        </button>
+    </h2>
+    <div id="timeline" class="accordion-collapse collapse" data-bs-parent="#analisiAccordion">
+        <div class="accordion-body">
+            <div class="mb-8">
+                <h3 class="fs-4 fw-bold mb-4">Tempistiche Procedurali</h3>
+                <div class="notice d-flex bg-light-primary rounded border-primary border border-dashed p-6">
+                    <i class="ki-duotone ki-calendar-8 fs-2tx text-primary me-4">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                        <span class="path3"></span>
+                        <span class="path4"></span>
+                    </i>
+                    <div class="d-flex flex-stack flex-grow-1">
+                        <div class="fw-semibold">
+                            <h4 class="text-gray-900 fw-bold">Panoramica Temporale</h4>
+                            <div class="fs-6 text-gray-700">{{ analisi_json.timeline.tempistiche_procedurali }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-5">
+                <div class="col-md-6">
+                    <h3 class="fs-4 fw-bold mb-4">Date Chiave</h3>
+                    <div class="bg-light rounded p-4">
+                        {% for data in analisi_json.timeline.date_chiave %}
+                            <div class="d-flex align-items-center border-bottom py-3">
+                                <i class="ki-duotone ki-calendar-tick fs-2 me-3 text-primary">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                </i>
+                                <span class="fs-6">{{ data }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h3 class="fs-4 fw-bold mb-4">Termini Perentori</h3>
+                    <div class="bg-light-warning rounded p-4">
+                        {% for termine in analisi_json.timeline.termini_perentori %}
+                            <div class="d-flex align-items-center border-bottom py-3">
+                                <i class="ki-duotone ki-calendar-warning fs-2 me-3 text-warning">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                </i>
+                                <span class="fs-6">{{ termine }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--end::Timeline-->
