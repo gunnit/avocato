@@ -1,25 +1,61 @@
 {% extends 'cases/base.html' %}
 
-{% block breadcrumb_items %}
-<li class="breadcrumb-item active">{{ caso.titolo }}</li>
+{% block page_title %}{{ caso.titolo }}{% endblock %}
+
+{% block breadcrumbs %}
+<!--begin::Item-->
+<li class="breadcrumb-item">
+    <span class="bullet bg-gray-500 w-5px h-2px"></span>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item text-muted">
+    <a href="{% url 'lista_casi' %}" class="text-muted text-hover-primary">Lista Casi</a>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item">
+    <span class="bullet bg-gray-500 w-5px h-2px"></span>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item text-muted">{{ caso.titolo }}</li>
+<!--end::Item-->
+{% endblock %}
+
+{% block page_actions %}
+<div class="d-flex align-items-center gap-2 gap-lg-3">
+    {% if caso.stato != 'Completato' %}
+    <button type="button" class="btn btn-sm fw-bold btn-success" data-bs-toggle="modal" data-bs-target="#modalCompletaCaso">
+        <i class="ki-duotone ki-check fs-2 me-2">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>Completa Caso
+    </button>
+    {% endif %}
+    <a href="{% url 'lista_casi' %}" class="btn btn-sm fw-bold btn-secondary">
+        <i class="ki-duotone ki-arrow-left fs-2 me-2">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>Torna alla Lista
+    </a>
+</div>
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>{{ caso.titolo }}</h2>
-            <span class="badge bg-info fs-6">{{ caso.stato }}</span>
+<div class="row g-5 g-xl-10">
+    <div class="col-12">
+        <div class="mb-5">
+            <span class="badge badge-lg py-3 px-4 fs-7 rounded-pill 
+                {% if caso.stato == 'In corso' %}badge-primary
+                {% elif caso.stato == 'Completato' %}badge-success
+                {% else %}badge-warning{% endif %}">
+                {{ caso.stato }}
+            </span>
         </div>
 
         {% include 'cases/components/case_info.html' %}
         {% include 'cases/components/case_analysis.html' %}
-
-        <div class="text-end mt-4">
-            <a href="{% url 'lista_casi' %}" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-2"></i>Torna alla Lista
-            </a>
-        </div>
     </div>
 </div>
 {% endblock %}

@@ -1,20 +1,47 @@
 {% extends 'cases/base.html' %}
 
+{% block page_title %}Lista Casi{% endblock %}
+
+{% block breadcrumbs %}
+<!--begin::Item-->
+<li class="breadcrumb-item">
+    <span class="bullet bg-gray-500 w-5px h-2px"></span>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item text-muted">Lista Casi</li>
+<!--end::Item-->
+{% endblock %}
+
+{% block page_actions %}
+<div class="d-flex align-items-center gap-2 gap-lg-3">
+    <a href="{% url 'nuovo_caso' %}" class="btn btn-sm fw-bold btn-primary">
+        <i class="ki-duotone ki-plus fs-2 me-2"></i>Nuovo Caso
+    </a>
+</div>
+{% endblock %}
+
 {% block content %}
 <!--begin::Content container-->
 <div id="kt_app_content_container" class="app-container container-xxl">
     <!--begin::Row-->
     <div class="row g-5 g-xl-10 mb-5 mb-xl-10">
         <!--begin::Col-->
-        <div class="col-md-6 col-lg-6 col-xl-6 col-xxl-3 mb-md-5 mb-xl-10">
+        <div class="col-md-6 col-lg-6 col-xl-6 col-xxl-6 mb-md-5 mb-xl-10">
             <!--begin::Card widget 20-->
-            <div class="card card-flush h-md-50 mb-5 mb-xl-10 bg-danger">
+            <div class="card card-flush bgi-no-repeat bgi-size-contain bgi-position-x-end h-md-50 mb-5 mb-xl-10 bg-danger">
                 <!--begin::Header-->
                 <div class="card-header pt-5">
                     <!--begin::Title-->
                     <div class="card-title d-flex flex-column">
                         <!--begin::Amount-->
-                        <span class="fs-2hx fw-bold text-white me-2 lh-1 ls-n2">{{ casi.count }}</span>
+                        <span class="fs-2hx fw-bold text-white me-2 lh-1 ls-n2">
+                            <i class="ki-duotone ki-document-list fs-2hx text-white me-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            {{ casi.count }}
+                        </span>
                         <!--end::Amount-->
                         <!--begin::Subtitle-->
                         <span class="text-white opacity-75 pt-1 fw-semibold fs-6">Casi Totali</span>
@@ -32,7 +59,7 @@
                             <span>{{ casi_in_corso }}%</span>
                         </div>
                         <div class="h-8px mx-3 w-100 bg-white bg-opacity-50 rounded">
-                            <div class="bg-white rounded h-8px" role="progressbar" style="width: {{ casi_in_corso }}%;" aria-valuenow="{{ casi_in_corso }}" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="bg-white rounded h-8px" role="progressbar" style="width:{{ casi_in_corso }}%" aria-valuenow="{{ casi_in_corso }}" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
                     <!--end::Progress-->
@@ -44,15 +71,21 @@
         <!--end::Col-->
 
         <!--begin::Col-->
-        <div class="col-md-6 col-lg-6 col-xl-6 col-xxl-3 mb-md-5 mb-xl-10">
+        <div class="col-md-6 col-lg-6 col-xl-6 col-xxl-6 mb-md-5 mb-xl-10">
             <!--begin::Card widget 20-->
-            <div class="card card-flush h-md-50 mb-5 mb-xl-10 bg-success">
+            <div class="card card-flush bgi-no-repeat bgi-size-contain bgi-position-x-end h-md-50 mb-5 mb-xl-10 bg-success">
                 <!--begin::Header-->
                 <div class="card-header pt-5">
                     <!--begin::Title-->
                     <div class="card-title d-flex flex-column">
                         <!--begin::Amount-->
-                        <span class="fs-2hx fw-bold text-white me-2 lh-1 ls-n2">{{ casi_completati }}</span>
+                        <span class="fs-2hx fw-bold text-white me-2 lh-1 ls-n2">
+                            <i class="ki-duotone ki-check-circle fs-2hx text-white me-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            {{ casi_completati }}
+                        </span>
                         <!--end::Amount-->
                         <!--begin::Subtitle-->
                         <span class="text-white opacity-75 pt-1 fw-semibold fs-6">Casi Completati</span>
@@ -82,8 +115,9 @@
                     <!--end::Title-->
                     <!--begin::Toolbar-->
                     <div class="card-toolbar">
-                        <a href="{% url 'nuovo_caso' %}" class="btn btn-sm fw-bold btn-primary">
-                            <i class="ki-duotone ki-plus fs-2"></i>Nuovo Caso
+                        <a href="{% url 'nuovo_caso' %}" class="btn btn-lg fw-bold btn-primary pulse pulse-primary">
+                            <i class="ki-duotone ki-plus fs-2 me-2"></i>Nuovo Caso
+                            <span class="pulse-ring"></span>
                         </a>
                     </div>
                     <!--end::Toolbar-->
@@ -96,48 +130,53 @@
                     <div class="row">
                         {% for caso in casi %}
                         <div class="col-md-6 mb-4">
-                            <div class="card card-flush h-xl-100 shadow-sm">
+                            <div class="card card-flush h-xl-100 shadow-sm hover-elevate-up">
                                 <div class="card-body py-5">
-                                    <div class="d-flex flex-stack">
-                                        <div class="d-flex align-items-center flex-row-fluid flex-wrap">
-                                            <div class="flex-grow-1 me-2">
-                                                <a href="{% url 'dettaglio_caso' caso.id %}" class="text-gray-800 text-hover-primary fs-4 fw-bold mb-1 text-truncate d-block">{{ caso.titolo }}</a>
-                                                <span class="text-gray-500 fw-semibold d-block fs-7">
-                                                    <i class="ki-duotone ki-calendar fs-7 me-1">
-                                                        <span class="path1"></span>
-                                                        <span class="path2"></span>
-                                                    </i>{{ caso.data_creazione|date:"d/m/Y H:i" }}
-                                                </span>
-                                            </div>
-                                        </div>
+                                    <div class="mb-3">
                                         {% if caso.stato == 'In corso' %}
-                                            <span class="badge badge-light-primary py-3 px-4 fs-7 rounded-pill">{{ caso.stato }}</span>
+                                            <span class="badge badge-primary badge-lg py-3 px-4 fs-7 rounded-pill">{{ caso.stato }}</span>
                                         {% elif caso.stato == 'Completato' %}
-                                            <span class="badge badge-light-success py-3 px-4 fs-7 rounded-pill">{{ caso.stato }}</span>
+                                            <span class="badge badge-success badge-lg py-3 px-4 fs-7 rounded-pill">{{ caso.stato }}</span>
                                         {% else %}
-                                            <span class="badge badge-light-warning py-3 px-4 fs-7 rounded-pill">{{ caso.stato }}</span>
+                                            <span class="badge badge-warning badge-lg py-3 px-4 fs-7 rounded-pill">{{ caso.stato }}</span>
                                         {% endif %}
                                     </div>
 
-                                    <div class="separator my-5"></div>
+                                    <div class="d-flex flex-stack mb-3">
+                                        <div class="d-flex align-items-center flex-row-fluid flex-wrap">
+                                            <div class="flex-grow-1">
+                                                <a href="{% url 'dettaglio_caso' caso.id %}" class="text-gray-800 text-hover-primary fs-2 fw-bolder mb-1 text-truncate d-block">{{ caso.titolo }}</a>
+                                                <div class="d-flex align-items-center text-gray-500 gap-2 mt-1">
+                                                    <i class="ki-duotone ki-calendar-8 fs-6">
+                                                        <span class="path1"></span>
+                                                        <span class="path2"></span>
+                                                    </i>
+                                                    <span class="fw-semibold">{{ caso.data_creazione|date:"d F Y - H:i" }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="separator separator-dashed my-5"></div>
 
                                     <div class="text-gray-600 fw-semibold mb-5 line-clamp-3">{{ caso.descrizione|truncatewords:30 }}</div>
 
                                     <div class="d-flex flex-stack">
-                                        <div class="d-flex align-items-center">
-                                            <i class="ki-duotone ki-document fs-2 me-2 text-gray-500">
+                                        <span class="text-gray-400 fw-semibold fs-7">
+                                            <i class="ki-duotone ki-abstract-26 fs-7 me-1">
                                                 <span class="path1"></span>
                                                 <span class="path2"></span>
-                                            </i>
-                                            <span class="text-gray-700 fw-bold">ID: {{ caso.id }}</span>
+                                            </i>ID: {{ caso.id }}
+                                        </span>
+                                        <div class="d-flex gap-2">
+                                            <a href="{% url 'dettaglio_caso' caso.id %}" class="btn btn-sm btn-primary">
+                                                <i class="ki-duotone ki-eye fs-7 me-1">
+                                                    <span class="path1"></span>
+                                                    <span class="path2"></span>
+                                                    <span class="path3"></span>
+                                                </i>Dettagli
+                                            </a>
                                         </div>
-                                        <a href="{% url 'dettaglio_caso' caso.id %}" class="btn btn-sm btn-light-primary">
-                                            <i class="ki-duotone ki-eye fs-7 me-1">
-                                                <span class="path1"></span>
-                                                <span class="path2"></span>
-                                                <span class="path3"></span>
-                                            </i>Visualizza
-                                        </a>
                                     </div>
                                 </div>
                             </div>

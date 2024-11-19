@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
 <head>
+    <base href="/">
     <title>{% block title %}Assistente Legale{% endblock %}</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -104,8 +105,61 @@
                             <img alt="Logo" src="/assets/media/logos/default-small.svg" class="h-20px app-sidebar-logo-minimize">
                         </a>
                         <!--end::Logo image-->
+                        <!--begin::Sidebar toggle-->
+                        <div id="kt_app_sidebar_toggle" class="app-sidebar-toggle btn btn-icon btn-shadow btn-sm btn-color-muted btn-active-color-primary h-30px w-30px position-absolute top-50 start-100 translate-middle rotate" data-kt-toggle="true" data-kt-toggle-state="active" data-kt-toggle-target="body" data-kt-toggle-name="app-sidebar-minimize">
+                            <i class="ki-duotone ki-black-left-line fs-3 rotate-180">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                        </div>
+                        <!--end::Sidebar toggle-->
                     </div>
                     <!--end::Logo-->
+
+                    <!--begin::sidebar menu-->
+                    <div class="app-sidebar-menu overflow-hidden flex-column-fluid">
+                        <!--begin::Menu wrapper-->
+                        <div id="kt_app_sidebar_menu_wrapper" class="app-sidebar-wrapper">
+                            <!--begin::Scroll wrapper-->
+                            <div id="kt_app_sidebar_menu_scroll" class="scroll-y my-5 mx-3" data-kt-scroll="true" data-kt-scroll-activate="true" data-kt-scroll-height="auto" data-kt-scroll-dependencies="#kt_app_sidebar_logo, #kt_app_sidebar_footer" data-kt-scroll-wrappers="#kt_app_sidebar_menu" data-kt-scroll-offset="5px" data-kt-scroll-save-state="true">
+                                <!--begin::Menu-->
+                                <div class="menu menu-column menu-rounded menu-sub-indention fw-semibold fs-6" id="#kt_app_sidebar_menu" data-kt-menu="true" data-kt-menu-expand="false">
+                                    <!--begin:Menu item-->
+                                    <div class="menu-item">
+                                        <a class="menu-link" href="{% url 'lista_casi' %}">
+                                            <span class="menu-icon">
+                                                <i class="ki-duotone ki-element-11 fs-2">
+                                                    <span class="path1"></span>
+                                                    <span class="path2"></span>
+                                                    <span class="path3"></span>
+                                                    <span class="path4"></span>
+                                                </i>
+                                            </span>
+                                            <span class="menu-title">Lista Casi</span>
+                                        </a>
+                                    </div>
+                                    <!--end:Menu item-->
+                                    <!--begin:Menu item-->
+                                    <div class="menu-item">
+                                        <a class="menu-link" href="{% url 'nuovo_caso' %}">
+                                            <span class="menu-icon">
+                                                <i class="ki-duotone ki-plus fs-2">
+                                                    <span class="path1"></span>
+                                                    <span class="path2"></span>
+                                                </i>
+                                            </span>
+                                            <span class="menu-title">Nuovo Caso</span>
+                                        </a>
+                                    </div>
+                                    <!--end:Menu item-->
+                                </div>
+                                <!--end::Menu-->
+                            </div>
+                            <!--end::Scroll wrapper-->
+                        </div>
+                        <!--end::Menu wrapper-->
+                    </div>
+                    <!--end::sidebar menu-->
                 </div>
                 <!--end::Sidebar-->
 
@@ -113,6 +167,44 @@
                 <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
                     <!--begin::Content wrapper-->
                     <div class="d-flex flex-column flex-column-fluid">
+                        <!--begin::Toolbar-->
+                        <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
+                            <!--begin::Toolbar container-->
+                            <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex flex-stack">
+                                <!--begin::Page title-->
+                                <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+                                    <!--begin::Title-->
+                                    <h1 class="page-heading d-flex text-gray-900 fw-bold fs-3 flex-column justify-content-center my-0">{% block page_title %}Dashboard{% endblock %}</h1>
+                                    <!--end::Title-->
+                                    <!--begin::Breadcrumb-->
+                                    <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
+                                        <!--begin::Item-->
+                                        <li class="breadcrumb-item text-muted">
+                                            <a href="{% url 'lista_casi' %}" class="text-muted text-hover-primary">Home</a>
+                                        </li>
+                                        <!--end::Item-->
+                                        {% block breadcrumbs %}
+                                        <!--begin::Item-->
+                                        <li class="breadcrumb-item">
+                                            <span class="bullet bg-gray-500 w-5px h-2px"></span>
+                                        </li>
+                                        <!--end::Item-->
+                                        <!--begin::Item-->
+                                        <li class="breadcrumb-item text-muted">Dashboard</li>
+                                        <!--end::Item-->
+                                        {% endblock %}
+                                    </ul>
+                                    <!--end::Breadcrumb-->
+                                </div>
+                                <!--end::Page title-->
+                                <!--begin::Actions-->
+                                {% block page_actions %}{% endblock %}
+                                <!--end::Actions-->
+                            </div>
+                            <!--end::Toolbar container-->
+                        </div>
+                        <!--end::Toolbar-->
+
                         <!--begin::Content-->
                         <div id="kt_app_content" class="app-content flex-column-fluid">
                             <!--begin::Content container-->
