@@ -1,17 +1,24 @@
-<!-- Status and Quick Actions -->
+<!--begin::Case actions-->
 <div class="card card-flush h-100">
-    <div class="card-header card-header-stretch bg-purple">
+    <!--begin::Card header-->
+    <div class="card-header pt-7">
+        <!--begin::Title-->
         <h3 class="card-title align-items-start flex-column">
-            <span class="text fs-4 mb-1 fw-bold">Stato e Azioni</span>
+            <span class="card-label fw-bold text-gray-800">Stato e Azioni</span>
+            <span class="text-gray-400 mt-1 fw-semibold fs-6">Gestione rapida del caso</span>
         </h3>
+        <!--end::Title-->
     </div>
+    <!--end::Card header-->
+
+    <!--begin::Card body-->
     <div class="card-body pt-5">
-        <!-- Status -->
-        <div class="mb-6">
-            <div class="fw-bold text-gray-600 mb-3">Stato Attuale</div>
-            <div class="bg-light-purple rounded p-4 text-center">
+        <!--begin::Status-->
+        <div class="mb-10">
+            <div class="fw-bold fs-5 text-gray-600 mb-5">Stato Attuale</div>
+            <div class="d-flex flex-column text-center bg-light-primary rounded p-6">
                 {% if caso.stato == 'Memoria Completata' %}
-                    <span class="badge badge-purple fs-6 d-block">
+                    <span class="badge badge-primary fs-6 fw-bold mb-2">
                         <i class="ki-duotone ki-check-circle fs-2 me-2">
                             <span class="path1"></span>
                             <span class="path2"></span>
@@ -19,7 +26,7 @@
                         {{ caso.stato }}
                     </span>
                 {% else %}
-                    <span class="badge badge-secondary fs-6 d-block">
+                    <span class="badge badge-light-warning fs-6 fw-bold mb-2">
                         <i class="ki-duotone ki-timer fs-2 me-2">
                             <span class="path1"></span>
                             <span class="path2"></span>
@@ -29,95 +36,139 @@
                 {% endif %}
             </div>
         </div>
+        <!--end::Status-->
 
-        <!-- Quick Actions -->
-        <div class="mb-6">
-            <div class="fw-bold text-gray-600 mb-3">Azioni Rapide</div>
+        <!--begin::Actions-->
+        <div class="mb-10">
+            <div class="fw-bold fs-5 text-gray-600 mb-5">Azioni Rapide</div>
             <div class="d-grid gap-3">
-                <a href="{% url 'documentary_evidence_list' caso.id %}" class="btn btn-flex btn-light-warning px-6">
-                    <i class="ki-duotone ki-folder fs-2 me-3">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                    </i>
-                    <span class="d-flex flex-column align-items-start">
-                        <span class="fs-5 fw-bold">Produzioni Documentali</span>
-                        <span class="fs-7">Gestisci documenti</span>
-                    </span>
-                </a>
-
-                <a href="{% url 'chat_caso' caso.id %}" class="btn btn-flex btn-light-primary px-6">
-                    <i class="ki-duotone ki-message-text-2 fs-2 me-3">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                    </i>
-                    <span class="d-flex flex-column align-items-start">
-                        <span class="fs-5 fw-bold">Chat</span>
-                        <span class="fs-7">Consulta assistente</span>
-                    </span>
-                </a>
-
-                {% if caso.stato == 'Memoria Completata' %}
-                    <a href="{% url 'memoria_difensiva_detail' caso.id %}" class="btn btn-flex btn-light-success px-6">
-                        <i class="ki-duotone ki-eye fs-2 me-3">
+                <!--begin::Action-->
+                <a href="{% url 'documentary_evidence_list' caso.id %}" class="btn btn-flex btn-light px-6 py-5">
+                    <span class="symbol symbol-25px me-3">
+                        <i class="ki-duotone ki-folder fs-1 text-warning">
                             <span class="path1"></span>
                             <span class="path2"></span>
                         </i>
+                    </span>
+                    <span class="d-flex flex-column align-items-start">
+                        <span class="fs-5 fw-bold">Produzioni Documentali</span>
+                        <span class="fs-7 text-gray-600">Gestisci documenti</span>
+                    </span>
+                </a>
+                <!--end::Action-->
+
+                <!--begin::Action-->
+                <a href="{% url 'chat_caso' caso.id %}" class="btn btn-flex btn-light px-6 py-5">
+                    <span class="symbol symbol-25px me-3">
+                        <i class="ki-duotone ki-message-text-2 fs-1 text-primary">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                    </span>
+                    <span class="d-flex flex-column align-items-start">
+                        <span class="fs-5 fw-bold">Chat</span>
+                        <span class="fs-7 text-gray-600">Consulta assistente</span>
+                    </span>
+                </a>
+                <!--end::Action-->
+
+                <!--begin::Action-->
+                {% if caso.stato == 'Memoria Completata' %}
+                    <a href="{% url 'memoria_difensiva_detail' caso.id %}" class="btn btn-flex btn-light px-6 py-5">
+                        <span class="symbol symbol-25px me-3">
+                            <i class="ki-duotone ki-eye fs-1 text-success">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                        </span>
                         <span class="d-flex flex-column align-items-start">
                             <span class="fs-5 fw-bold">Visualizza Memoria</span>
-                            <span class="fs-7">Memoria completata</span>
+                            <span class="fs-7 text-gray-600">Memoria completata</span>
                         </span>
                     </a>
                 {% else %}
-                    <a href="{% url 'memoria_difensiva' caso.id %}" class="btn btn-flex btn-light-success px-6">
-                        <i class="ki-duotone ki-shield-tick fs-2 me-3">
-                            <span class="path1"></span>
-                            <span class="path2"></span>
-                        </i>
+                    <a href="{% url 'memoria_difensiva' caso.id %}" class="btn btn-flex btn-light px-6 py-5">
+                        <span class="symbol symbol-25px me-3">
+                            <i class="ki-duotone ki-shield-tick fs-1 text-success">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                        </span>
                         <span class="d-flex flex-column align-items-start">
                             <span class="fs-5 fw-bold">Memoria Difensiva</span>
-                            <span class="fs-7">Prepara memoria</span>
+                            <span class="fs-7 text-gray-600">Prepara memoria</span>
                         </span>
                     </a>
                 {% endif %}
+                <!--end::Action-->
 
-                <a href="{% url 'rigenera_analisi' caso.id %}" class="btn btn-flex btn-light-info px-6">
-                    <i class="ki-duotone ki-arrows-circle fs-2 me-3">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                    </i>
+                <!--begin::Action-->
+                <a href="{% url 'rigenera_analisi' caso.id %}" class="btn btn-flex btn-light px-6 py-5">
+                    <span class="symbol symbol-25px me-3">
+                        <i class="ki-duotone ki-arrows-circle fs-1 text-info">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                    </span>
                     <span class="d-flex flex-column align-items-start">
                         <span class="fs-5 fw-bold">Rigenera Analisi</span>
-                        <span class="fs-7">Aggiorna analisi caso</span>
+                        <span class="fs-7 text-gray-600">Aggiorna analisi caso</span>
                     </span>
                 </a>
+                <!--end::Action-->
             </div>
         </div>
+        <!--end::Actions-->
 
-        <!-- Statistics -->
+        <!--begin::Statistics-->
         <div>
-            <div class="fw-bold text-gray-600 mb-3">Statistiche</div>
-            <div class="bg-light-purple rounded p-6">
-                <div class="d-flex align-items-center mb-4">
-                    <i class="ki-duotone ki-message-text fs-2 me-3 text-purple">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                    </i>
-                    <div class="flex-grow-1">
-                        <span class="text-gray-800 fw-bold d-block">Chat Messages</span>
-                        <span class="badge badge-purple">{{ caso.chat_messages.count }}</span>
+            <div class="fw-bold fs-5 text-gray-600 mb-5">Statistiche</div>
+            <div class="bg-light-primary rounded p-6">
+                <!--begin::Stats-->
+                <div class="d-flex align-items-center mb-6">
+                    <div class="symbol symbol-45px me-5">
+                        <span class="symbol-label bg-primary bg-opacity-10">
+                            <i class="ki-duotone ki-message-text fs-2 text-primary">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                        </span>
+                    </div>
+                    <div class="d-flex align-items-center flex-wrap w-100">
+                        <div class="mb-1 pe-3 flex-grow-1">
+                            <span class="fs-5 text-gray-800 fw-bold">Chat Messages</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="badge badge-primary fs-base">{{ caso.chat_messages.count }}</span>
+                        </div>
                     </div>
                 </div>
+                <!--end::Stats-->
+
+                <!--begin::Stats-->
                 <div class="d-flex align-items-center">
-                    <i class="ki-duotone ki-timer fs-2 me-3 text-purple">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                    </i>
-                    <div class="flex-grow-1">
-                        <span class="text-gray-800 fw-bold d-block">Giorni Aperti</span>
-                        <span class="badge badge-purple">{{ caso.data_creazione|timesince }}</span>
+                    <div class="symbol symbol-45px me-5">
+                        <span class="symbol-label bg-primary bg-opacity-10">
+                            <i class="ki-duotone ki-timer fs-2 text-primary">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                        </span>
+                    </div>
+                    <div class="d-flex align-items-center flex-wrap w-100">
+                        <div class="mb-1 pe-3 flex-grow-1">
+                            <span class="fs-5 text-gray-800 fw-bold">Giorni Aperti</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="badge badge-primary fs-base">{{ caso.data_creazione|timesince }}</span>
+                        </div>
                     </div>
                 </div>
+                <!--end::Stats-->
             </div>
         </div>
+        <!--end::Statistics-->
     </div>
+    <!--end::Card body-->
 </div>
+<!--end::Case actions-->

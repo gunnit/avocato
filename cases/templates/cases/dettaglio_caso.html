@@ -24,38 +24,56 @@
 {% endblock %}
 
 {% block page_actions %}
-<div class="d-flex align-items-center gap-2 gap-lg-3">
+<!--begin::Actions-->
+<div class="d-flex align-items-center gap-2">
     {% if caso.stato != 'Completato' %}
-    <button type="button" class="btn btn-sm fw-bold btn-success" data-bs-toggle="modal" data-bs-target="#modalCompletaCaso">
-        <i class="ki-duotone ki-check fs-2 me-2">
+    <button type="button" class="btn btn-sm btn-light-success" data-bs-toggle="modal" data-bs-target="#modalCompletaCaso">
+        <i class="ki-duotone ki-check fs-2">
             <span class="path1"></span>
             <span class="path2"></span>
-        </i>Completa Caso
+        </i>
+        <span class="ms-1">Completa Caso</span>
     </button>
     {% endif %}
-    <a href="{% url 'lista_casi' %}" class="btn btn-sm fw-bold btn-secondary">
-        <i class="ki-duotone ki-arrow-left fs-2 me-2">
+    <a href="{% url 'lista_casi' %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-2">
             <span class="path1"></span>
             <span class="path2"></span>
-        </i>Torna alla Lista
+        </i>
+        <span class="ms-1">Torna alla Lista</span>
     </a>
 </div>
+<!--end::Actions-->
 {% endblock %}
 
 {% block content %}
-<div class="row g-5 g-xl-10">
-    <div class="col-12">
-        <div class="mb-5">
-            <span class="badge badge-lg py-3 px-4 fs-7 rounded-pill 
-                {% if caso.stato == 'In corso' %}badge-primary
-                {% elif caso.stato == 'Completato' %}badge-success
-                {% else %}badge-warning{% endif %}">
+<!--begin::Content container-->
+<div class="d-flex flex-column flex-xl-row gap-7">
+    <!--begin::Status indicator-->
+    <div class="d-none d-md-flex position-fixed top-50 end-0 me-5 translate-middle-y">
+        <div class="d-flex flex-column align-items-center">
+            <span class="fs-7 fw-bold text-gray-600 mb-2">STATO</span>
+            <span class="badge badge-lg py-3 px-4 fs-7 
+                {% if caso.stato == 'In corso' %}badge-light-primary
+                {% elif caso.stato == 'Completato' %}badge-light-success
+                {% else %}badge-light-warning{% endif %}">
                 {{ caso.stato }}
             </span>
         </div>
-
-        {% include 'cases/components/case_info.html' %}
-        {% include 'cases/components/case_analysis.html' %}
     </div>
+    <!--end::Status indicator-->
+
+    <!--begin::Main column-->
+    <div class="d-flex flex-column flex-row-fluid gap-7">
+        <!--begin::Case info-->
+        {% include 'cases/components/case_info.html' %}
+        <!--end::Case info-->
+
+        <!--begin::Case analysis-->
+        {% include 'cases/components/case_analysis.html' %}
+        <!--end::Case analysis-->
+    </div>
+    <!--end::Main column-->
 </div>
+<!--end::Content container-->
 {% endblock %}

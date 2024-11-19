@@ -1,12 +1,38 @@
-<!-- Case Info Section -->
-<div class="row mb-4">
-    <!-- Main Case Info -->
-    <div class="col-md-8">
-        {% include 'cases/components/case_info_details.html' %}
+<!--begin::Case Info-->
+<div class="card mb-5 mb-xl-8">
+    <!--begin::Card header-->
+    <div class="card-header border-0">
+        <!--begin::Card title-->
+        <div class="card-title">
+            <h2 class="fw-bold mb-0">Informazioni Caso</h2>
+        </div>
+        <!--end::Card title-->
+        <!--begin::Card toolbar-->
+        <div class="card-toolbar">
+            <span class="badge badge-light-primary fs-7 fw-bold">ID: {{ caso.id }}</span>
+        </div>
+        <!--end::Card toolbar-->
     </div>
+    <!--end::Card header-->
 
-    <!-- Status and Quick Actions -->
-    <div class="col-md-4">
-        {% include 'cases/components/case_info_actions.html' %}
+    <!--begin::Card body-->
+    <div class="card-body pt-0">
+        <!--begin::Row-->
+        <div class="row g-7">
+            <!--begin::Col-->
+            <div class="col-md-8">
+                {% include 'cases/components/case_info_details.html' %}
+            </div>
+            <!--end::Col-->
+
+            <!--begin::Col-->
+            <div class="col-md-4">
+                {% include 'cases/components/case_info_actions.html' %}
+            </div>
+            <!--end::Col-->
+        </div>
+        <!--end::Row-->
     </div>
+    <!--end::Card body-->
 </div>
+<!--end::Case Info-->
