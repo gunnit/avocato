@@ -1,0 +1,58 @@
+<!--begin::Card-->
+<div class="card card-flush">
+    {% include "cases/components/case_search.html" %}
+
+    <!--begin::Card body-->
+    <div class="card-body pt-5">
+        {% if casi %}
+        <div class="row">
+            {% for caso in casi %}
+                {% include "cases/components/case_card.html" with caso=caso %}
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-primary d-flex align-items-center p-5 mb-10">
+            <i class="ki-duotone ki-information-5 fs-2hx text-primary me-4">
+                <span class="path1"></span>
+                <span class="path2"></span>
+                <span class="path3"></span>
+            </i>
+            <div class="d-flex flex-column">
+                <h4 class="mb-1 text-primary">Nessun caso</h4>
+                <span>Non ci sono casi registrati. <a href="{% url 'nuovo_caso' %}" class="fw-bold">Crea il primo caso</a>.</span>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    <!--end::Card body-->
+</div>
+<!--end::Card-->
+
+{% block extra_js %}
+<script>
+// Search functionality
+var searchInput = document.querySelector('[data-kt-filter="search"]');
+var cards = document.querySelectorAll('.col-md-6.mb-4');
+
+searchInput.addEventListener('keyup', function(e) {
+    var searchText = e.target.value.toLowerCase();
+
+    cards.forEach(function(card) {
+        var title = card.querySelector('.text-gray-800').textContent.toLowerCase();
+        var description = card.querySelector('.text-gray-600').textContent.toLowerCase();
+        
+        if (title.includes(searchText) || description.includes(searchText)) {
+            card.style.display = '';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+});
+
+// Initialize tooltips
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl);
+});
+</script>
+{% endblock %}
