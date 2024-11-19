@@ -69,9 +69,14 @@ def documentary_evidence_edit(request, caso_id, doc_id):
 def documentary_evidence_detail(request, caso_id, doc_id):
     caso = get_object_or_404(Caso, id=caso_id)
     document = get_object_or_404(DocumentaryEvidence, id=doc_id, caso=caso)
+    
+    # Pass the existing analysis to the template if available
+    initial_analysis = document.ai_analysis_json if document.ai_analysis_json else None
+    
     return render(request, 'cases/documentary_evidence_detail.html', {
         'caso': caso,
-        'document': document
+        'document': document,
+        'initial_analysis': json.dumps(initial_analysis) if initial_analysis else 'null'
     })
 
 @require_http_methods(["POST"])
@@ -79,6 +84,10 @@ def documentary_evidence_detail(request, caso_id, doc_id):
 def analyze_evidence(request, caso_id, doc_id):
     caso = get_object_or_404(Caso, id=caso_id)
     document = get_object_or_404(DocumentaryEvidence, id=doc_id, caso=caso)
+    
+    # Check if analysis already exists
+    if document.ai_analysis_json is not None:
+        return JsonResponse(document.ai_analysis_json)
     
     # Prepare the prompt for Claude analysis
     prompt = f"""Analizza la seguente prova legale dal punto di vista dell'avvocato del imputtato, considerando il contesto del sistema giuridico italiano. Esamina l'affidabilità, le implicazioni legali e il valore strategico:
@@ -157,6 +166,12 @@ Restituisci SOLO l'oggetto JSON, senza testo o spiegazioni aggiuntive."""
         # Try to parse the JSON response
         try:
             analysis = json.loads(content)
+            
+            # Save both JSON and text versions
+            document.ai_analysis_json = analysis
+            document.ai_analysis_text = content
+            document.save()
+            
             return JsonResponse(analysis)
         except json.JSONDecodeError:
             # If direct parsing fails, try to extract JSON from the response
@@ -166,6 +181,12 @@ Restituisci SOLO l'oggetto JSON, senza testo o spiegazioni aggiuntive."""
             if start != -1 and end != 0:
                 json_str = content[start:end]
                 analysis = json.loads(json_str)
+                
+                # Save both JSON and text versions
+                document.ai_analysis_json = analysis
+                document.ai_analysis_text = json_str
+                document.save()
+                
                 return JsonResponse(analysis)
             else:
                 raise Exception("Could not extract valid JSON from response")

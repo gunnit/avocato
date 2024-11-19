@@ -41,6 +41,8 @@ class DocumentaryEvidence(models.Model):
     authentication_notes = models.TextField(blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
+    ai_analysis_json = models.JSONField(blank=True, null=True)
+    ai_analysis_text = models.TextField(blank=True)
 
     class Meta:
         ordering = ['exhibit_number']

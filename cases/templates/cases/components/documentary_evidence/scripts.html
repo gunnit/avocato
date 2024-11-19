@@ -112,15 +112,38 @@
         );
     }
 
+    // Function to display analysis
+    function displayAnalysis(data) {
+        const analysisContainer = document.getElementById('ai_analysis_container');
+        const template = document.getElementById('ai_analysis_template');
+        
+        if (!template) {
+            throw new Error('Template not found!');
+        }
+        
+        // Insert the template into the container
+        analysisContainer.innerHTML = template.innerHTML;
+        
+        // Populate the template with data
+        populateAnalysis(data);
+    }
+
     // Function to analyze evidence
     function analyzeEvidence() {
-        const casoId = "{{ caso.id }}";
-        const docId = "{{ document.id }}";
-        const csrftoken = getCookie('csrftoken');
+        const casoId = '{{ caso.id }}';
+        const docId = '{{ document.id }}';
+        const initialAnalysis = JSON.parse('{{ initial_analysis|escapejs }}');
         
-        console.log('Loading analysis for case:', casoId, 'document:', docId);
+        console.log('Checking analysis for case:', casoId, 'document:', docId);
         
-        // Show loading state
+        // If we have initial analysis data, display it immediately
+        if (initialAnalysis) {
+            console.log('Using stored analysis');
+            displayAnalysis(initialAnalysis);
+            return;
+        }
+        
+        // Show loading state for new analysis
         const analysisContainer = document.getElementById('ai_analysis_container');
         analysisContainer.innerHTML = `
             <div class="d-flex flex-column align-items-center p-10">
@@ -131,8 +154,8 @@
             </div>
         `;
 
-        // Use Django's URL reversing
-        const analyzeUrl = "{% url 'analyze_evidence' caso.id document.id %}";
+        const csrftoken = getCookie('csrftoken');
+        const analyzeUrl = '{% url "analyze_evidence" caso.id document.id %}';
 
         // Call analyze endpoint
         fetch(analyzeUrl, {
@@ -153,18 +176,7 @@
         })
         .then(data => {
             console.log('Analysis data received:', data);
-            
-            // Get the template content
-            const template = document.getElementById('ai_analysis_template');
-            if (!template) {
-                throw new Error('Template not found!');
-            }
-            
-            // Insert the template into the container
-            analysisContainer.innerHTML = template.innerHTML;
-            
-            // Populate the template with data
-            populateAnalysis(data);
+            displayAnalysis(data);
         })
         .catch(error => {
             console.error('Error loading analysis:', error);
