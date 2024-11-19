@@ -38,8 +38,8 @@ searchInput.addEventListener('keyup', function(e) {
     var searchText = e.target.value.toLowerCase();
 
     cards.forEach(function(card) {
-        var title = card.querySelector('.text-gray-800').textContent.toLowerCase();
-        var description = card.querySelector('.text-gray-600').textContent.toLowerCase();
+        var title = card.querySelector('.text-gray-900').textContent.toLowerCase();
+        var description = card.querySelector('.text-gray-500').textContent.toLowerCase();
         
         if (title.includes(searchText) || description.includes(searchText)) {
             card.style.display = '';
@@ -53,6 +53,34 @@ searchInput.addEventListener('keyup', function(e) {
 var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
 var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl);
+});
+
+// Initialize counters
+var counterElements = [].slice.call(document.querySelectorAll('[data-kt-countup="true"]'));
+counterElements.map(function (counter) {
+    var isInited = counter.getAttribute('data-kt-initialized');
+
+    if (!isInited) {
+        if (KTUtil.isInViewport(counter) && KTUtil.visible(counter)) {
+            var options = {};
+            var value = counter.getAttribute('data-kt-countup-value');
+            value = parseFloat(value.replace(/,/g, ''));
+
+            if (value > 0) {
+                options = {
+                    startVal: 0,
+                    endVal: value,
+                    duration: 2,
+                    useEasing: true,
+                    useGrouping: true,
+                };
+
+                var countUp = new CountUp(counter, value, options);
+                countUp.start();
+                counter.setAttribute('data-kt-initialized', 1);
+            }
+        }
+    }
 });
 </script>
 {% endblock %}
