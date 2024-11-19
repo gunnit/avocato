@@ -12,3 +12,4 @@ tiktoken
 requests
 django-environ
 PyMuPDF
+psycopg2-binary

@@ -49,20 +49,6 @@
 {% block content %}
 <!--begin::Content container-->
 <div class="d-flex flex-column flex-xl-row gap-7">
-    <!--begin::Status indicator-->
-    <div class="d-none d-md-flex position-fixed top-50 end-0 me-5 translate-middle-y">
-        <div class="d-flex flex-column align-items-center">
-            <span class="fs-7 fw-bold text-gray-600 mb-2">STATO</span>
-            <span class="badge badge-lg py-3 px-4 fs-7 
-                {% if caso.stato == 'In corso' %}badge-light-primary
-                {% elif caso.stato == 'Completato' %}badge-light-success
-                {% else %}badge-light-warning{% endif %}">
-                {{ caso.stato }}
-            </span>
-        </div>
-    </div>
-    <!--end::Status indicator-->
-
     <!--begin::Main column-->
     <div class="d-flex flex-column flex-row-fluid gap-7">
         <!--begin::Case info-->
