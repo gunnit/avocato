@@ -1,0 +1,218 @@
+{% csrf_token %}
+
+<!--begin::AI Analysis Container-->
+<div id="ai_analysis_container">
+    <div class="d-flex flex-column align-items-center p-10">
+        <div class="spinner-border text-primary mb-5" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <span class="text-gray-600">Analisi in corso...</span>
+    </div>
+</div>
+<!--end::AI Analysis Container-->
+
+<!--begin::AI Analysis Template-->
+<script type="text/template" id="ai_analysis_template">
+<!--begin::AI Analysis-->
+<div class="card card-flush mb-6">
+    <!--begin::Card header-->
+    <div class="card-header pt-5">
+        <h3 class="card-title align-items-start flex-column">
+            <span class="card-label fw-bold text-dark">Analisi Documentale AI</span>
+            <span class="text-gray-400 mt-1 fw-semibold fs-6">Analisi dettagliata del documento</span>
+        </h3>
+    </div>
+    <!--end::Card header-->
+
+    <!--begin::Card body-->
+    <div class="card-body">
+        <!--begin::Informazioni Chiave-->
+        <div class="mb-8">
+            <h4 class="fs-1 fw-bold text-gray-800 mb-4">Informazioni Chiave</h4>
+            
+            <div class="d-flex flex-column gap-3">
+                <div class="d-flex flex-column">
+                    <span class="text-gray-600 fw-semibold">Tipo Documento</span>
+                    <span class="text-gray-800 fs-5" id="tipo_documento"></span>
+                </div>
+
+                <div class="d-flex flex-column">
+                    <span class="text-gray-600 fw-semibold">Riferimenti Temporali</span>
+                    <div class="d-flex flex-wrap gap-2" id="riferimenti_temporali"></div>
+                </div>
+
+                <div class="d-flex flex-column">
+                    <span class="text-gray-600 fw-semibold">Parti Coinvolte</span>
+                    <div class="d-flex flex-column gap-2" id="parti_coinvolte"></div>
+                </div>
+
+                <div class="d-flex flex-column">
+                    <span class="text-gray-600 fw-semibold">Fatti Principali</span>
+                    <div class="d-flex flex-column gap-2 mt-2" id="fatti_principali"></div>
+                </div>
+            </div>
+        </div>
+        <!--end::Informazioni Chiave-->
+
+        <!--begin::Analisi Legale-->
+        <div class="mb-8">
+            <h4 class="fs-1 fw-bold text-gray-800 mb-4">Analisi Legale</h4>
+            
+            <div class="d-flex flex-column gap-5">
+                <div class="d-flex flex-column">
+                    <span class="text-gray-600 fw-semibold mb-2">Valutazione Affidabilità</span>
+                    <div class="bg-light-warning rounded p-4">
+                        <span class="text-gray-800" id="valutazione_affidabilita"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column">
+                    <span class="text-gray-600 fw-semibold mb-2">Potenziali Eccezioni</span>
+                    <div class="d-flex flex-column gap-2" id="potenziali_eccezioni"></div>
+                </div>
+
+                <div class="d-flex flex-column">
+                    <span class="text-gray-600 fw-semibold mb-2">Valore Probatorio</span>
+                    <div class="bg-light-info rounded p-4">
+                        <span class="text-gray-800" id="valore_probatorio"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--end::Analisi Legale-->
+
+        <!--begin::Considerazioni Strategiche-->
+        <div class="mb-8">
+            <h4 class="fs-1 fw-bold text-gray-800 mb-4">Considerazioni Strategiche</h4>
+            
+            <div class="row g-5">
+                <div class="col-md-6">
+                    <div class="card card-bordered h-100">
+                        <div class="card-header">
+                            <h3 class="card-title text-gray-800">
+                                <i class="ki-duotone ki-arrow-up-right fs-2 text-success me-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                Punti di Forza
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex flex-column gap-3" id="punti_forza"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card card-bordered h-100">
+                        <div class="card-header">
+                            <h3 class="card-title text-gray-800">
+                                <i class="ki-duotone ki-arrow-down-right fs-2 text-danger me-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                Punti Deboli
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex flex-column gap-3" id="punti_deboli"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--end::Considerazioni Strategiche-->
+
+        <!--begin::Valutazione Rischi-->
+        <div class="mb-8">
+            <h4 class="fs-1 fw-bold text-gray-800 mb-4">Valutazione Rischi</h4>
+            
+            <div class="row g-5">
+                <div class="col-md-6">
+                    <div class="card card-flush bg-light-danger">
+                        <div class="card-header">
+                            <h3 class="card-title text-gray-800">Rischi Legali</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex flex-column gap-3" id="rischi_legali"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card card-flush bg-light-warning">
+                        <div class="card-header">
+                            <h3 class="card-title text-gray-800">Rischi Strategici</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex flex-column gap-3" id="rischi_strategici"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--end::Valutazione Rischi-->
+
+        <!--begin::Raccomandazioni-->
+        <div class="mb-8">
+            <h4 class="fs-1 fw-bold text-gray-800 mb-4">Raccomandazioni</h4>
+            
+            <div class="d-flex flex-column gap-5">
+                <div class="d-flex flex-column">
+                    <span class="text-gray-600 fw-semibold mb-2">Azioni Immediate</span>
+                    <div class="d-flex flex-column gap-3" id="azioni_immediate"></div>
+                </div>
+
+                <div class="d-flex flex-column">
+                    <span class="text-gray-600 fw-semibold mb-2">Strategia Lungo Termine</span>
+                    <div class="bg-light-primary rounded p-4">
+                        <span class="text-gray-800" id="strategia_lungo_termine"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column">
+                    <span class="text-gray-600 fw-semibold mb-2">Consultazioni Specialistiche</span>
+                    <div class="d-flex flex-column gap-3" id="consultazioni_specialistiche"></div>
+                </div>
+            </div>
+        </div>
+        <!--end::Raccomandazioni-->
+
+        <!--begin::Considerazioni Processuali-->
+        <div>
+            <h4 class="fs-1 fw-bold text-gray-800 mb-4">Considerazioni Processuali</h4>
+            
+            <div class="d-flex flex-column gap-5">
+                <div class="row g-5">
+                    <div class="col-md-6">
+                        <div class="d-flex flex-column">
+                            <span class="text-gray-600 fw-semibold mb-2">Fase Processuale Ottimale</span>
+                            <div class="bg-light-success rounded p-4">
+                                <span class="text-gray-800" id="fase_processuale_ottimale"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="d-flex flex-column">
+                            <span class="text-gray-600 fw-semibold mb-2">Tempistica Presentazione</span>
+                            <div class="bg-light-success rounded p-4">
+                                <span class="text-gray-800" id="tempistica_presentazione"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column">
+                    <span class="text-gray-600 fw-semibold mb-2">Potenziali Nullità</span>
+                    <div class="d-flex flex-column gap-3" id="potenziali_nullita"></div>
+                </div>
+            </div>
+        </div>
+        <!--end::Considerazioni Processuali-->
+    </div>
+    <!--end::Card body-->
+</div>
+<!--end::AI Analysis-->
+</script>
+<!--end::AI Analysis Template-->

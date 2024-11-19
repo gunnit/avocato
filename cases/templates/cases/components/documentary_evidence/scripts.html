@@ -1,68 +1,193 @@
-{% load static %}
+<!--begin::Custom scripts-->
 <script>
-function analyzeEvidence(casoId, documentId) {
-    const button = document.getElementById('analyzeBtn');
-    const resultsDiv = document.getElementById('analysisResults');
-    const analysisContent = document.getElementById('analysisContent');
-    
-    // Update button state
-    button.disabled = true;
-    button.innerHTML = `
-        <span class="indicator-label">
-            <i class="ki-duotone ki-spinner ki-spin fs-2">
-                <span class="path1"></span>
-                <span class="path2"></span>
-                <span class="path3"></span>
-            </i>
-            Analisi in corso...
-        </span>
-    `;
-    
-    fetch(`/${casoId}/documentary-evidence/${documentId}/analyze/`, {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': getCookie('csrftoken'),
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        analysisContent.textContent = JSON.stringify(data, null, 2);
-        resultsDiv.classList.remove('d-none');
-        
-        // Show success notification
-        toastr.success('Analisi completata con successo');
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        // Show error notification
-        toastr.error('Si è verificato un errore durante l\'analisi del documento');
-    })
-    .finally(() => {
-        // Reset button state
-        button.disabled = false;
-        button.innerHTML = `
-            <i class="ki-duotone ki-brain fs-2">
-                <span class="path1"></span>
-                <span class="path2"></span>
-            </i>
-            Analizza Documento
-        `;
-    });
-}
-
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
+    // Function to get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
             }
         }
+        return cookieValue;
     }
-    return cookieValue;
-}
+
+    // Function to create list items with icons
+    function createListItems(items, iconClass, iconColor) {
+        return items.map(item => `
+            <div class="d-flex align-items-center">
+                <i class="ki-duotone ${iconClass} fs-2 ${iconColor} me-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                </i>
+                <span class="text-gray-800">${item}</span>
+            </div>
+        `).join('');
+    }
+
+    // Function to populate the analysis data
+    function populateAnalysis(data) {
+        // Informazioni Chiave
+        document.getElementById('tipo_documento').textContent = data.informazioni_chiave.tipo_documento;
+        
+        document.getElementById('riferimenti_temporali').innerHTML = data.informazioni_chiave.riferimenti_temporali
+            .map(data => `<span class="badge badge-light-primary">${data}</span>`).join('');
+        
+        document.getElementById('parti_coinvolte').innerHTML = createListItems(
+            data.informazioni_chiave.parti_coinvolte,
+            'ki-profile-circle',
+            'text-primary'
+        );
+        
+        document.getElementById('fatti_principali').innerHTML = createListItems(
+            data.informazioni_chiave.fatti_principali,
+            'ki-check-circle',
+            'text-success'
+        );
+
+        // Analisi Legale
+        document.getElementById('valutazione_affidabilita').textContent = data.analisi_legale.valutazione_affidabilita;
+        
+        document.getElementById('potenziali_eccezioni').innerHTML = createListItems(
+            data.analisi_legale.potenziali_eccezioni,
+            'ki-warning-circle',
+            'text-warning'
+        );
+        
+        document.getElementById('valore_probatorio').textContent = data.analisi_legale.valore_probatorio;
+
+        // Considerazioni Strategiche
+        document.getElementById('punti_forza').innerHTML = createListItems(
+            data.considerazioni_strategiche.punti_forza,
+            'ki-check',
+            'text-success'
+        );
+        
+        document.getElementById('punti_deboli').innerHTML = createListItems(
+            data.considerazioni_strategiche.punti_deboli,
+            'ki-cross',
+            'text-danger'
+        );
+
+        // Valutazione Rischi
+        document.getElementById('rischi_legali').innerHTML = createListItems(
+            data.valutazione_rischi.rischi_legali,
+            'ki-shield-cross',
+            'text-danger'
+        );
+        
+        document.getElementById('rischi_strategici').innerHTML = createListItems(
+            data.valutazione_rischi.rischi_strategici,
+            'ki-shield-tick',
+            'text-warning'
+        );
+
+        // Raccomandazioni
+        document.getElementById('azioni_immediate').innerHTML = createListItems(
+            data.raccomandazioni.azioni_immediate,
+            'ki-rocket',
+            'text-primary'
+        );
+        
+        document.getElementById('strategia_lungo_termine').textContent = data.raccomandazioni.strategia_lungo_termine;
+        
+        document.getElementById('consultazioni_specialistiche').innerHTML = createListItems(
+            data.raccomandazioni.consultazioni_specialistiche,
+            'ki-profile-user',
+            'text-info'
+        );
+
+        // Considerazioni Processuali
+        document.getElementById('fase_processuale_ottimale').textContent = data.considerazioni_processuali.fase_processuale_ottimale;
+        document.getElementById('tempistica_presentazione').textContent = data.considerazioni_processuali.tempistica_presentazione;
+        
+        document.getElementById('potenziali_nullita').innerHTML = createListItems(
+            data.considerazioni_processuali.potenziali_nullita,
+            'ki-shield-cross',
+            'text-danger'
+        );
+    }
+
+    // Function to analyze evidence
+    function analyzeEvidence() {
+        const casoId = "{{ caso.id }}";
+        const docId = "{{ document.id }}";
+        const csrftoken = getCookie('csrftoken');
+        
+        console.log('Loading analysis for case:', casoId, 'document:', docId);
+        
+        // Show loading state
+        const analysisContainer = document.getElementById('ai_analysis_container');
+        analysisContainer.innerHTML = `
+            <div class="d-flex flex-column align-items-center p-10">
+                <div class="spinner-border text-primary mb-5" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <span class="text-gray-600">Analisi in corso...</span>
+            </div>
+        `;
+
+        // Use Django's URL reversing
+        const analyzeUrl = "{% url 'analyze_evidence' caso.id document.id %}";
+
+        // Call analyze endpoint
+        fetch(analyzeUrl, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => {
+            console.log('Response status:', response.status);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Analysis data received:', data);
+            
+            // Get the template content
+            const template = document.getElementById('ai_analysis_template');
+            if (!template) {
+                throw new Error('Template not found!');
+            }
+            
+            // Insert the template into the container
+            analysisContainer.innerHTML = template.innerHTML;
+            
+            // Populate the template with data
+            populateAnalysis(data);
+        })
+        .catch(error => {
+            console.error('Error loading analysis:', error);
+            analysisContainer.innerHTML = `
+                <div class="alert alert-danger d-flex align-items-center p-5 mb-10">
+                    <i class="ki-duotone ki-shield-cross fs-2hx text-danger me-4">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                    <div class="d-flex flex-column">
+                        <h4 class="mb-1 text-danger">Errore durante l'analisi</h4>
+                        <span>Si è verificato un errore durante l'analisi del documento. Dettaglio: ${error.message}</span>
+                        <span class="text-muted mt-2">URL: ${analyzeUrl}</span>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    // Load analysis when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('Document loaded, initializing analysis...');
+        analyzeEvidence();
+    });
 </script>
+<!--end::Custom scripts-->

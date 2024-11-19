@@ -81,46 +81,59 @@ def analyze_evidence(request, caso_id, doc_id):
     document = get_object_or_404(DocumentaryEvidence, id=doc_id, caso=caso)
     
     # Prepare the prompt for Claude analysis
-    prompt = f"""Analyze the following legal evidence as a lawyer. Consider reliability, legal implications, and strategic value:
+    prompt = f"""Analizza la seguente prova legale dal punto di vista dell'avvocato del imputtato, considerando il contesto del sistema giuridico italiano. Esamina l'affidabilità, le implicazioni legali e il valore strategico:
 
-Title: {document.title}
-Description: {document.description}
-Authentication Status: {document.authentication_status}
-Authentication Notes: {document.authentication_notes}
+Titolo: {document.title}
+Descrizione: {document.description}
+Stato di Autenticazione: {document.authentication_status}
+Note di Autenticazione: {document.authentication_notes}
 
-Provide a detailed analysis in JSON format with the following structure:
+Fornisci un'analisi dettagliata in formato JSON con la seguente struttura:
 {{
-    "key_information": {{
-        "document_type": "",
-        "date_references": [],
-        "key_parties": [],
-        "main_facts": []
+    "informazioni_chiave": {{
+        "tipo_documento": "",
+        "riferimenti_temporali": [],
+        "parti_coinvolte": [],
+        "fatti_principali": [],
+        "rilevanza_processuale": ""
     }},
-    "legal_analysis": {{
-        "reliability_assessment": "",
-        "potential_challenges": [],
-        "authentication_concerns": "",
-        "evidentiary_value": ""
+    "analisi_legale": {{
+        "valutazione_affidabilita": "",
+        "potenziali_eccezioni": [],
+        "questioni_autenticazione": "",
+        "valore_probatorio": "",
+        "compatibilita_costituzionale": "",
+        "conformita_procedura_penale": ""
     }},
-    "strategic_considerations": {{
-        "strengths": [],
-        "weaknesses": [],
-        "recommended_actions": [],
-        "potential_counterarguments": []
+    "considerazioni_strategiche": {{
+        "punti_forza": [],
+        "punti_deboli": [],
+        "azioni_raccomandate": [],
+        "controargomentazioni": [],
+        "strategie_dibattimentali": []
     }},
-    "risk_assessment": {{
-        "credibility_risks": [],
-        "legal_risks": [],
-        "strategic_risks": []
+    "valutazione_rischi": {{
+        "rischi_credibilita": [],
+        "rischi_legali": [],
+        "rischi_strategici": [],
+        "impatto_sulla_posizione_processuale": []
     }},
-    "recommendations": {{
-        "immediate_actions": [],
-        "long_term_strategy": "",
-        "additional_evidence_needed": []
+    "raccomandazioni": {{
+        "azioni_immediate": [],
+        "strategia_lungo_termine": "",
+        "prove_supplementari_necessarie": [],
+        "consultazioni_specialistiche": [],
+        "opzioni_negoziali": []
+    }},
+    "considerazioni_processuali": {{
+        "fase_processuale_ottimale": "",
+        "tempistica_presentazione": "",
+        "modalita_acquisizione": "",
+        "potenziali_nullita": []
     }}
 }}
 
-Return ONLY the JSON object, without any additional text or explanation."""
+Restituisci SOLO l'oggetto JSON, senza testo o spiegazioni aggiuntive."""
 
     try:
         # Initialize Anthropic client
