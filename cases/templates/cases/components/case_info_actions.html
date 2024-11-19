@@ -1,0 +1,123 @@
+<!-- Status and Quick Actions -->
+<div class="card card-flush h-100">
+    <div class="card-header card-header-stretch bg-purple">
+        <h3 class="card-title align-items-start flex-column">
+            <span class="text fs-4 mb-1 fw-bold">Stato e Azioni</span>
+        </h3>
+    </div>
+    <div class="card-body pt-5">
+        <!-- Status -->
+        <div class="mb-6">
+            <div class="fw-bold text-gray-600 mb-3">Stato Attuale</div>
+            <div class="bg-light-purple rounded p-4 text-center">
+                {% if caso.stato == 'Memoria Completata' %}
+                    <span class="badge badge-purple fs-6 d-block">
+                        <i class="ki-duotone ki-check-circle fs-2 me-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        {{ caso.stato }}
+                    </span>
+                {% else %}
+                    <span class="badge badge-secondary fs-6 d-block">
+                        <i class="ki-duotone ki-timer fs-2 me-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        {{ caso.stato }}
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="mb-6">
+            <div class="fw-bold text-gray-600 mb-3">Azioni Rapide</div>
+            <div class="d-grid gap-3">
+                <a href="{% url 'documentary_evidence_list' caso.id %}" class="btn btn-flex btn-light-warning px-6">
+                    <i class="ki-duotone ki-folder fs-2 me-3">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                    <span class="d-flex flex-column align-items-start">
+                        <span class="fs-5 fw-bold">Produzioni Documentali</span>
+                        <span class="fs-7">Gestisci documenti</span>
+                    </span>
+                </a>
+
+                <a href="{% url 'chat_caso' caso.id %}" class="btn btn-flex btn-light-primary px-6">
+                    <i class="ki-duotone ki-message-text-2 fs-2 me-3">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                    <span class="d-flex flex-column align-items-start">
+                        <span class="fs-5 fw-bold">Chat</span>
+                        <span class="fs-7">Consulta assistente</span>
+                    </span>
+                </a>
+
+                {% if caso.stato == 'Memoria Completata' %}
+                    <a href="{% url 'memoria_difensiva_detail' caso.id %}" class="btn btn-flex btn-light-success px-6">
+                        <i class="ki-duotone ki-eye fs-2 me-3">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        <span class="d-flex flex-column align-items-start">
+                            <span class="fs-5 fw-bold">Visualizza Memoria</span>
+                            <span class="fs-7">Memoria completata</span>
+                        </span>
+                    </a>
+                {% else %}
+                    <a href="{% url 'memoria_difensiva' caso.id %}" class="btn btn-flex btn-light-success px-6">
+                        <i class="ki-duotone ki-shield-tick fs-2 me-3">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        <span class="d-flex flex-column align-items-start">
+                            <span class="fs-5 fw-bold">Memoria Difensiva</span>
+                            <span class="fs-7">Prepara memoria</span>
+                        </span>
+                    </a>
+                {% endif %}
+
+                <a href="{% url 'rigenera_analisi' caso.id %}" class="btn btn-flex btn-light-info px-6">
+                    <i class="ki-duotone ki-arrows-circle fs-2 me-3">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                    <span class="d-flex flex-column align-items-start">
+                        <span class="fs-5 fw-bold">Rigenera Analisi</span>
+                        <span class="fs-7">Aggiorna analisi caso</span>
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div>
+            <div class="fw-bold text-gray-600 mb-3">Statistiche</div>
+            <div class="bg-light-purple rounded p-6">
+                <div class="d-flex align-items-center mb-4">
+                    <i class="ki-duotone ki-message-text fs-2 me-3 text-purple">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                    <div class="flex-grow-1">
+                        <span class="text-gray-800 fw-bold d-block">Chat Messages</span>
+                        <span class="badge badge-purple">{{ caso.chat_messages.count }}</span>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center">
+                    <i class="ki-duotone ki-timer fs-2 me-3 text-purple">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                    <div class="flex-grow-1">
+                        <span class="text-gray-800 fw-bold d-block">Giorni Aperti</span>
+                        <span class="badge badge-purple">{{ caso.data_creazione|timesince }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

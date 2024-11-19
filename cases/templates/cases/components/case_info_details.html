@@ -1,0 +1,84 @@
+<!-- Main Case Info -->
+<div class="card h-100">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">
+            <i class="ki-duotone ki-information-5 fs-2 me-3">
+                <span class="path1"></span>
+                <span class="path2"></span>
+                <span class="path3"></span>
+            </i>
+            Dettagli del Caso
+        </h5>
+        <span class="badge badge-light-primary">ID: {{ caso.id }}</span>
+    </div>
+    <div class="card-body">
+        <div class="mb-4">
+            <h6 class="text-gray-600 mb-3">
+                <i class="ki-duotone ki-calendar fs-2 me-3">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                </i>
+                Informazioni Temporali
+            </h6>
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-2">
+                        <strong>Data Apertura:</strong><br>
+                        {{ caso.data_creazione|date:"d/m/Y H:i" }}
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-2">
+                        <strong>Ultimo Aggiornamento:</strong><br>
+                        {{ caso.data_creazione|date:"d/m/Y H:i" }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Accordion for Description and Legal References -->
+        <div class="accordion" id="detailsAccordion">
+            <!-- Case Description -->
+            <div class="accordion-item mb-5 border rounded-3 shadow-sm">
+                <h2 class="accordion-header">
+                    <button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#descrizioneCollapse" aria-expanded="true">
+                        <i class="ki-duotone ki-document fs-2 me-3">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        Descrizione del Caso
+                    </button>
+                </h2>
+                <div id="descrizioneCollapse" class="accordion-collapse collapse show" data-bs-parent="#detailsAccordion">
+                    <div class="accordion-body">
+                        <div class="bg-light-primary rounded p-4">
+                            {{ caso.descrizione|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Legal References -->
+            {% if caso.riferimenti_legali %}
+            <div class="accordion-item mb-5 border rounded-3 shadow-sm">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#riferimentiCollapse">
+                        <i class="ki-duotone ki-shield-tick fs-2 me-3">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        Riferimenti Legali
+                    </button>
+                </h2>
+                <div id="riferimentiCollapse" class="accordion-collapse collapse" data-bs-parent="#detailsAccordion">
+                    <div class="accordion-body">
+                        <div class="bg-light-primary rounded p-4">
+                            {{ caso.riferimenti_legali|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
