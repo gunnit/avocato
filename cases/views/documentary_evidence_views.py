@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.db.models import Max
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
@@ -9,6 +10,7 @@ import anthropic
 from django.conf import settings
 from ..models import Caso, DocumentaryEvidence
 
+@login_required
 def documentary_evidence_list(request, caso_id):
     caso = get_object_or_404(Caso, id=caso_id)
     documents = caso.documentary_evidences.all().order_by('exhibit_number')
@@ -17,6 +19,7 @@ def documentary_evidence_list(request, caso_id):
         'documents': documents
     })
 
+@login_required
 def documentary_evidence_add(request, caso_id):
     caso = get_object_or_404(Caso, id=caso_id)
     
@@ -44,6 +47,7 @@ def documentary_evidence_add(request, caso_id):
         'action': 'add'
     })
 
+@login_required
 def documentary_evidence_edit(request, caso_id, doc_id):
     caso = get_object_or_404(Caso, id=caso_id)
     document = get_object_or_404(DocumentaryEvidence, id=doc_id, caso=caso)
@@ -66,6 +70,7 @@ def documentary_evidence_edit(request, caso_id, doc_id):
         'action': 'edit'
     })
 
+@login_required
 def documentary_evidence_detail(request, caso_id, doc_id):
     caso = get_object_or_404(Caso, id=caso_id)
     document = get_object_or_404(DocumentaryEvidence, id=doc_id, caso=caso)
@@ -79,6 +84,7 @@ def documentary_evidence_detail(request, caso_id, doc_id):
         'initial_analysis': json.dumps(initial_analysis) if initial_analysis else 'null'
     })
 
+@login_required
 @require_http_methods(["POST"])
 @csrf_protect
 def analyze_evidence(request, caso_id, doc_id):

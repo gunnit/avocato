@@ -7,6 +7,7 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
+from django.contrib.auth.decorators import login_required
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Chroma
 from langchain_anthropic import ChatAnthropic
@@ -155,6 +156,7 @@ class RagSystem:
 # Create a single instance of the RAG system
 rag_system = RagSystem()
 
+@login_required
 @csrf_protect
 @require_http_methods(["POST"])
 def chat_view(request):
