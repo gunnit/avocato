@@ -2,7 +2,9 @@ from .case_views import (
     lista_casi,
     nuovo_caso,
     dettaglio_caso,
-    rigenera_analisi
+    rigenera_analisi,
+    edit_caso,
+    delete_caso
 )
 
 from .documentary_evidence_views import (
@@ -31,6 +33,8 @@ __all__ = [
     'nuovo_caso',
     'dettaglio_caso',
     'rigenera_analisi',
+    'edit_caso',
+    'delete_caso',
     
     # Documentary evidence views
     'documentary_evidence_list',

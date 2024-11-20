@@ -1,0 +1,118 @@
+{% extends 'cases/base.html' %}
+
+{% block page_title %}Modifica Caso{% endblock %}
+
+{% block breadcrumbs %}
+<!--begin::Item-->
+<li class="breadcrumb-item">
+    <span class="bullet bg-gray-500 w-5px h-2px"></span>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item text-muted">
+    <a href="{% url 'lista_casi' %}" class="text-muted text-hover-primary">Lista Casi</a>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item">
+    <span class="bullet bg-gray-500 w-5px h-2px"></span>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item text-muted">Modifica Caso</li>
+<!--end::Item-->
+{% endblock %}
+
+{% block page_actions %}
+<div class="d-flex align-items-center gap-2 gap-lg-3">
+    <a href="{% url 'dettaglio_caso' caso.id %}" class="btn btn-sm fw-bold btn-secondary">
+        <i class="ki-duotone ki-arrow-left fs-2 me-2">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>Torna al Caso
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- Loading overlay -->
+<div id="loading_overlay" class="position-fixed w-100 h-100 top-0 start-0 d-none" style="background: rgba(0,0,0,0.5); z-index: 9999;">
+    <div class="d-flex align-items-center justify-content-center w-100 h-100">
+        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <!--begin::Card body-->
+    <div class="card-body">
+        <form method="POST" id="edit_caso_form">
+            {% csrf_token %}
+            <!--begin::Input group-->
+            <div class="mb-5">
+                <label for="titolo" class="required form-label">Titolo del Caso</label>
+                <input type="text" class="form-control form-control-solid" id="titolo" name="titolo" value="{{ caso.titolo }}" required>
+                <div class="text-muted fs-7 mt-2">Inserisci un titolo breve ma descrittivo</div>
+            </div>
+            <!--end::Input group-->
+
+            <!--begin::Input group-->
+            <div class="mb-5">
+                <label for="descrizione" class="required form-label">Descrizione Dettagliata</label>
+                <textarea class="form-control form-control-solid" id="descrizione" name="descrizione" rows="10" required>{{ caso.descrizione }}</textarea>
+                <div class="text-muted fs-7 mt-2">
+                    Fornisci tutti i dettagli rilevanti del caso, inclusi:
+                    <ul class="mt-2">
+                        <li>Cronologia degli eventi</li>
+                        <li>Persone coinvolte</li>
+                        <li>Eventuali azioni già intraprese</li>
+                        <li>Documentazione disponibile</li>
+                    </ul>
+                </div>
+            </div>
+            <!--end::Input group-->
+
+            <!--begin::Input group-->
+            <div class="mb-5">
+                <label for="stato" class="required form-label">Stato del Caso</label>
+                <select class="form-select form-select-solid" id="stato" name="stato" required>
+                    <option value="Nuovo" {% if caso.stato == 'Nuovo' %}selected{% endif %}>Nuovo</option>
+                    <option value="In corso" {% if caso.stato == 'In corso' %}selected{% endif %}>In corso</option>
+                    <option value="Completato" {% if caso.stato == 'Completato' %}selected{% endif %}>Completato</option>
+                </select>
+                <div class="text-muted fs-7 mt-2">Seleziona lo stato attuale del caso</div>
+            </div>
+            <!--end::Input group-->
+
+            <!--begin::Actions-->
+            <div class="text-center">
+                <button type="submit" class="btn btn-lg btn-primary me-3" id="submit_button">
+                    <span class="indicator-label">
+                        <i class="ki-duotone ki-save-2 fs-2 me-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>Salva Modifiche
+                    </span>
+                    <span class="indicator-progress">
+                        Attendere... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                    </span>
+                </button>
+                <a href="{% url 'dettaglio_caso' caso.id %}" class="btn btn-lg btn-light">Annulla</a>
+            </div>
+            <!--end::Actions-->
+        </form>
+    </div>
+    <!--end::Card body-->
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('edit_caso_form').addEventListener('submit', function(e) {
+    // Show loading overlay
+    document.getElementById('loading_overlay').classList.remove('d-none');
+    document.getElementById('submit_button').disabled = true;
+});
+</script>
+{% endblock %}

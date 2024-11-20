@@ -11,6 +11,22 @@ class Caso(models.Model):
     def __str__(self):
         return self.titolo
 
+    @property
+    def documenti_count(self):
+        return self.documentary_evidences.count()
+
+    @property
+    def messaggi_count(self):
+        return self.chat_messages.count()
+
+    @property
+    def progresso(self):
+        if self.stato == 'Completato':
+            return 100
+        elif self.stato == 'In corso':
+            return 50
+        return 0
+
     class Meta:
         verbose_name = 'Caso'
         verbose_name_plural = 'Casi'
