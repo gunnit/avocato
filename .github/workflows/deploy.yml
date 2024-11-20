@@ -38,6 +38,11 @@ jobs:
         AZURE_STORAGE_ACCOUNT_KEY: ${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}
         AZURE_STORAGE_CONTAINER_NAME: ${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}
       run: python manage.py collectstatic --noinput
+
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
       
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
