@@ -13,3 +13,8 @@ requests
 django-environ
 PyMuPDF
 psycopg2-binary
+whitenoise
+gunicorn
+python-decouple
+django-storages[azure]
+django-cors-headers
