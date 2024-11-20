@@ -1,5 +1,65 @@
 {% extends 'cases/base.html' %}
 
+{% block extra_js %}
+<script>
+async function generateAIContent(field) {
+    const button = document.querySelector(`#generate_${field}`);
+    const textarea = document.querySelector(`textarea[name="${field}"]`);
+    const caseId = "{{ caso.id }}";
+    
+    // Show loading state
+    button.disabled = true;
+    button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generazione...';
+    
+    try {
+        const response = await fetch(`/cases/${caseId}/generate-content/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                field: field,
+                case_id: caseId
+            })
+        });
+        
+        if (!response.ok) throw new Error('Network response was not ok');
+        
+        const data = await response.json();
+        textarea.value = data.content;
+        
+        // Show success state
+        button.classList.remove('btn-primary');
+        button.classList.add('btn-success');
+        button.innerHTML = '<i class="fas fa-check me-2"></i>Generato';
+        
+        // Reset button after 2 seconds
+        setTimeout(() => {
+            button.classList.remove('btn-success');
+            button.classList.add('btn-primary');
+            button.disabled = false;
+            button.innerHTML = '<i class="fas fa-robot me-2"></i>Genera con AI';
+        }, 2000);
+        
+    } catch (error) {
+        console.error('Error:', error);
+        button.classList.remove('btn-primary');
+        button.classList.add('btn-danger');
+        button.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Errore';
+        
+        // Reset button after 2 seconds
+        setTimeout(() => {
+            button.classList.remove('btn-danger');
+            button.classList.add('btn-primary');
+            button.disabled = false;
+            button.innerHTML = '<i class="fas fa-robot me-2"></i>Genera con AI';
+        }, 2000);
+    }
+}
+</script>
+{% endblock %}
+
 {% block breadcrumb_items %}
 <li class="breadcrumb-item"><a href="{% url 'dettaglio_caso' caso.id %}">{{ caso.titolo }}</a></li>
 <li class="breadcrumb-item active">Memoria Difensiva</li>
@@ -19,190 +79,11 @@
                 <form method="post">
                     {% csrf_token %}
                     
-                    <!-- Sezione Fatti -->
-                    <div class="mb-4">
-                        <h5><i class="fas fa-file-alt me-2"></i>Esposizione dei Fatti</h5>
-                        <div class="alert alert-info mb-3">
-                            <h6><i class="fas fa-info-circle me-2"></i>Linee Guida:</h6>
-                            <ol class="mb-0">
-                                <li>Iniziare con data, luogo e parti coinvolte</li>
-                                <li>Esporre i fatti in ordine cronologico</li>
-                                <li>Utilizzare un linguaggio chiaro e preciso</li>
-                                <li>Citare documenti specifici a supporto</li>
-                                <li>Mantenere un tono oggettivo e professionale</li>
-                            </ol>
-                        </div>
-                        <div class="form-group">
-                            <textarea class="form-control" name="fatti" rows="12" placeholder="{% if not memoria.fatti %}FATTO
-
-In data [inserire data], presso [luogo], il sottoscritto [nome e qualifica]
-
-1. CIRCOSTANZE INIZIALI
-   - Contesto generale della situazione
-   - Parti coinvolte e loro ruoli
-   - Situazione precedente ai fatti contestati
-
-2. SVOLGIMENTO DEI FATTI
-   [Data]: [Descrizione dettagliata dell'evento]
-   [Data]: [Evento successivo]
-   [Data]: [Ulteriori sviluppi]
-   
-3. DOCUMENTAZIONE A SUPPORTO
-   - Documento [X] del [data]
-   - Testimonianza di [nome] del [data]
-   - Comunicazione [Y] del [data]
-   
-4. CONSEGUENZE
-   - Effetti immediati
-   - Sviluppi successivi
-   - Situazione attuale
-
-5. ELEMENTI OGGETTIVI
-   - Riscontri documentali
-   - Evidenze fattuali
-   - Verifiche effettuate{% endif %}">{% if memoria.fatti %}{{ memoria.fatti }}{% endif %}</textarea>
-                        </div>
-                    </div>
-
-                    <!-- Sezione Argomentazioni Legali -->
-                    <div class="mb-4">
-                        <h5><i class="fas fa-balance-scale me-2"></i>Argomentazioni Legali</h5>
-                        <div class="alert alert-info mb-3">
-                            <h6><i class="fas fa-info-circle me-2"></i>Linee Guida:</h6>
-                            <ol class="mb-0">
-                                <li>Citare specifici articoli di legge</li>
-                                <li>Riferire precedenti giurisprudenziali pertinenti</li>
-                                <li>Collegare le norme ai fatti specifici</li>
-                                <li>Strutturare le argomentazioni in modo logico</li>
-                            </ol>
-                        </div>
-                        <div class="form-group">
-                            <textarea class="form-control" name="argomentazioni" rows="10" placeholder="{% if not memoria.argomentazioni_legali %}IN DIRITTO
-
-1. QUADRO NORMATIVO
-   - Art. [X] del [Codice/Legge]: [citazione pertinente]
-   - Interpretazione giurisprudenziale: [citare sentenze]
-
-2. APPLICAZIONE AL CASO CONCRETO
-   - Sussunzione dei fatti nella fattispecie normativa
-   - Elementi costitutivi della fattispecie
-
-3. PRECEDENTI GIURISPRUDENZIALI
-   - Sentenza [riferimento] del [data]
-   - Massima: [citazione]
-   - Analogia con il caso in esame
-
-4. CONTESTAZIONE DELLE VIOLAZIONI
-   - Analisi degli elementi contestati
-   - Confutazione delle accuse
-   - Elementi a discarico{% endif %}">{% if memoria.argomentazioni_legali %}{{ memoria.argomentazioni_legali }}{% endif %}</textarea>
-                        </div>
-                    </div>
-
-                    <!-- Sezione Prove -->
-                    <div class="mb-4">
-                        <h5><i class="fas fa-folder-open me-2"></i>Elementi Probatori</h5>
-                        <div class="alert alert-info mb-3">
-                            <h6><i class="fas fa-info-circle me-2"></i>Linee Guida:</h6>
-                            <ol class="mb-0">
-                                <li>Elencare tutte le prove disponibili</li>
-                                <li>Specificare la rilevanza di ogni prova</li>
-                                <li>Indicare la fonte e la data di ogni documento</li>
-                                <li>Organizzare le prove per tipologia</li>
-                            </ol>
-                        </div>
-                        <div class="form-group">
-                            <textarea class="form-control" name="prove" rows="8" placeholder="{% if not memoria.elementi_probatori %}ELEMENTI PROBATORI
-
-1. DOCUMENTI
-   - [Tipo documento] del [data]: [breve descrizione e rilevanza]
-   - [Allegato X]: [contenuto e significato probatorio]
-
-2. TESTIMONIANZE
-   - Dichiarazione di [nome] del [data]
-   - Contenuto rilevante: [punti chiave]
-
-3. PERIZIE E CONSULENZE
-   - Relazione tecnica del [data]
-   - Conclusioni principali
-
-4. ALTRI ELEMENTI
-   - Fotografie, registrazioni, ecc.
-   - Riscontri oggettivi{% endif %}">{% if memoria.elementi_probatori %}{{ memoria.elementi_probatori }}{% endif %}</textarea>
-                        </div>
-                    </div>
-
-                    <!-- Sezione Strategia Difensiva -->
-                    <div class="mb-4">
-                        <h5><i class="fas fa-chess me-2"></i>Strategia Difensiva</h5>
-                        <div class="alert alert-info mb-3">
-                            <h6><i class="fas fa-info-circle me-2"></i>Linee Guida:</h6>
-                            <ol class="mb-0">
-                                <li>Delineare gli argomenti principali della difesa</li>
-                                <li>Anticipare e confutare possibili obiezioni</li>
-                                <li>Evidenziare i punti di forza del caso</li>
-                                <li>Proporre soluzioni alternative se pertinenti</li>
-                            </ol>
-                        </div>
-                        <div class="form-group">
-                            <textarea class="form-control" name="strategia" rows="8" placeholder="{% if not memoria.strategia_difensiva %}STRATEGIA DIFENSIVA
-
-1. ARGOMENTI PRINCIPALI
-   - Punto forte 1: [descrizione e supporto]
-   - Punto forte 2: [descrizione e supporto]
-
-2. CONFUTAZIONE PREVENTIVA
-   - Obiezione prevista: [argomento]
-   - Nostra risposta: [contro-argomentazione]
-
-3. SOLUZIONI PROPOSTE
-   - Proposta principale
-   - Alternative possibili
-
-4. ELEMENTI A SOSTEGNO
-   - Precedenti favorevoli
-   - Circostanze attenuanti
-   - Elementi di buona fede{% endif %}">{% if memoria.strategia_difensiva %}{{ memoria.strategia_difensiva }}{% endif %}</textarea>
-                        </div>
-                    </div>
-
-                    <!-- Sezione Conclusioni -->
-                    <div class="mb-4">
-                        <h5><i class="fas fa-flag-checkered me-2"></i>Conclusioni</h5>
-                        <div class="alert alert-info mb-3">
-                            <h6><i class="fas fa-info-circle me-2"></i>Linee Guida:</h6>
-                            <ol class="mb-0">
-                                <li>Riassumere i punti principali della memoria</li>
-                                <li>Formulare richieste specifiche e precise</li>
-                                <li>Indicare il petitum in modo chiaro</li>
-                                <li>Mantenere coerenza con le argomentazioni precedenti</li>
-                            </ol>
-                        </div>
-                        <div class="form-group">
-                            <textarea class="form-control" name="conclusioni" rows="8" placeholder="{% if not memoria.conclusioni %}CONCLUSIONI
-
-P.Q.M.
-[Per Questi Motivi]
-
-Si chiede che [Autorità competente] voglia:
-
-1. PRELIMINARMENTE
-   - [Richieste procedurali immediate]
-
-2. NEL MERITO
-   - [Richiesta principale]
-   - [Richieste subordinate]
-
-3. IN VIA ISTRUTTORIA
-   - [Eventuali richieste di prove/documenti]
-
-4. SPESE
-   - [Richieste sulle spese di procedura]
-
-[Luogo e Data]
-[Firma]{% endif %}">{% if memoria.conclusioni %}{{ memoria.conclusioni }}{% endif %}</textarea>
-                        </div>
-                    </div>
+                    {% include 'cases/components/memoria_difensiva/fatti.html' %}
+                    {% include 'cases/components/memoria_difensiva/argomentazioni.html' %}
+                    {% include 'cases/components/memoria_difensiva/prove.html' %}
+                    {% include 'cases/components/memoria_difensiva/strategia.html' %}
+                    {% include 'cases/components/memoria_difensiva/conclusioni.html' %}
 
                     <!-- Pulsanti -->
                     <div class="d-flex justify-content-between align-items-center">

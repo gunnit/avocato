@@ -1,0 +1,42 @@
+<!-- Sezione Conclusioni -->
+<div class="mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5><i class="fas fa-flag-checkered me-2"></i>Conclusioni</h5>
+        <button type="button" class="btn btn-primary btn-sm" id="generate_conclusioni" onclick="generateAIContent('conclusioni')">
+            <i class="fas fa-robot me-2"></i>Genera con AI
+        </button>
+    </div>
+    <div class="alert alert-info mb-3">
+        <h6><i class="fas fa-info-circle me-2"></i>Linee Guida:</h6>
+        <ol class="mb-0">
+            <li>Riassumere i punti principali della memoria</li>
+            <li>Formulare richieste specifiche e precise</li>
+            <li>Indicare il petitum in modo chiaro</li>
+            <li>Mantenere coerenza con le argomentazioni precedenti</li>
+        </ol>
+    </div>
+    <div class="form-group">
+        <textarea class="form-control" name="conclusioni" rows="8" placeholder="{% if not memoria.conclusioni %}CONCLUSIONI
+
+P.Q.M.
+[Per Questi Motivi]
+
+Si chiede che [Autorità competente] voglia:
+
+1. PRELIMINARMENTE
+   - [Richieste procedurali immediate]
+
+2. NEL MERITO
+   - [Richiesta principale]
+   - [Richieste subordinate]
+
+3. IN VIA ISTRUTTORIA
+   - [Eventuali richieste di prove/documenti]
+
+4. SPESE
+   - [Richieste sulle spese di procedura]
+
+[Luogo e Data]
+[Firma]{% endif %}">{% if memoria.conclusioni %}{{ memoria.conclusioni }}{% endif %}</textarea>
+    </div>
+</div>

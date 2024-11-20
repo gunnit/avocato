@@ -1,0 +1,39 @@
+<!-- Sezione Argomentazioni Legali -->
+<div class="mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5><i class="fas fa-balance-scale me-2"></i>Argomentazioni Legali</h5>
+        <button type="button" class="btn btn-primary btn-sm" id="generate_argomentazioni" onclick="generateAIContent('argomentazioni')">
+            <i class="fas fa-robot me-2"></i>Genera con AI
+        </button>
+    </div>
+    <div class="alert alert-info mb-3">
+        <h6><i class="fas fa-info-circle me-2"></i>Linee Guida:</h6>
+        <ol class="mb-0">
+            <li>Citare specifici articoli di legge</li>
+            <li>Riferire precedenti giurisprudenziali pertinenti</li>
+            <li>Collegare le norme ai fatti specifici</li>
+            <li>Strutturare le argomentazioni in modo logico</li>
+        </ol>
+    </div>
+    <div class="form-group">
+        <textarea class="form-control" name="argomentazioni" rows="10" placeholder="{% if not memoria.argomentazioni_legali %}IN DIRITTO
+
+1. QUADRO NORMATIVO
+   - Art. [X] del [Codice/Legge]: [citazione pertinente]
+   - Interpretazione giurisprudenziale: [citare sentenze]
+
+2. APPLICAZIONE AL CASO CONCRETO
+   - Sussunzione dei fatti nella fattispecie normativa
+   - Elementi costitutivi della fattispecie
+
+3. PRECEDENTI GIURISPRUDENZIALI
+   - Sentenza [riferimento] del [data]
+   - Massima: [citazione]
+   - Analogia con il caso in esame
+
+4. CONTESTAZIONE DELLE VIOLAZIONI
+   - Analisi degli elementi contestati
+   - Confutazione delle accuse
+   - Elementi a discarico{% endif %}">{% if memoria.argomentazioni_legali %}{{ memoria.argomentazioni_legali }}{% endif %}</textarea>
+    </div>
+</div>

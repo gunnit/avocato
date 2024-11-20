@@ -9,6 +9,11 @@ from .views.documentary_evidence_views import (
 )
 from .views.user_views import profile
 from .views.landing_views import landing_view
+from .views.legal_memory_views import (
+    memoria_difensiva,
+    memoria_difensiva_detail,
+    generate_content
+)
 
 urlpatterns = [
     # Landing page
@@ -21,8 +26,9 @@ urlpatterns = [
     path('cases/<int:caso_id>/edit/', views.edit_caso, name='edit_caso'),
     path('cases/<int:caso_id>/delete/', views.delete_caso, name='delete_caso'),
     path('cases/<int:caso_id>/chat/', views.chat_caso, name='chat_caso'),
-    path('cases/<int:caso_id>/memoria-difensiva/', views.memoria_difensiva, name='memoria_difensiva'),
-    path('cases/<int:caso_id>/memoria-difensiva/detail/', views.memoria_difensiva_detail, name='memoria_difensiva_detail'),
+    path('cases/<int:caso_id>/memoria-difensiva/', memoria_difensiva, name='memoria_difensiva'),
+    path('cases/<int:caso_id>/memoria-difensiva/detail/', memoria_difensiva_detail, name='memoria_difensiva_detail'),
+    path('cases/<int:caso_id>/generate-content/', generate_content, name='generate_content'),
     path('cases/<int:caso_id>/rigenera-analisi/', views.rigenera_analisi, name='rigenera_analisi'),
     
     # Documentary Evidence URLs

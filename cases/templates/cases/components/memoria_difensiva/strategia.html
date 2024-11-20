@@ -1,0 +1,38 @@
+<!-- Sezione Strategia Difensiva -->
+<div class="mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5><i class="fas fa-chess me-2"></i>Strategia Difensiva</h5>
+        <button type="button" class="btn btn-primary btn-sm" id="generate_strategia" onclick="generateAIContent('strategia')">
+            <i class="fas fa-robot me-2"></i>Genera con AI
+        </button>
+    </div>
+    <div class="alert alert-info mb-3">
+        <h6><i class="fas fa-info-circle me-2"></i>Linee Guida:</h6>
+        <ol class="mb-0">
+            <li>Delineare gli argomenti principali della difesa</li>
+            <li>Anticipare e confutare possibili obiezioni</li>
+            <li>Evidenziare i punti di forza del caso</li>
+            <li>Proporre soluzioni alternative se pertinenti</li>
+        </ol>
+    </div>
+    <div class="form-group">
+        <textarea class="form-control" name="strategia" rows="8" placeholder="{% if not memoria.strategia_difensiva %}STRATEGIA DIFENSIVA
+
+1. ARGOMENTI PRINCIPALI
+   - Punto forte 1: [descrizione e supporto]
+   - Punto forte 2: [descrizione e supporto]
+
+2. CONFUTAZIONE PREVENTIVA
+   - Obiezione prevista: [argomento]
+   - Nostra risposta: [contro-argomentazione]
+
+3. SOLUZIONI PROPOSTE
+   - Proposta principale
+   - Alternative possibili
+
+4. ELEMENTI A SOSTEGNO
+   - Precedenti favorevoli
+   - Circostanze attenuanti
+   - Elementi di buona fede{% endif %}">{% if memoria.strategia_difensiva %}{{ memoria.strategia_difensiva }}{% endif %}</textarea>
+    </div>
+</div>
