@@ -1,5 +1,38 @@
 {% extends 'cases/base.html' %}
 
+{% block page_title %}Memoria Difensiva - {{ caso.titolo }}{% endblock %}
+
+{% block breadcrumbs %}
+<!--begin::Item-->
+<li class="breadcrumb-item">
+    <span class="bullet bg-gray-500 w-5px h-2px"></span>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item text-muted">
+    <a href="{% url 'lista_casi' %}" class="text-muted text-hover-primary">Lista Casi</a>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item">
+    <span class="bullet bg-gray-500 w-5px h-2px"></span>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item text-muted">
+    <a href="{% url 'dettaglio_caso' caso.id %}" class="text-muted text-hover-primary">{{ caso.titolo }}</a>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item">
+    <span class="bullet bg-gray-500 w-5px h-2px"></span>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item text-muted">Memoria Difensiva</li>
+<!--end::Item-->
+{% endblock %}
+
 {% block extra_js %}
 <script>
 async function generateAIContent(field) {
@@ -58,11 +91,6 @@ async function generateAIContent(field) {
     }
 }
 </script>
-{% endblock %}
-
-{% block breadcrumb_items %}
-<li class="breadcrumb-item"><a href="{% url 'dettaglio_caso' caso.id %}">{{ caso.titolo }}</a></li>
-<li class="breadcrumb-item active">Memoria Difensiva</li>
 {% endblock %}
 
 {% block content %}

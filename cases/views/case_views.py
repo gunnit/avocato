@@ -1,9 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
+from django.core.exceptions import PermissionDenied
 from ..models import Caso
 from .ai_utils import analizza_caso
 import json
+import anthropic
+import os
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Avg, F, ExpressionWrapper, fields
@@ -126,3 +131,61 @@ def rigenera_analisi(request, caso_id):
         messages.error(request, f'Errore durante la rigenerazione dell\'analisi: {str(e)}')
     
     return redirect('dettaglio_caso', caso_id=caso.id)
+
+@require_http_methods(["POST"])
+def generate_description(request, caso_id):
+    """Generate AI description for a case using all available data."""
+    if not request.user.is_authenticated:
+        raise PermissionDenied
+    
+    caso = get_object_or_404(Caso, id=caso_id)
+    
+    # Get case data and documents
+    case_data = {
+        'titolo': caso.titolo,
+        'stato': caso.stato,
+        'data_creazione': caso.data_creazione.strftime('%Y-%m-%d'),
+        'documenti': [doc.title for doc in caso.documentary_evidences.all()],
+        'analisi': json.loads(caso.analisi_ai) if caso.analisi_ai else None
+    }
+    
+    # Create prompt for case description
+    prompt = f"""Sei un avvocato esperto. Genera una descrizione dettagliata e professionale per il seguente caso legale:
+
+Titolo del Caso: {case_data['titolo']}
+Data di Apertura: {case_data['data_creazione']}
+Stato: {case_data['stato']}
+Documenti Disponibili: {', '.join(case_data['documenti'])}
+
+La descrizione deve:
+1. Fornire un quadro completo e chiaro del caso
+2. Includere una cronologia degli eventi rilevanti
+3. Menzionare le parti coinvolte e i loro ruoli
+4. Evidenziare gli aspetti legali chiave
+5. Citare i documenti pertinenti
+6. Mantenere un tono professionale e oggettivo
+7. Essere strutturata in modo logico e coerente
+
+Se disponibile, considera anche la seguente analisi del caso:
+{json.dumps(case_data['analisi'], indent=2) if case_data['analisi'] else 'Analisi non disponibile'}"""
+
+    try:
+        client = anthropic.Anthropic(api_key=os.getenv('ANTHROPIC_API_KEY'))
+        
+        message = client.messages.create(
+            model="claude-3-opus-20240229",
+            max_tokens=4000,
+            temperature=0.7,
+            system="Sei un avvocato esperto italiano specializzato nella redazione di documenti legali. Rispondi sempre in italiano.",
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
+        )
+        
+        return JsonResponse({'content': message.content[0].text})
+        
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

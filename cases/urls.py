@@ -14,22 +14,33 @@ from .views.legal_memory_views import (
     memoria_difensiva_detail,
     generate_content
 )
+from .views.case_views import (
+    lista_casi,
+    nuovo_caso,
+    dettaglio_caso,
+    edit_caso,
+    delete_caso,
+    rigenera_analisi,
+    generate_description
+)
+from .views.chat_views import chat_caso
 
 urlpatterns = [
     # Landing page
     path('', landing_view, name='landing'),
     
     # Cases URLs
-    path('cases/', views.lista_casi, name='lista_casi'),
-    path('cases/nuovo/', views.nuovo_caso, name='nuovo_caso'),
-    path('cases/<int:caso_id>/', views.dettaglio_caso, name='dettaglio_caso'),
-    path('cases/<int:caso_id>/edit/', views.edit_caso, name='edit_caso'),
-    path('cases/<int:caso_id>/delete/', views.delete_caso, name='delete_caso'),
-    path('cases/<int:caso_id>/chat/', views.chat_caso, name='chat_caso'),
+    path('cases/', lista_casi, name='lista_casi'),
+    path('cases/nuovo/', nuovo_caso, name='nuovo_caso'),
+    path('cases/<int:caso_id>/', dettaglio_caso, name='dettaglio_caso'),
+    path('cases/<int:caso_id>/edit/', edit_caso, name='edit_caso'),
+    path('cases/<int:caso_id>/delete/', delete_caso, name='delete_caso'),
+    path('cases/<int:caso_id>/chat/', chat_caso, name='chat_caso'),
     path('cases/<int:caso_id>/memoria-difensiva/', memoria_difensiva, name='memoria_difensiva'),
     path('cases/<int:caso_id>/memoria-difensiva/detail/', memoria_difensiva_detail, name='memoria_difensiva_detail'),
     path('cases/<int:caso_id>/generate-content/', generate_content, name='generate_content'),
-    path('cases/<int:caso_id>/rigenera-analisi/', views.rigenera_analisi, name='rigenera_analisi'),
+    path('cases/<int:caso_id>/generate-description/', generate_description, name='generate_description'),
+    path('cases/<int:caso_id>/rigenera-analisi/', rigenera_analisi, name='rigenera_analisi'),
     
     # Documentary Evidence URLs
     path('cases/<int:caso_id>/documentary-evidence/', documentary_evidence_list, name='documentary_evidence_list'),
