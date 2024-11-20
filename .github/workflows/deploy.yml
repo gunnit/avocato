@@ -1,0 +1,47 @@
+name: Build and Collect Static
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'
+        
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Create .env file
+      run: |
+        cat << EOF > .env
+        DB_NAME=avocato
+        DB_USER=postgres
+        DB_PASSWORD=Born1984!@
+        DB_HOST=projectschool.postgres.database.azure.com
+        DB_PORT=5432
+        SECRET_KEY=django-insecure-o2d6u5@lq4$zdtt%64^w!8i4g6yjb!hqnbt)xaph2u++3$wi2@
+        DEBUG=False
+        ANTHROPIC_API_KEY=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
+        OPENAI_API_KEY=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
+        SERPER_API_KEY=4fcf1f4b77fa58bb96a0071e2800dbb246e814d6
+        EOF
+        
+    - name: Create staticfiles directory
+      run: mkdir -p staticfiles
+        
+    - name: Copy assets
+      run: cp -r assets/* staticfiles/ || true
+        
+    - name: Collect Static Files
+      run: python manage.py collectstatic --noinput
