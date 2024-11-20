@@ -1,4 +1,4 @@
-# Avocato Legal Assistant
+# Avocato Legal Assistant GM
 
 ## Azure Deployment Information
 - App Name: avocato-fvhmgsdxgtcbdxhz
