@@ -2,7 +2,7 @@ from .base import *
 from decouple import config
 
 # Security settings
-DEBUG = False
+DEBUG = True  # Debug enabled for production
 SECRET_KEY = config('SECRET_KEY')
 
 ALLOWED_HOSTS = [
