@@ -102,3 +102,55 @@ def process_image_pdf(request):
         return JsonResponse({
             'error': 'Si è verificato un errore durante l\'elaborazione del PDF'
         }, status=500)
+
+@csrf_protect
+@require_http_methods(["POST"])
+def analyze_extracted_text(request):
+    """Analyze extracted text using OpenAI"""
+    try:
+        data = json.loads(request.body)
+        text = data.get('text')
+        
+        if not text:
+            return JsonResponse({
+                'error': 'Nessun testo fornito per l\'analisi'
+            }, status=400)
+
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {settings.OPENAI_API_KEY}"
+        }
+        
+        payload = {
+            "model": "gpt-4",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "Sei un assistente legale esperto. Analizza il seguente testo e fornisci un riassunto dettagliato evidenziando i punti chiave, le questioni legali principali e eventuali raccomandazioni."
+                },
+                {
+                    "role": "user",
+                    "content": text
+                }
+            ],
+            "max_tokens": 2000
+        }
+        
+        response = requests.post(
+            "https://api.openai.com/v1/chat/completions",
+            headers=headers,
+            json=payload
+        )
+        response.raise_for_status()
+        
+        analysis = response.json()['choices'][0]['message']['content']
+        
+        return JsonResponse({
+            'analysis': analysis
+        })
+
+    except Exception as e:
+        print(f"Error analyzing text: {str(e)}")
+        return JsonResponse({
+            'error': 'Si è verificato un errore durante l\'analisi del testo'
+        }, status=500)
