@@ -1,81 +1,142 @@
-<div class="py-20 mb-n20 position-relative z-index-2">
+{% load static %}
+<div class="py-20">
     <div class="container">
         <div class="text-center mb-17">
-            <h2 class="fs-2hx text-gray-900 mb-5" id="demo">Vedi l'AI in Azione</h2>
+            <h3 class="fs-2hx text-gray-900 mb-5" id="demo">Vedi l'AI in Azione</h3>
             <div class="fs-5 text-muted fw-bold">Scopri come la nostra soluzione AI trasforma il lavoro quotidiano</div>
         </div>
 
-        <!-- Demo Features -->
-        <div class="row g-10 mb-10 mb-lg-20">
-            <!-- AI Document Analysis -->
-            <div class="col-lg-4">
-                <div class="card card-border hover-elevate-up shadow-sm parent-hover">
-                    <div class="card-body p-9">
-                        <div class="d-flex flex-column">
-                            <div class="mb-5">
-                                <div class="d-flex flex-center w-60px h-60px rounded-3 bg-light-primary bg-opacity-90">
-                                    <i class="ki-duotone ki-document-2 fs-3x text-primary">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                    </i>
+        <!-- Tabs Navigation -->
+        <div class="d-flex flex-center mb-5 mb-lg-15">
+            <ul class="nav border-transparent flex-center fs-5 fw-bold">
+                <li class="nav-item">
+                    <a class="nav-link text-gray-500 text-active-primary px-3 px-lg-6 active" href="#" data-bs-toggle="tab" data-bs-target="#kt_demo_tab_1">Analisi Documenti</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-gray-500 text-active-primary px-3 px-lg-6" href="#" data-bs-toggle="tab" data-bs-target="#kt_demo_tab_2">Gestione Casi</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-gray-500 text-active-primary px-3 px-lg-6" href="#" data-bs-toggle="tab" data-bs-target="#kt_demo_tab_3">Ricerca Legale</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Tabs Content -->
+        <div class="tab-content">
+            <!-- Tab 1: Document Analysis -->
+            <div class="tab-pane fade show active" id="kt_demo_tab_1">
+                <div class="card">
+                    <div class="card-body p-lg-15">
+                        <div class="row g-10">
+                            <div class="col-lg-6">
+                                <div class="d-flex flex-column justify-content-center h-lg-100">
+                                    <h2 class="fs-2qx text-gray-900 mb-7">Analisi Documenti Intelligente</h2>
+                                    <div class="fs-4 text-muted mb-7">
+                                        L'AI analizza automaticamente i documenti legali, estraendo informazioni chiave e identificando potenziali rischi o opportunità.
+                                    </div>
+                                    <div class="d-flex flex-wrap mb-7">
+                                        <div class="d-flex align-items-center mb-5 me-10">
+                                            <i class="ki-duotone ki-check-circle fs-2 text-success me-3"></i>
+                                            <span class="fs-5">Estrazione automatica dati</span>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-5 me-10">
+                                            <i class="ki-duotone ki-check-circle fs-2 text-success me-3"></i>
+                                            <span class="fs-5">Analisi del rischio</span>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-5">
+                                            <i class="ki-duotone ki-check-circle fs-2 text-success me-3"></i>
+                                            <span class="fs-5">Confronto automatico</span>
+                                        </div>
+                                    </div>
+                                    <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_demo_request">
+                                        Richiedi Demo
+                                    </a>
                                 </div>
                             </div>
-                            <div class="mb-5">
-                                <div class="fs-2 fw-bold mb-2">Analisi Documenti</div>
-                                <div class="text-gray-600">L'AI analizza automaticamente contratti e documenti legali</div>
-                            </div>
-                            <div class="d-flex align-items-center mt-auto">
-                                <a href="#" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_document_demo">Vedi Demo</a>
+                            <div class="col-lg-6">
+                                <div class="d-flex flex-center h-100 rounded bg-light p-lg-15">
+                                    <img src="{% static 'assets/media/product/1.svg' %}" alt="Analisi Documenti" class="mw-100 mh-300px">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- AI Case Management -->
-            <div class="col-lg-4">
-                <div class="card card-border hover-elevate-up shadow-sm parent-hover">
-                    <div class="card-body p-9">
-                        <div class="d-flex flex-column">
-                            <div class="mb-5">
-                                <div class="d-flex flex-center w-60px h-60px rounded-3 bg-light-success bg-opacity-90">
-                                    <i class="ki-duotone ki-briefcase fs-3x text-success">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                    </i>
+            <!-- Tab 2: Case Management -->
+            <div class="tab-pane fade" id="kt_demo_tab_2">
+                <div class="card">
+                    <div class="card-body p-lg-15">
+                        <div class="row g-10">
+                            <div class="col-lg-6">
+                                <div class="d-flex flex-column justify-content-center h-lg-100">
+                                    <h2 class="fs-2qx text-gray-900 mb-7">Gestione Casi Avanzata</h2>
+                                    <div class="fs-4 text-muted mb-7">
+                                        Organizza e gestisci i tuoi casi in modo intelligente, con timeline automatiche e suggerimenti strategici basati su AI.
+                                    </div>
+                                    <div class="d-flex flex-wrap mb-7">
+                                        <div class="d-flex align-items-center mb-5 me-10">
+                                            <i class="ki-duotone ki-check-circle fs-2 text-success me-3"></i>
+                                            <span class="fs-5">Timeline intelligente</span>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-5 me-10">
+                                            <i class="ki-duotone ki-check-circle fs-2 text-success me-3"></i>
+                                            <span class="fs-5">Gestione scadenze</span>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-5">
+                                            <i class="ki-duotone ki-check-circle fs-2 text-success me-3"></i>
+                                            <span class="fs-5">Analisi predittiva</span>
+                                        </div>
+                                    </div>
+                                    <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_demo_request">
+                                        Richiedi Demo
+                                    </a>
                                 </div>
                             </div>
-                            <div class="mb-5">
-                                <div class="fs-2 fw-bold mb-2">Gestione Casi</div>
-                                <div class="text-gray-600">Organizzazione intelligente dei fascicoli e scadenze</div>
-                            </div>
-                            <div class="d-flex align-items-center mt-auto">
-                                <a href="#" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#kt_modal_case_demo">Vedi Demo</a>
+                            <div class="col-lg-6">
+                                <div class="d-flex flex-center h-100 rounded bg-light p-lg-15">
+                                    <img src="{% static 'assets/media/product/2.svg' %}" alt="Gestione Casi" class="mw-100 mh-300px">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- AI Legal Research -->
-            <div class="col-lg-4">
-                <div class="card card-border hover-elevate-up shadow-sm parent-hover">
-                    <div class="card-body p-9">
-                        <div class="d-flex flex-column">
-                            <div class="mb-5">
-                                <div class="d-flex flex-center w-60px h-60px rounded-3 bg-light-info bg-opacity-90">
-                                    <i class="ki-duotone ki-search fs-3x text-info">
-                                        <span class="path1"></span>
-                                        <span class="path2"></span>
-                                    </i>
+            <!-- Tab 3: Legal Research -->
+            <div class="tab-pane fade" id="kt_demo_tab_3">
+                <div class="card">
+                    <div class="card-body p-lg-15">
+                        <div class="row g-10">
+                            <div class="col-lg-6">
+                                <div class="d-flex flex-column justify-content-center h-lg-100">
+                                    <h2 class="fs-2qx text-gray-900 mb-7">Ricerca Legale Potenziata</h2>
+                                    <div class="fs-4 text-muted mb-7">
+                                        Ricerca intelligente nella giurisprudenza con analisi predittiva e aggiornamenti normativi automatici.
+                                    </div>
+                                    <div class="d-flex flex-wrap mb-7">
+                                        <div class="d-flex align-items-center mb-5 me-10">
+                                            <i class="ki-duotone ki-check-circle fs-2 text-success me-3"></i>
+                                            <span class="fs-5">Ricerca semantica</span>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-5 me-10">
+                                            <i class="ki-duotone ki-check-circle fs-2 text-success me-3"></i>
+                                            <span class="fs-5">Analisi predittiva</span>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-5">
+                                            <i class="ki-duotone ki-check-circle fs-2 text-success me-3"></i>
+                                            <span class="fs-5">Aggiornamenti automatici</span>
+                                        </div>
+                                    </div>
+                                    <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_demo_request">
+                                        Richiedi Demo
+                                    </a>
                                 </div>
                             </div>
-                            <div class="mb-5">
-                                <div class="fs-2 fw-bold mb-2">Ricerca Legale</div>
-                                <div class="text-gray-600">Ricerca intelligente nella giurisprudenza</div>
-                            </div>
-                            <div class="d-flex align-items-center mt-auto">
-                                <a href="#" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#kt_modal_research_demo">Vedi Demo</a>
+                            <div class="col-lg-6">
+                                <div class="d-flex flex-center h-100 rounded bg-light p-lg-15">
+                                    <img src="{% static 'assets/media/product/3.svg' %}" alt="Ricerca Legale" class="mw-100 mh-300px">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -84,19 +145,15 @@
         </div>
 
         <!-- Call to Action -->
-        <div class="card" style="filter: drop-shadow(0px 0px 40px rgba(68, 81, 96, 0.08))">
-            <div class="card-body p-lg-20">
-                <div class="text-center mb-5 mb-lg-10">
-                    <h3 class="fs-2hx text-gray-900 mb-5">Pronto a Trasformare il Tuo Studio?</h3>
-                    <div class="fs-4 text-muted fw-bold mb-10">
-                        Richiedi una demo personalizzata e scopri come la nostra soluzione AI
-                        <br />può ottimizzare il tuo studio legale
-                    </div>
-                    <a href="#" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#kt_modal_demo_request">
-                        Richiedi Demo Gratuita
-                    </a>
-                </div>
+        <div class="d-flex flex-stack flex-wrap flex-md-nowrap card-rounded shadow p-8 p-lg-12 mt-10" style="background: linear-gradient(90deg, #20AA3E 0%, #03A588 100%);">
+            <div class="my-2 me-5">
+                <div class="fs-1 fs-lg-2qx fw-bold text-white mb-2">Pronto a Trasformare il Tuo Studio?
+                <span class="fw-normal">Richiedi una Demo Oggi</span></div>
+                <div class="fs-6 fs-lg-5 text-white fw-semibold opacity-75">Unisciti a centinaia di studi legali che hanno già scelto l'innovazione</div>
             </div>
+            <a href="#" class="btn btn-lg btn-outline border-2 btn-outline-white flex-shrink-0 my-2" data-bs-toggle="modal" data-bs-target="#kt_modal_demo_request">
+                Richiedi Demo Gratuita
+            </a>
         </div>
     </div>
 </div>
