@@ -27,8 +27,29 @@ jobs:
         
     - name: Copy assets
       run: cp -r assets/* staticfiles/ || true
+
+    - name: Create .env file
+      run: |
+        cat << EOF > .env
+        DB_NAME=avocato
+        DB_USER=postgres
+        DB_PASSWORD=Born1984!@
+        DB_HOST=projectschool.postgres.database.azure.com
+        DB_PORT=5432
+        SECRET_KEY=django-insecure-o2d6u5@lq4$zdtt%64^w!8i4g6yjb!hqnbt)xaph2u++3$wi2@
+        DEBUG=False
+        ANTHROPIC_API_KEY=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
+        OPENAI_API_KEY=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
+        SERPER_API_KEY=4fcf1f4b77fa58bb96a0071e2800dbb246e814d6
+        EOF
         
     - name: Collect Static Files
       env:
         DJANGO_SETTINGS_MODULE: legal_assistant.settings.production
       run: python manage.py collectstatic --noinput
+
+    - name: Start Gunicorn Server
+      env:
+        DJANGO_SETTINGS_MODULE: legal_assistant.settings.production
+      run: |
+        gunicorn legal_assistant.wsgi:application --bind 0.0.0.0:8000
