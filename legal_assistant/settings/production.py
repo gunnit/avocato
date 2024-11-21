@@ -1,14 +1,15 @@
 from .base import *
 
 # Security settings
-DEBUG = env.bool('DJANGO_DEBUG', default=False)
-SECRET_KEY = env('DJANGO_SECRET_KEY')
+DEBUG = env.bool('DEBUG', default=False)
+SECRET_KEY = env('SECRET_KEY')
 
 # Azure Web App default domain and your custom domain
 ALLOWED_HOSTS = [
     'avocato.azurewebsites.net',  # Default Azure domain
     'avocato-fvhmgsdxgtcbdxhz.germanywestcentral-01.azurewebsites.net',
     '.azurewebsites.net',
+    'viagea.oa.r.appspot.com',  # Google App Engine domain
     '*',  # Temporarily allow all hosts for troubleshooting
 ]
 
@@ -37,13 +38,19 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# Azure Blob Storage configuration
-DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
-AZURE_ACCOUNT_NAME = env('AZURE_ACCOUNT_NAME', default='greg123')
-AZURE_ACCOUNT_KEY = env('AZURE_ACCOUNT_KEY')
-AZURE_CONTAINER = env('AZURE_CONTAINER', default='media')
-AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
-AZURE_LOCATION = env('AZURE_LOCATION', default='francecentral')
+# File Storage Configuration
+try:
+    AZURE_ACCOUNT_KEY = env('AZURE_STORAGE_ACCOUNT_KEY')
+    DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+    AZURE_ACCOUNT_NAME = env('AZURE_STORAGE_ACCOUNT_NAME', default='greg123')
+    AZURE_CONTAINER = env('AZURE_STORAGE_CONTAINER_NAME', default='media')
+    AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
+    AZURE_LOCATION = env('AZURE_LOCATION', default='francecentral')
+except Exception:
+    # Fall back to local file storage if Azure storage is not configured
+    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Static files configuration
 STATIC_URL = '/static/'
@@ -70,7 +77,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 CORS_ALLOW_CREDENTIALS = True
 
-# Logging configuration
+# Logging configuration - Console only for App Engine
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -78,18 +85,14 @@ LOGGING = {
         'console': {
             'class': 'logging.StreamHandler',
         },
-        'file': {
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'django.log'),
-        },
     },
     'root': {
-        'handlers': ['console', 'file'],
+        'handlers': ['console'],
         'level': 'INFO',
     },
     'loggers': {
         'django': {
-            'handlers': ['console', 'file'],
+            'handlers': ['console'],
             'level': env('DJANGO_LOG_LEVEL', default='INFO'),
             'propagate': False,
         },
