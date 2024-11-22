@@ -1,0 +1,97 @@
+<style>
+/* Animations */
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0px); }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-float {
+    animation: float 6s ease-in-out infinite;
+}
+
+.animate-bounce {
+    animation: bounce 2s ease-in-out infinite;
+}
+
+.animate-up {
+    animation: slideUp 0.5s ease-out forwards;
+}
+
+/* Feature Items */
+.feature-item {
+    transition: all 0.3s ease;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+}
+
+.feature-item:hover {
+    background: rgba(0, 0, 0, 0.025);
+    transform: translateX(10px);
+}
+
+.feature-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(20, 170, 62, 0.1);
+}
+
+/* Hover Effects */
+.hover-elevate {
+    transition: all 0.3s ease;
+}
+
+.hover-elevate:hover {
+    transform: translateY(-5px);
+}
+
+.hover-elevate-up {
+    transition: all 0.3s ease;
+}
+
+.hover-elevate-up:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* Blur Effects */
+.blur-3 {
+    filter: blur(3px);
+}
+
+/* Transform Effects */
+.transform-diagonal {
+    transform: rotate(-45deg) scale(1.5);
+}
+
+/* Gradient CTA */
+.gradient-cta {
+    overflow: hidden;
+    border-radius: 1rem;
+}
+
+/* Tab Navigation */
+.nav-tabs .nav-link {
+    transition: all 0.3s ease;
+    border-radius: 0.5rem;
+}
+
+.nav-tabs .nav-link:not(.active):hover {
+    background: rgba(20, 170, 62, 0.1);
+    color: #20AA3E;
+}
+</style>
