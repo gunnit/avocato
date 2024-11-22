@@ -1,30 +1,38 @@
 <!-- Case Analysis Section -->
 {% if analisi_json %}
 <!--begin::Content container-->
-<div id="kt_app_content_container" class="app-container container-xxl">
+<div id="kt_app_content_container" class="app-container container-xxl animate__animated animate__fadeIn">
     <!--begin::Stats-->
     {% include "cases/components/case_analysis_stats.html" %}
     <!--end::Stats-->
 
     <!--begin::Card-->
-    <div class="card">
+    <div class="card shadow-sm hover-elevate-up">
         <!--begin::Card header-->
         <div class="card-header border-0 pt-6">
             <!--begin::Card title-->
             <div class="card-title">
-                <h2 class="fw-bold">Analisi del Caso</h2>
+                <h2 class="fw-bolder fs-2 mb-0">
+                    <i class="ki-duotone ki-document-analysis fs-2 me-2">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                    Analisi del Caso
+                </h2>
             </div>
             <!--end::Card title-->
             <!--begin::Card toolbar-->
             <div class="card-toolbar">
                 <div class="d-flex justify-content-end" data-kt-user-table-toolbar="base">
-                    <a href="{% url 'rigenera_analisi' caso.id %}" class="btn btn-primary">
-                        <i class="ki-duotone ki-arrows-circle fs-2">
+                    <button type="button" class="btn btn-primary btn-lg pulse" onclick="window.location.href='{% url 'rigenera_analisi' caso.id %}'">
+                        <span class="pulse-ring"></span>
+                        <i class="ki-duotone ki-arrows-circle fs-2 me-2">
                             <span class="path1"></span>
                             <span class="path2"></span>
                         </i>
                         Rigenera Analisi
-                    </a>
+                        <span class="ms-2 badge badge-light">AI</span>
+                    </button>
                 </div>
             </div>
             <!--end::Card toolbar-->
@@ -33,45 +41,65 @@
 
         <!--begin::Card body-->
         <div class="card-body py-4">
-            <div class="accordion" id="analisiAccordion">
+            <div class="accordion custom-accordion" id="analisiAccordion">
                 <!--begin::Legal Analysis-->
-                {% include "cases/components/case_analysis_legal.html" %}
+                <div class="accordion-item mb-5 shadow-sm hover-elevate-up transition-all">
+                    {% include "cases/components/case_analysis_legal.html" %}
+                </div>
                 <!--end::Legal Analysis-->
 
                 <!--begin::Defense Strategies-->
-                {% include "cases/components/case_analysis_defense.html" %}
+                <div class="accordion-item mb-5 shadow-sm hover-elevate-up transition-all">
+                    {% include "cases/components/case_analysis_defense.html" %}
+                </div>
                 <!--end::Defense Strategies-->
 
                 <!--begin::Evidence Management-->
-                {% include "cases/components/case_analysis_evidence.html" %}
+                <div class="accordion-item mb-5 shadow-sm hover-elevate-up transition-all">
+                    {% include "cases/components/case_analysis_evidence.html" %}
+                </div>
                 <!--end::Evidence Management-->
 
                 <!--begin::Immediate Actions-->
-                {% include "cases/components/case_analysis_actions.html" %}
+                <div class="accordion-item mb-5 shadow-sm hover-elevate-up transition-all">
+                    {% include "cases/components/case_analysis_actions.html" %}
+                </div>
                 <!--end::Immediate Actions-->
 
                 <!--begin::Timeline-->
-                {% include "cases/components/case_analysis_timeline.html" %}
+                <div class="accordion-item mb-5 shadow-sm hover-elevate-up transition-all">
+                    {% include "cases/components/case_analysis_timeline.html" %}
+                </div>
                 <!--end::Timeline-->
 
                 <!--begin::Risk Analysis-->
-                {% include "cases/components/case_analysis_risks.html" %}
+                <div class="accordion-item mb-5 shadow-sm hover-elevate-up transition-all">
+                    {% include "cases/components/case_analysis_risks.html" %}
+                </div>
                 <!--end::Risk Analysis-->
 
                 <!--begin::Support and Resources-->
-                {% include "cases/components/case_analysis_support.html" %}
+                <div class="accordion-item mb-5 shadow-sm hover-elevate-up transition-all">
+                    {% include "cases/components/case_analysis_support.html" %}
+                </div>
                 <!--end::Support and Resources-->
 
                 <!--begin::Recommendations-->
-                {% include "cases/components/case_analysis_recommendations.html" %}
+                <div class="accordion-item mb-5 shadow-sm hover-elevate-up transition-all">
+                    {% include "cases/components/case_analysis_recommendations.html" %}
+                </div>
                 <!--end::Recommendations-->
 
                 <!--begin::Economic Aspects-->
-                {% include "cases/components/case_analysis_economic.html" %}
+                <div class="accordion-item mb-5 shadow-sm hover-elevate-up transition-all">
+                    {% include "cases/components/case_analysis_economic.html" %}
+                </div>
                 <!--end::Economic Aspects-->
 
                 <!--begin::Resolution Prospects-->
-                {% include "cases/components/case_analysis_resolution.html" %}
+                <div class="accordion-item mb-5 shadow-sm hover-elevate-up transition-all">
+                    {% include "cases/components/case_analysis_resolution.html" %}
+                </div>
                 <!--end::Resolution Prospects-->
             </div>
         </div>
@@ -80,4 +108,108 @@
     <!--end::Card-->
 </div>
 <!--end::Content container-->
+
+<!-- Add custom styles -->
+<style>
+    .custom-accordion .accordion-item {
+        border-radius: 0.75rem;
+        border: 1px solid rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .custom-accordion .accordion-button {
+        padding: 1.5rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: var(--bs-gray-800);
+        background: var(--bs-gray-100);
+        transition: all 0.3s ease;
+    }
+
+    .custom-accordion .accordion-button:not(.collapsed) {
+        background: var(--bs-primary);
+        color: white;
+    }
+
+    .custom-accordion .accordion-button:focus {
+        box-shadow: none;
+        border-color: var(--bs-primary);
+    }
+
+    .custom-accordion .accordion-body {
+        padding: 2rem;
+        background: white;
+    }
+
+    @media (max-width: 767px) {
+        .card-header {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 1rem;
+        }
+
+        .card-toolbar {
+            justify-content: stretch;
+        }
+
+        .btn-lg {
+            width: 100%;
+        }
+
+        .custom-accordion .accordion-button {
+            padding: 1rem;
+            font-size: 1rem;
+        }
+
+        .custom-accordion .accordion-body {
+            padding: 1rem;
+        }
+    }
+
+    /* Loading animation for regenerate button */
+    .btn-primary.loading {
+        position: relative;
+        pointer-events: none;
+        opacity: 0.8;
+    }
+
+    .btn-primary.loading:after {
+        content: '';
+        position: absolute;
+        width: 1rem;
+        height: 1rem;
+        border: 2px solid transparent;
+        border-top-color: white;
+        border-radius: 50%;
+        animation: button-loading-spinner 1s ease infinite;
+    }
+
+    @keyframes button-loading-spinner {
+        from {
+            transform: rotate(0turn);
+        }
+        to {
+            transform: rotate(1turn);
+        }
+    }
+</style>
+
+<!-- Add custom script for loading state -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const regenerateBtn = document.querySelector('.btn-primary');
+    
+    regenerateBtn.addEventListener('click', function(e) {
+        this.classList.add('loading');
+        const originalText = this.innerHTML;
+        this.innerHTML = '<span class="spinner"></span> Rigenerando...';
+        
+        // Restore button state after navigation
+        setTimeout(() => {
+            this.classList.remove('loading');
+            this.innerHTML = originalText;
+        }, 500);
+    });
+});
+</script>
 {% endif %}
