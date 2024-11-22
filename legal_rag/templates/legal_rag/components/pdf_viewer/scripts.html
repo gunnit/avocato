@@ -1,0 +1,276 @@
+{% load static %}
+<script>
+function formatBBox(bbox) {
+    if (!bbox) return '';
+    return `${Math.round(bbox.x)},${Math.round(bbox.y)} (${Math.round(bbox.width)}x${Math.round(bbox.height)})`;
+}
+
+function createMetadataDiv(node) {
+    const metadata = document.createElement('div');
+    metadata.className = 'metadata';
+    
+    if (node.metadata) {
+        if (node.metadata.confidence) {
+            const confidence = document.createElement('span');
+            confidence.className = 'confidence';
+            confidence.textContent = `${Math.round(node.metadata.confidence * 100)}%`;
+            metadata.appendChild(confidence);
+        }
+        
+        if (node.metadata.bbox) {
+            const bbox = document.createElement('span');
+            bbox.className = 'bbox-info';
+            bbox.textContent = formatBBox(node.metadata.bbox);
+            metadata.appendChild(bbox);
+        }
+    }
+    
+    return metadata;
+}
+
+function createPositionIndicator(node) {
+    if (!node.metadata?.bbox) return null;
+    
+    const indicator = document.createElement('div');
+    indicator.className = 'position-indicator';
+    indicator.textContent = `y: ${Math.round(node.metadata.bbox.y)}`;
+    return indicator;
+}
+
+function buildDocumentOutline(content) {
+    const outline = document.createElement('ul');
+    let currentSection = null;
+    
+    content.forEach(node => {
+        const item = document.createElement('li');
+        const itemContent = document.createElement('div');
+        itemContent.className = 'outline-item';
+        
+        // Add badge
+        const badge = document.createElement('span');
+        badge.className = `outline-badge ${node.type}`;
+        badge.textContent = node.type.charAt(0).toUpperCase() + node.type.slice(1);
+        itemContent.appendChild(badge);
+        
+        // Add text preview
+        const text = document.createElement('span');
+        text.textContent = node.text ? 
+            (node.text.length > 50 ? node.text.substring(0, 50) + '...' : node.text) :
+            (node.type === 'table' ? 'Table content' : '');
+        itemContent.appendChild(text);
+        
+        item.appendChild(itemContent);
+        
+        // Handle nesting
+        if (node.type === 'heading') {
+            currentSection = document.createElement('ul');
+            item.appendChild(currentSection);
+            outline.appendChild(item);
+        } else if (currentSection) {
+            currentSection.appendChild(item);
+        } else {
+            outline.appendChild(item);
+        }
+    });
+    
+    return outline;
+}
+
+function renderStructuredContent(content) {
+    const container = document.getElementById('structuredContent');
+    const documentStructure = document.getElementById('documentStructure');
+    container.innerHTML = '';
+    
+    let currentPage = 0;
+    
+    // Render main content
+    content.forEach(node => {
+        // Add page number if changed
+        if (node.metadata && node.metadata.page_num && node.metadata.page_num !== currentPage) {
+            currentPage = node.metadata.page_num;
+            const pageNumber = document.createElement('div');
+            pageNumber.className = 'page-number';
+            pageNumber.textContent = `Page ${currentPage}`;
+            container.appendChild(pageNumber);
+        }
+        
+        // Create content type indicator
+        const typeIndicator = document.createElement('span');
+        typeIndicator.className = `content-type ${node.type}`;
+        typeIndicator.textContent = node.type.charAt(0).toUpperCase() + node.type.slice(1);
+        
+        if (node.type === 'heading') {
+            const heading = document.createElement('h3');
+            heading.className = 'heading';
+            heading.appendChild(typeIndicator);
+            heading.appendChild(document.createTextNode(node.text));
+            heading.appendChild(createMetadataDiv(node));
+            
+            const positionIndicator = createPositionIndicator(node);
+            if (positionIndicator) heading.appendChild(positionIndicator);
+            
+            container.appendChild(heading);
+        }
+        else if (node.type === 'table') {
+            const tableContainer = document.createElement('div');
+            tableContainer.className = 'table-container';
+            tableContainer.appendChild(typeIndicator);
+            tableContainer.appendChild(createMetadataDiv(node));
+            
+            // Use cells data if available, otherwise fallback to markdown
+            if (node.cells && Array.isArray(node.cells)) {
+                const table = document.createElement('table');
+                node.cells.forEach((row, rowIndex) => {
+                    const tr = document.createElement('tr');
+                    row.forEach((cell, cellIndex) => {
+                        const td = document.createElement(rowIndex === 0 ? 'th' : 'td');
+                        td.textContent = cell;
+                        
+                        // Add highlighting for cells with high confidence
+                        if (cell.confidence && cell.confidence > 0.9) {
+                            td.className = 'highlight';
+                        }
+                        
+                        tr.appendChild(td);
+                    });
+                    table.appendChild(tr);
+                });
+                tableContainer.appendChild(table);
+            } else if (node.markdown) {
+                // Fallback to markdown parsing
+                const tableHtml = node.markdown
+                    .replace(/\|/g, '')
+                    .split('\n')
+                    .filter(row => row.trim() !== '')
+                    .map((row, index) => {
+                        const cells = row.trim().split(/\s{2,}/);
+                        const tag = index === 0 ? 'th' : 'td';
+                        return `<tr>${cells.map(cell => `<${tag}>${cell.trim()}</${tag}>`).join('')}</tr>`;
+                    })
+                    .join('');
+                
+                tableContainer.innerHTML += `<table>${tableHtml}</table>`;
+            }
+            
+            const positionIndicator = createPositionIndicator(node);
+            if (positionIndicator) tableContainer.appendChild(positionIndicator);
+            
+            container.appendChild(tableContainer);
+        }
+        else {
+            const textBlock = document.createElement('div');
+            textBlock.className = 'text-block';
+            textBlock.appendChild(typeIndicator);
+            textBlock.appendChild(document.createTextNode(node.text));
+            textBlock.appendChild(createMetadataDiv(node));
+            
+            const positionIndicator = createPositionIndicator(node);
+            if (positionIndicator) textBlock.appendChild(positionIndicator);
+            
+            container.appendChild(textBlock);
+        }
+    });
+    
+    // Build and show document structure
+    documentStructure.style.display = 'block';
+    const outlineContainer = documentStructure.querySelector('.document-outline');
+    outlineContainer.innerHTML = '';
+    outlineContainer.appendChild(buildDocumentOutline(content));
+}
+
+// Form submission handler
+document.getElementById('pdfUploadForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const button = document.getElementById('uploadButton');
+    const label = button.querySelector('.indicator-label');
+    const progress = button.querySelector('.indicator-progress');
+    const resultsSection = document.getElementById('resultsSection');
+    const analyzeButton = document.getElementById('analyzeButton');
+    const analysisSection = document.getElementById('analysisSection');
+
+    try {
+        // Show loading state
+        button.disabled = true;
+        label.style.display = 'none';
+        progress.style.display = 'inline-flex';
+        resultsSection.style.display = 'none';
+        analyzeButton.style.display = 'none';
+        analysisSection.style.display = 'none';
+
+        const response = await fetch('/legal-rag/process-image-pdf/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            throw new Error(data.error);
+        }
+
+        // Display results using structured content
+        renderStructuredContent(data.structured_content);
+        resultsSection.style.display = 'block';
+        analyzeButton.style.display = 'inline-flex';
+
+    } catch (error) {
+        alert('Errore: ' + error.message);
+    } finally {
+        // Reset button state
+        button.disabled = false;
+        label.style.display = 'inline-flex';
+        progress.style.display = 'none';
+    }
+});
+
+// Analysis button handler
+document.getElementById('analyzeButton').addEventListener('click', async function() {
+    const button = this;
+    const label = button.querySelector('.indicator-label');
+    const progress = button.querySelector('.indicator-progress');
+    const analysisSection = document.getElementById('analysisSection');
+    const analysisText = document.getElementById('analysisText');
+    const structuredContent = document.getElementById('structuredContent');
+
+    try {
+        // Show loading state
+        button.disabled = true;
+        label.style.display = 'none';
+        progress.style.display = 'inline-flex';
+
+        const response = await fetch('/legal-rag/analyze-text/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                text: structuredContent.textContent
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            throw new Error(data.error);
+        }
+
+        // Display analysis results
+        analysisText.innerHTML = data.analysis.replace(/\n/g, '<br>');
+        analysisSection.style.display = 'block';
+
+    } catch (error) {
+        alert('Errore durante l\'analisi: ' + error.message);
+    } finally {
+        // Reset button state
+        button.disabled = false;
+        label.style.display = 'inline-flex';
+        progress.style.display = 'none';
+    }
+});
+</script>

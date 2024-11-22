@@ -1,0 +1,31 @@
+{% load static %}
+<!-- Results Section -->
+<div id="resultsSection" style="display: none;">
+    <h4 class="mb-3">Testo Estratto</h4>
+    <div class="pdf-content border rounded p-4 bg-light mb-3">
+        <div id="structuredContent"></div>
+    </div>
+    
+    <!-- Document Structure View -->
+    <div id="documentStructure" class="mb-4" style="display: none;">
+        <h5 class="mb-3">Document Structure</h5>
+        <div class="document-outline border rounded p-3"></div>
+    </div>
+
+    <!-- Analyze Button -->
+    <button type="button" class="btn btn-secondary mb-5" id="analyzeButton" style="display: none;">
+        <span class="indicator-label">Analyze extracted text</span>
+        <span class="indicator-progress" style="display: none">
+            Analisi in corso... 
+            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+        </span>
+    </button>
+
+    <!-- Analysis Results Section -->
+    <div id="analysisSection" style="display: none;">
+        <h4 class="mb-3">Analisi del Testo</h4>
+        <div class="border rounded p-3 bg-light">
+            <div id="analysisText" class="mb-0"></div>
+        </div>
+    </div>
+</div>
