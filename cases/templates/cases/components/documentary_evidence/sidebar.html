@@ -25,6 +25,37 @@
             </div>
             <!--end::Status-->
 
+            <!--begin::Document Type-->
+            <div class="d-flex flex-column">
+                <div class="fw-bold text-gray-800 mb-2">Tipo Documento</div>
+                <div class="text-gray-600">
+                    {% if document.document_type == 'atto_citazione' %}
+                    Atto di Citazione
+                    {% elif document.document_type == 'comparsa_costituzione' %}
+                    Comparsa di Costituzione
+                    {% elif document.document_type == 'memoria_183' %}
+                    Memoria ex art. 183
+                    {% elif document.document_type == 'doc_contabili' %}
+                    Documenti Contabili
+                    {% elif document.document_type == 'perizia_tecnica' %}
+                    Perizia Tecnica
+                    {% elif document.document_type == 'corrispondenza' %}
+                    Corrispondenza
+                    {% elif document.document_type == 'contratto' %}
+                    Contratto
+                    {% elif document.document_type == 'doc_amministrativo' %}
+                    Documento Amministrativo
+                    {% elif document.document_type == 'verbale' %}
+                    Verbale
+                    {% elif document.document_type == 'sentenza' %}
+                    Sentenza
+                    {% else %}
+                    Altro
+                    {% endif %}
+                </div>
+            </div>
+            <!--end::Document Type-->
+
             <!--begin::Dates-->
             <div class="d-flex flex-column">
                 <div class="fw-bold text-gray-800 mb-2">Data Aggiunta</div>

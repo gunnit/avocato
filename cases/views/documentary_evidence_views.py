@@ -34,6 +34,7 @@ def documentary_evidence_add(request, caso_id):
             title=request.POST.get('title'),
             description=request.POST.get('description'),
             document_file=request.FILES.get('document_file'),
+            document_type=request.POST.get('document_type', 'altro'),
             authentication_status=request.POST.get('authentication_status', 'pending'),
             authentication_notes=request.POST.get('authentication_notes', '')
         )
@@ -55,6 +56,7 @@ def documentary_evidence_edit(request, caso_id, doc_id):
     if request.method == 'POST':
         document.title = request.POST.get('title')
         document.description = request.POST.get('description')
+        document.document_type = request.POST.get('document_type', 'altro')
         if 'document_file' in request.FILES:
             document.document_file = request.FILES['document_file']
         document.authentication_status = request.POST.get('authentication_status')
@@ -99,6 +101,7 @@ def analyze_evidence(request, caso_id, doc_id):
     prompt = f"""Analizza la seguente prova legale dal punto di vista dell'avvocato del imputtato, considerando il contesto del sistema giuridico italiano. Esamina l'affidabilità, le implicazioni legali e il valore strategico:
 
 Titolo: {document.title}
+Tipo Documento: {document.get_document_type_display()}
 Descrizione: {document.description}
 Stato di Autenticazione: {document.authentication_status}
 Note di Autenticazione: {document.authentication_notes}

@@ -83,6 +83,7 @@
                 <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
                     <th>N° Esibito</th>
                     <th>Titolo</th>
+                    <th>Tipo</th>
                     <th>Stato Autenticazione</th>
                     <th>Data Aggiunta</th>
                     <th class="text-end">Azioni</th>
@@ -93,6 +94,31 @@
                 <tr>
                     <td>{{ doc.exhibit_number }}</td>
                     <td>{{ doc.title }}</td>
+                    <td>
+                        {% if doc.document_type == 'atto_citazione' %}
+                        Atto di Citazione
+                        {% elif doc.document_type == 'comparsa_costituzione' %}
+                        Comparsa di Costituzione
+                        {% elif doc.document_type == 'memoria_183' %}
+                        Memoria ex art. 183
+                        {% elif doc.document_type == 'doc_contabili' %}
+                        Documenti Contabili
+                        {% elif doc.document_type == 'perizia_tecnica' %}
+                        Perizia Tecnica
+                        {% elif doc.document_type == 'corrispondenza' %}
+                        Corrispondenza
+                        {% elif doc.document_type == 'contratto' %}
+                        Contratto
+                        {% elif doc.document_type == 'doc_amministrativo' %}
+                        Documento Amministrativo
+                        {% elif doc.document_type == 'verbale' %}
+                        Verbale
+                        {% elif doc.document_type == 'sentenza' %}
+                        Sentenza
+                        {% else %}
+                        Altro
+                        {% endif %}
+                    </td>
                     <td>
                         {% if doc.authentication_status == 'pending' %}
                         <span class="badge badge-light-warning">In Attesa</span>

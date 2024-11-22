@@ -44,11 +44,31 @@ class ChatMessage(models.Model):
         return f"{'AI' if self.is_ai else 'User'} message for {self.caso.titolo}"
 
 class DocumentaryEvidence(models.Model):
+    DOCUMENT_TYPE_CHOICES = [
+        ('atto_citazione', 'Atto di Citazione'),
+        ('comparsa_costituzione', 'Comparsa di Costituzione'),
+        ('memoria_183', 'Memoria ex art. 183'),
+        ('doc_contabili', 'Documenti Contabili'),
+        ('perizia_tecnica', 'Perizia Tecnica'),
+        ('corrispondenza', 'Corrispondenza'),
+        ('contratto', 'Contratto'),
+        ('doc_amministrativo', 'Documento Amministrativo'),
+        ('verbale', 'Verbale'),
+        ('sentenza', 'Sentenza'),
+        ('altro', 'Altro')
+    ]
+
     caso = models.ForeignKey(Caso, on_delete=models.CASCADE, related_name='documentary_evidences')
     exhibit_number = models.IntegerField()
     title = models.CharField(max_length=200)
     description = models.TextField()
     document_file = models.FileField(upload_to='documentary_evidences/')
+    document_type = models.CharField(
+        max_length=100,
+        choices=DOCUMENT_TYPE_CHOICES,
+        default='altro',
+        verbose_name='Tipo Documento'
+    )
     authentication_status = models.CharField(max_length=50, choices=[
         ('pending', 'In attesa di autenticazione'),
         ('authenticated', 'Autenticato'),

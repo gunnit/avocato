@@ -72,6 +72,48 @@ Modifica Documento - {{ caso.titolo }}
                 </div>
 
                 <div class="mb-3">
+                    <label for="document_type" class="form-label">Tipo di Documento*</label>
+                    <select class="form-select" id="document_type" name="document_type" required>
+                        <option value="atto_citazione" {% if document.document_type == 'atto_citazione' %}selected{% endif %}>
+                            Atto di Citazione
+                        </option>
+                        <option value="comparsa_costituzione" {% if document.document_type == 'comparsa_costituzione' %}selected{% endif %}>
+                            Comparsa di Costituzione
+                        </option>
+                        <option value="memoria_183" {% if document.document_type == 'memoria_183' %}selected{% endif %}>
+                            Memoria ex art. 183
+                        </option>
+                        <option value="doc_contabili" {% if document.document_type == 'doc_contabili' %}selected{% endif %}>
+                            Documenti Contabili
+                        </option>
+                        <option value="perizia_tecnica" {% if document.document_type == 'perizia_tecnica' %}selected{% endif %}>
+                            Perizia Tecnica
+                        </option>
+                        <option value="corrispondenza" {% if document.document_type == 'corrispondenza' %}selected{% endif %}>
+                            Corrispondenza
+                        </option>
+                        <option value="contratto" {% if document.document_type == 'contratto' %}selected{% endif %}>
+                            Contratto
+                        </option>
+                        <option value="doc_amministrativo" {% if document.document_type == 'doc_amministrativo' %}selected{% endif %}>
+                            Documento Amministrativo
+                        </option>
+                        <option value="verbale" {% if document.document_type == 'verbale' %}selected{% endif %}>
+                            Verbale
+                        </option>
+                        <option value="sentenza" {% if document.document_type == 'sentenza' %}selected{% endif %}>
+                            Sentenza
+                        </option>
+                        <option value="altro" {% if document.document_type == 'altro' %}selected{% endif %}>
+                            Altro
+                        </option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Seleziona il tipo di documento.
+                    </div>
+                </div>
+
+                <div class="mb-3">
                     <label for="description" class="form-label">Descrizione*</label>
                     <textarea class="form-control" id="description" name="description" 
                               rows="4" required>{{ document.description|default:'' }}</textarea>
