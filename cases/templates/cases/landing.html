@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -6,15 +7,15 @@
     <meta name="description" content="Piattaforma AI avanzata per studi legali. Automatizza le attività ripetitive, migliora l'efficienza e risparmia tempo prezioso con strumenti di intelligenza artificiale specifici per il settore legale." />
     <meta name="keywords" content="ai legale, studio legale, automazione, intelligenza artificiale, gestione casi, analisi documenti, ricerca legale" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="shortcut icon" href="assets/media/logos/favicon.ico" />
+    <link rel="shortcut icon" href="{% static 'media/logos/favicon.ico' %}" />
     
     <!--begin::Fonts-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
     <!--end::Fonts-->
     
     <!--begin::Global Stylesheets Bundle-->
-    <link href="assets/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
-    <link href="assets/css/style.bundle.css" rel="stylesheet" type="text/css" />
+    <link href="{% static 'plugins/global/plugins.bundle.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/style.bundle.css' %}" rel="stylesheet" type="text/css" />
     <!--end::Global Stylesheets Bundle-->
     
     <script>
@@ -47,7 +48,16 @@
                 {% include 'cases/components/landing/header.html' %}
                 {% include 'cases/components/landing/hero.html' %}
             </div>
+            
         </div>
+        <!--begin::Curve bottom-->
+<div class="landing-curve landing-dark-color">
+    <svg viewBox="15 12 1470 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0 11C3.93573 11.3356 7.85984 11.6689 11.7725 12H1488.16C1492.1 11.6689 1496.04 11.3356 1500 11V12H1488.16C913.668 60.3476 586.282 60.6117 11.7725 12H0V11Z" fill="currentColor"></path>
+    </svg>
+</div>
+<!--end::Curve bottom-->
+        
         <!--end::Header Section-->
 
         <!--begin::Features Section-->
@@ -61,7 +71,13 @@
         <!--begin::Demo Section-->
         {% include 'cases/components/landing/demo.html' %}
         <!--end::Demo Section-->
-
+<!--begin::Curve top-->
+<div class="landing-curve landing-dark-color">
+    <svg viewBox="15 -1 1470 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 48C4.93573 47.6644 8.85984 47.3311 12.7725 47H1489.16C1493.1 47.3311 1497.04 47.6644 1501 48V47H1489.16C914.668 -1.34764 587.282 -1.61174 12.7725 47H1V48Z" fill="currentColor"></path>
+    </svg>
+</div>
+<!--end::Curve top-->
         <!--begin::Footer Section-->
         {% include 'cases/components/landing/footer.html' %}
         <!--end::Footer Section-->
@@ -78,13 +94,13 @@
     <!--end::Scrolltop-->
 
     <!--begin::Javascript-->
-    <script>var hostUrl = "assets/";</script>
+    <script>var hostUrl = "{% static '' %}";</script>
     <!--begin::Global Javascript Bundle-->
-    <script src="assets/plugins/global/plugins.bundle.js"></script>
-    <script src="assets/js/scripts.bundle.js"></script>
+    <script src="{% static 'plugins/global/plugins.bundle.js' %}"></script>
+    <script src="{% static 'js/scripts.bundle.js' %}"></script>
     <!--end::Global Javascript Bundle-->
     <!--begin::Custom Javascript-->
-    <script src="assets/js/custom/landing.js"></script>
+    <script src="{% static 'js/custom/landing.js' %}"></script>
     <!--end::Custom Javascript-->
     <!--end::Javascript-->
 
