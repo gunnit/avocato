@@ -1,59 +1,258 @@
-{% extends "cases/base.html" %}
-{% load static %}
+<!DOCTYPE html>
+<html lang="it" data-bs-theme="light">
+<head>
+    <base href="/">
+    <title>Login - Avoccato AI</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Accedi alla piattaforma Avoccato AI">
+    {% load static %}
+    <link rel="shortcut icon" href="{% static 'media/logos/favicon.ico' %}">
+    
+    <!--begin::Fonts-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700">
+    <!--end::Fonts-->
+    
+    <!--begin::Global Stylesheets Bundle-->
+    <link href="{% static 'plugins/global/plugins.bundle.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/style.bundle.css' %}" rel="stylesheet" type="text/css">
+    <!--end::Global Stylesheets Bundle-->
 
-{% block title %}Login{% endblock %}
+    <style>
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
 
-{% block content %}
-<!--begin::Card-->
-<div class="card">
-    <!--begin::Card body-->
-    <div class="card-body p-10 p-lg-15">
-        <!--begin::Form-->
-        <form method="post" class="form w-100" action="{% url 'login' %}">
-            {% csrf_token %}
-            <!--begin::Heading-->
-            <div class="text-center mb-10">
-                <!--begin::Title-->
-                <h1 class="text-dark mb-3 fs-3x">Accedi</h1>
-                <!--end::Title-->
+        @keyframes floatingBubbles {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(20px);
+                opacity: 0;
+            }
+        }
+
+        .animated-bg {
+            position: relative;
+            background: linear-gradient(-45deg, #28316C, #3B4794, #1a1f45, #2c3577);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+            overflow: hidden;
+        }
+
+        .bubble {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .bubble:nth-child(1) { left: 10%; width: 80px; height: 80px; animation: floatingBubbles 12s infinite; animation-delay: 0s; }
+        .bubble:nth-child(2) { left: 20%; width: 60px; height: 60px; animation: floatingBubbles 16s infinite; animation-delay: 1s; }
+        .bubble:nth-child(3) { left: 35%; width: 40px; height: 40px; animation: floatingBubbles 13s infinite; animation-delay: 2s; }
+        .bubble:nth-child(4) { left: 50%; width: 70px; height: 70px; animation: floatingBubbles 15s infinite; animation-delay: 0s; }
+        .bubble:nth-child(5) { left: 65%; width: 50px; height: 50px; animation: floatingBubbles 14s infinite; animation-delay: 3s; }
+        .bubble:nth-child(6) { left: 80%; width: 45px; height: 45px; animation: floatingBubbles 16s infinite; animation-delay: 2s; }
+
+        .content-overlay {
+            position: relative;
+            z-index: 1;
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+
+<body id="kt_body" class="app-blank">
+    <!--begin::Theme mode setup-->
+    <script>
+        var defaultThemeMode = "light";
+        var themeMode;
+        if (document.documentElement) {
+            if (document.documentElement.hasAttribute("data-bs-theme-mode")) {
+                themeMode = document.documentElement.getAttribute("data-bs-theme-mode");
+            } else {
+                themeMode = localStorage.getItem("data-bs-theme") || defaultThemeMode;
+            }
+            document.documentElement.setAttribute("data-bs-theme", themeMode);
+        }
+    </script>
+    <!--end::Theme mode setup-->
+
+    <!--begin::Root-->
+    <div class="d-flex flex-column flex-root" id="kt_app_root">
+        <!--begin::Authentication - Sign-in-->
+        <div class="d-flex flex-column flex-lg-row flex-column-fluid">
+            <!--begin::Aside-->
+            <div class="d-flex flex-lg-row-fluid w-lg-50 animated-bg">
+                <!-- Animated Bubbles -->
+                <div class="bubble"></div>
+                <div class="bubble"></div>
+                <div class="bubble"></div>
+                <div class="bubble"></div>
+                <div class="bubble"></div>
+                <div class="bubble"></div>
+
+                <div class="d-flex flex-column flex-center py-7 py-lg-15 px-5 px-md-15 w-100 content-overlay">
+                    <!--begin::Logo-->
+                    <a href="/" class="mb-12">
+                        <img alt="Logo" src="{% static 'media/logos/custom-1.png' %}" class="h-60px">
+                    </a>
+                    <!--end::Logo-->
+                    
+                    <!--begin::Image-->
+                    <img class="d-none d-lg-block mx-auto w-275px w-md-50 w-xl-500px mb-10 mb-lg-20" 
+                         src="{% static 'media/illustrations/sketchy-1/16.png' %}" alt="">
+                    <!--end::Image-->
+                    
+                    <!--begin::Title-->
+                    <div class="glass-effect">
+                        <h1 class="text-white fs-2qx fw-bolder text-center mb-7">
+                            Gestione Legale Intelligente
+                        </h1>
+                        <!--begin::Text-->
+                        <div class="text-white fs-base text-center fw-semibold">
+                            Ottimizza il tuo studio legale con l'intelligenza artificiale.
+                            <br>Gestisci casi, documenti e clienti in modo efficiente.
+                        </div>
+                        <!--end::Text-->
+                    </div>
+                </div>
             </div>
-            <!--end::Heading-->
+            <!--end::Aside-->
 
-            {% if form.errors %}
-            <div class="alert alert-danger">
-                Username o password non validi. Riprova.
+            <!--begin::Body-->
+            <div class="d-flex flex-column flex-lg-row-fluid w-lg-50 p-10 order-2 order-lg-1">
+                <!--begin::Form-->
+                <div class="d-flex flex-center flex-column flex-lg-row-fluid">
+                    <!--begin::Wrapper-->
+                    <div class="w-lg-500px p-10">
+                        <!--begin::Form-->
+                        <form method="post" class="form w-100" action="{% url 'login' %}">
+                            {% csrf_token %}
+                            <!--begin::Heading-->
+                            <div class="text-center mb-11">
+                                <h1 class="text-gray-900 fw-bolder mb-3">Accedi alla Piattaforma</h1>
+                                <div class="text-gray-500 fw-semibold fs-6">Inserisci le tue credenziali per continuare</div>
+                            </div>
+                            <!--end::Heading-->
+
+                            {% if form.errors %}
+                            <!--begin::Alert-->
+                            <div class="alert alert-dismissible bg-light-danger d-flex flex-column flex-sm-row p-5 mb-10">
+                                <i class="ki-duotone ki-message-text-2 fs-2hx text-danger me-4 mb-5 mb-sm-0">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                </i>
+                                <div class="d-flex flex-column pe-0 pe-sm-10">
+                                    <h5 class="mb-1">Errore di Accesso</h5>
+                                    <span>Username o password non validi. Riprova.</span>
+                                </div>
+                                <button type="button" class="position-absolute position-sm-relative m-2 m-sm-0 top-0 end-0 btn btn-icon ms-sm-auto" data-bs-dismiss="alert">
+                                    <i class="ki-duotone ki-cross fs-1 text-danger"><span class="path1"></span><span class="path2"></span></i>
+                                </button>
+                            </div>
+                            <!--end::Alert-->
+                            {% endif %}
+
+                            <!--begin::Input group-->
+                            <div class="fv-row mb-8">
+                                <label class="form-label fs-6 fw-bold">Username</label>
+                                <input type="text" placeholder="Il tuo username" name="username" autocomplete="off" 
+                                       class="form-control bg-transparent" required />
+                            </div>
+                            <!--end::Input group-->
+
+                            <!--begin::Input group-->
+                            <div class="fv-row mb-8">
+                                <label class="form-label fw-bold">Password</label>
+                                <input type="password" placeholder="La tua password" name="password" autocomplete="off" 
+                                       class="form-control bg-transparent" required />
+                            </div>
+                            <!--end::Input group-->
+
+                            <!--begin::Wrapper-->
+                            <div class="d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-8">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="remember" />
+                                    <label class="form-check-label" for="remember">
+                                        Ricordami
+                                    </label>
+                                </div>
+                                <a href="#" class="link-primary">Password dimenticata?</a>
+                            </div>
+                            <!--end::Wrapper-->
+
+                            <!--begin::Submit button-->
+                            <div class="d-grid mb-10">
+                                <button type="submit" class="btn btn-primary">
+                                    <span class="indicator-label">Accedi</span>
+                                    <span class="indicator-progress">Attendere...
+                                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                                </button>
+                            </div>
+                            <!--end::Submit button-->
+
+                            <!--begin::Sign up-->
+                            <div class="text-gray-500 text-center fw-semibold fs-6">
+                                Non hai un account?
+                                <a href="#" class="link-primary">Richiedi una Demo</a>
+                            </div>
+                            <!--end::Sign up-->
+
+                            <input type="hidden" name="next" value="{{ next }}" />
+                        </form>
+                        <!--end::Form-->
+                    </div>
+                    <!--end::Wrapper-->
+                </div>
+                <!--end::Form-->
+
+                <!--begin::Footer-->
+                <div class="d-flex flex-center flex-wrap px-5">
+                    <!--begin::Links-->
+                    <div class="d-flex fw-semibold text-primary fs-base">
+                        <a href="#" class="px-5">Termini</a>
+                        <a href="#" class="px-5">Privacy</a>
+                        <a href="#" class="px-5">Contatti</a>
+                    </div>
+                    <!--end::Links-->
+                </div>
+                <!--end::Footer-->
             </div>
-            {% endif %}
-
-            <!--begin::Input group-->
-            <div class="fv-row mb-8">
-                <!--begin::Username-->
-                <input type="text" placeholder="Username" name="username" autocomplete="off" class="form-control bg-transparent" required />
-                <!--end::Username-->
-            </div>
-            <!--end::Input group-->
-
-            <!--begin::Input group-->
-            <div class="fv-row mb-8">
-                <!--begin::Password-->
-                <input type="password" placeholder="Password" name="password" autocomplete="off" class="form-control bg-transparent" required />
-                <!--end::Password-->
-            </div>
-            <!--end::Input group-->
-
-            <!--begin::Submit button-->
-            <div class="d-grid mb-10">
-                <button type="submit" class="btn btn-primary">
-                    <span class="indicator-label">Accedi</span>
-                </button>
-            </div>
-            <!--end::Submit button-->
-
-            <input type="hidden" name="next" value="{{ next }}" />
-        </form>
-        <!--end::Form-->
+            <!--end::Body-->
+        </div>
+        <!--end::Authentication - Sign-in-->
     </div>
-    <!--end::Card body-->
-</div>
-<!--end::Card-->
-{% endblock %}
+    <!--end::Root-->
+
+    <!--begin::Javascript-->
+    <script>var hostUrl = "{% static '' %}";</script>
+    <!--begin::Global Javascript Bundle-->
+    <script src="{% static 'plugins/global/plugins.bundle.js' %}"></script>
+    <script src="{% static 'js/scripts.bundle.js' %}"></script>
+    <!--end::Global Javascript Bundle-->
+    <!--end::Javascript-->
+</body>
+</html>
