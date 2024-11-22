@@ -1,19 +1,20 @@
 <!--begin::Case Card-->
 <div class="col-md-6 mb-4">
-    <div class="card card-flush h-xl-100">
+    <div class="card card-flush h-xl-100 shadow-sm hover-elevate-up">
         <!--begin::Card header-->
-        <div class="card-header">
+        <div class="card-header pt-5">
             <!--begin::Card title-->
             <div class="card-title d-flex flex-column">
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center mb-3">
                     <!--begin::Symbol-->
-                    <div class="symbol symbol-50px me-3">
+                    <div class="symbol symbol-60px me-4">
                         {% if caso.stato == 'In corso' %}
-                            <div class="symbol-label bg-light-primary">
+                            <div class="symbol-label bg-light-primary pulse pulse-primary">
                                 <i class="ki-duotone ki-rocket fs-1 text-primary">
                                     <span class="path1"></span>
                                     <span class="path2"></span>
                                 </i>
+                                <span class="pulse-ring"></span>
                             </div>
                         {% elif caso.stato == 'Completato' %}
                             <div class="symbol-label bg-light-success">
@@ -34,10 +35,14 @@
                     <!--end::Symbol-->
 
                     <!--begin::Title-->
-                    <div>
-                        <a href="{% url 'dettaglio_caso' caso.id %}" class="text-gray-800 text-hover-primary fs-2 fw-bold me-1">{{ caso.titolo }}</a>
-                        <span class="badge badge-light-{% if caso.stato == 'In corso' %}primary{% elif caso.stato == 'Completato' %}success{% else %}warning{% endif %} fw-bold my-1">{{ caso.stato }}</span>
-                        <span class="text-gray-400 fs-7 fw-semibold d-block">ID: #{{ caso.id }}</span>
+                    <div class="flex-grow-1">
+                        <div class="d-flex flex-column">
+                            <a href="{% url 'dettaglio_caso' caso.id %}" class="text-gray-900 text-hover-primary fs-2 fw-bold mb-1 text-truncate">{{ caso.titolo }}</a>
+                            <div class="d-flex align-items-center">
+                                <span class="badge badge-light-{% if caso.stato == 'In corso' %}primary{% elif caso.stato == 'Completato' %}success{% else %}warning{% endif %} fw-bold me-2">{{ caso.stato }}</span>
+                                <span class="text-gray-500 fs-7">ID: #{{ caso.id }}</span>
+                            </div>
+                        </div>
                     </div>
                     <!--end::Title-->
                 </div>
@@ -47,43 +52,49 @@
         <!--end::Card header-->
 
         <!--begin::Card body-->
-        <div class="card-body pt-0">
+        <div class="card-body pt-3">
             <!--begin::Description-->
-            <div class="text-gray-600 fw-semibold fs-6 mb-5">{{ caso.descrizione|truncatewords:30 }}</div>
+            <div class="text-gray-600 fw-semibold fs-6 mb-5 line-clamp-2">{{ caso.descrizione|truncatewords:30 }}</div>
             <!--end::Description-->
 
             <!--begin::Info-->
-            <div class="d-flex flex-wrap mb-5">
+            <div class="d-flex flex-wrap gap-3 mb-5">
                 <!--begin::Due date-->
-                <div class="border border-dashed border-gray-300 rounded min-w-125px py-3 px-4 me-3 mb-3">
-                    <div class="fs-6 text-gray-800 fw-bold">{{ caso.data_creazione|date:"d F Y" }}</div>
-                    <div class="fw-semibold text-gray-400">Data Creazione</div>
+                <div class="border border-dashed border-gray-300 rounded-2 min-w-125px py-3 px-4 bg-light-primary bg-hover-light-primary">
+                    <div class="d-flex align-items-center mb-1">
+                        <i class="ki-duotone ki-calendar-tick fs-3 text-primary me-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        <div class="fs-6 text-gray-800 fw-bold">{{ caso.data_creazione|date:"d F Y" }}</div>
+                    </div>
+                    <div class="fw-semibold text-gray-500">Data Creazione</div>
                 </div>
                 <!--end::Due date-->
 
                 <!--begin::Documents-->
-                <div class="border border-dashed border-gray-300 rounded min-w-125px py-3 px-4 me-3 mb-3">
-                    <div class="d-flex align-items-center">
-                        <i class="ki-duotone ki-document fs-3 text-primary me-2">
+                <div class="border border-dashed border-gray-300 rounded-2 min-w-125px py-3 px-4 bg-light-info bg-hover-light-info">
+                    <div class="d-flex align-items-center mb-1">
+                        <i class="ki-duotone ki-document fs-3 text-info me-2">
                             <span class="path1"></span>
                             <span class="path2"></span>
                         </i>
                         <div class="fs-6 text-gray-800 fw-bold">{{ caso.documenti_count }}</div>
                     </div>
-                    <div class="fw-semibold text-gray-400">Documenti</div>
+                    <div class="fw-semibold text-gray-500">Documenti</div>
                 </div>
                 <!--end::Documents-->
 
                 <!--begin::Messages-->
-                <div class="border border-dashed border-gray-300 rounded min-w-125px py-3 px-4 mb-3">
-                    <div class="d-flex align-items-center">
-                        <i class="ki-duotone ki-message-text-2 fs-3 text-primary me-2">
+                <div class="border border-dashed border-gray-300 rounded-2 min-w-125px py-3 px-4 bg-light-success bg-hover-light-success">
+                    <div class="d-flex align-items-center mb-1">
+                        <i class="ki-duotone ki-message-text-2 fs-3 text-success me-2">
                             <span class="path1"></span>
                             <span class="path2"></span>
                         </i>
                         <div class="fs-6 text-gray-800 fw-bold">{{ caso.messaggi_count }}</div>
                     </div>
-                    <div class="fw-semibold text-gray-400">Messaggi</div>
+                    <div class="fw-semibold text-gray-500">Messaggi</div>
                 </div>
                 <!--end::Messages-->
             </div>
@@ -91,31 +102,33 @@
 
             <!--begin::Progress-->
             <div class="d-flex align-items-center w-100 mb-5">
-                <div class="flex-grow-1 bg-light-primary rounded h-5px me-2">
-                    <div class="bg-primary rounded h-5px" role="progressbar" style="width:{{ caso.progresso }}%" aria-valuenow="{{ caso.progresso }}" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="flex-grow-1 bg-light-primary rounded h-7px me-3">
+                    <div class="bg-primary rounded h-7px" role="progressbar" style="width:{{ caso.progresso }}%" aria-valuenow="{{ caso.progresso }}" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-tooltip">{{ caso.progresso }}%</div>
+                    </div>
                 </div>
-                <span class="text-gray-400 fw-semibold">{{ caso.progresso }}%</span>
+                <span class="text-gray-700 fw-bold">{{ caso.progresso }}%</span>
             </div>
             <!--end::Progress-->
 
             <!--begin::Actions-->
-            <div class="d-flex justify-content-end">
-                <a href="{% url 'dettaglio_caso' caso.id %}" class="btn btn-icon btn-light-info btn-sm me-1" data-bs-toggle="tooltip" title="Visualizza dettagli">
+            <div class="d-flex justify-content-end border-top pt-4">
+                <a href="{% url 'dettaglio_caso' caso.id %}" class="btn btn-icon btn-light-info btn-active-info btn-sm me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Visualizza dettagli">
                     <i class="ki-duotone ki-eye fs-2">
                         <span class="path1"></span>
                         <span class="path2"></span>
                         <span class="path3"></span>
                     </i>
                 </a>
-                <a href="{% url 'edit_caso' caso.id %}" class="btn btn-icon btn-light-warning btn-sm me-1" data-bs-toggle="tooltip" title="Modifica caso">
+                <a href="{% url 'edit_caso' caso.id %}" class="btn btn-icon btn-light-warning btn-active-warning btn-sm me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Modifica caso">
                     <i class="ki-duotone ki-pencil fs-2">
                         <span class="path1"></span>
                         <span class="path2"></span>
                     </i>
                 </a>
-                <form action="{% url 'delete_caso' caso.id %}" method="POST" class="d-inline" onsubmit="return confirm('Sei sicuro di voler eliminare questo caso? Questa azione non può essere annullata.');">
+                <form action="{% url 'delete_caso' caso.id %}" method="POST" class="d-inline delete-form" onsubmit="return confirm('Sei sicuro di voler eliminare questo caso? Questa azione non può essere annullata.');">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-icon btn-light-danger btn-sm" data-bs-toggle="tooltip" title="Elimina caso">
+                    <button type="submit" class="btn btn-icon btn-light-danger btn-active-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Elimina caso">
                         <i class="ki-duotone ki-trash fs-2">
                             <span class="path1"></span>
                             <span class="path2"></span>

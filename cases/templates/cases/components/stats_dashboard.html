@@ -1,16 +1,18 @@
 {% load static %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
 <!--begin::Row-->
 <div class="row g-5 g-xl-10 mb-5 mb-xl-10">
     <!--begin::Col-->
     <div class="col-md-6 col-lg-6 col-xl-6 col-xxl-3 mb-md-5 mb-xl-10">
         <!--begin::Card widget 20-->
-        <div class="card card-flush h-xl-100 bgi-no-repeat bgi-size-contain bgi-position-x-end bg-danger" style="background-image: url('{% static "media/patterns/vector-1.png" %}')">
+        <div class="card card-flush h-xl-100 hover-elevate-up shadow-sm transition-all duration-200" style="background: linear-gradient(135deg, #FF6B6B 0%, #c62828 100%)">
             <!--begin::Header-->
             <div class="card-header pt-5 pb-5">
                 <!--begin::Title-->
-                <div class="card-title d-flex flex-column">
+                <div class="card-title d-flex flex-column" data-bs-toggle="tooltip" data-bs-placement="top" title="Numero totale di casi gestiti">
                     <!--begin::Amount-->
-                    <span class="fs-2hx fw-bold text-white me-2 lh-1 ls-n2">
+                    <span class="fs-2hx fw-bolder text-white me-2 lh-1 ls-n2 mb-3 animate__animated animate__fadeIn">
                         <i class="ki-duotone ki-document-list fs-2hx text-white me-2">
                             <span class="path1"></span>
                             <span class="path2"></span>
@@ -19,7 +21,7 @@
                     </span>
                     <!--end::Amount-->
                     <!--begin::Subtitle-->
-                    <span class="text-white opacity-75 pt-1 fw-semibold fs-6">Casi Totali</span>
+                    <span class="text-white opacity-90 pt-1 fw-bold fs-5 letter-spacing-1">Casi Totali</span>
                     <!--end::Subtitle-->
                 </div>
                 <!--end::Title-->
@@ -29,12 +31,12 @@
             <div class="card-body d-flex align-items-end pt-0">
                 <!--begin::Progress-->
                 <div class="d-flex align-items-center flex-column mt-3 w-100">
-                    <div class="d-flex justify-content-between fw-bold fs-6 text-white opacity-75 w-100 mt-auto mb-2">
+                    <div class="d-flex justify-content-between fw-bold fs-6 text-white opacity-90 w-100 mt-auto mb-2">
                         <span>In Corso</span>
                         <span>{{ casi_in_corso }}%</span>
                     </div>
-                    <div class="h-8px mx-3 w-100 bg-white bg-opacity-50 rounded">
-                        <div class="bg-white rounded h-8px" role="progressbar" style="width:{{ casi_in_corso }}%" aria-valuenow="{{ casi_in_corso }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div class="h-10px mx-3 w-100 bg-white bg-opacity-20 rounded-pill">
+                        <div class="bg-white rounded-pill h-10px transition-width duration-300" role="progressbar" style="width:{{ casi_in_corso }}%" aria-valuenow="{{ casi_in_corso }}" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                 </div>
                 <!--end::Progress-->
@@ -48,22 +50,30 @@
     <!--begin::Col-->
     <div class="col-md-6 col-lg-6 col-xl-6 col-xxl-3 mb-md-5 mb-xl-10">
         <!--begin::Card widget 20-->
-        <div class="card card-flush h-xl-100 bgi-no-repeat bgi-size-contain bgi-position-x-end bg-success" style="background-image: url('{% static "media/patterns/vector-1.png" %}')">
+        <div class="card card-flush h-xl-100 hover-elevate-up shadow-sm transition-all duration-200" style="background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%)">
             <!--begin::Header-->
             <div class="card-header pt-5 pb-5">
                 <!--begin::Title-->
-                <div class="card-title d-flex flex-column">
+                <div class="card-title d-flex flex-column" data-bs-toggle="tooltip" data-bs-placement="top" title="Casi completati con successo">
                     <!--begin::Amount-->
-                    <span class="fs-2hx fw-bold text-white me-2 lh-1 ls-n2">
+                    <span class="fs-2hx fw-bolder text-white me-2 lh-1 ls-n2 mb-3 animate__animated animate__fadeIn">
                         <i class="ki-duotone ki-check-circle fs-2hx text-white me-2">
                             <span class="path1"></span>
                             <span class="path2"></span>
                         </i>
                         {{ casi_completati }}
+                        {% if casi_completati > previous_completati %}
+                        <span class="fs-4 ms-2">
+                            <i class="ki-duotone ki-arrow-up fs-4 text-white-50">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                        </span>
+                        {% endif %}
                     </span>
                     <!--end::Amount-->
                     <!--begin::Subtitle-->
-                    <span class="text-white opacity-75 pt-1 fw-semibold fs-6">Casi Completati</span>
+                    <span class="text-white opacity-90 pt-1 fw-bold fs-5 letter-spacing-1">Casi Completati</span>
                     <!--end::Subtitle-->
                 </div>
                 <!--end::Title-->
@@ -77,22 +87,30 @@
     <!--begin::Col-->
     <div class="col-md-6 col-lg-6 col-xl-6 col-xxl-3 mb-md-5 mb-xl-10">
         <!--begin::Card widget 20-->
-        <div class="card card-flush h-xl-100 bgi-no-repeat bgi-size-contain bgi-position-x-end bg-info" style="background-image: url('{% static "media/patterns/vector-1.png" %}')">
+        <div class="card card-flush h-xl-100 hover-elevate-up shadow-sm transition-all duration-200" style="background: linear-gradient(135deg, #03A9F4 0%, #0277BD 100%)">
             <!--begin::Header-->
             <div class="card-header pt-5 pb-5">
                 <!--begin::Title-->
-                <div class="card-title d-flex flex-column">
+                <div class="card-title d-flex flex-column" data-bs-toggle="tooltip" data-bs-placement="top" title="Nuovi casi questo mese">
                     <!--begin::Amount-->
-                    <span class="fs-2hx fw-bold text-white me-2 lh-1 ls-n2">
+                    <span class="fs-2hx fw-bolder text-white me-2 lh-1 ls-n2 mb-3 animate__animated animate__fadeIn">
                         <i class="ki-duotone ki-calendar fs-2hx text-white me-2">
                             <span class="path1"></span>
                             <span class="path2"></span>
                         </i>
                         {{ casi_questo_mese }}
+                        {% if casi_questo_mese > previous_month %}
+                        <span class="fs-4 ms-2">
+                            <i class="ki-duotone ki-arrow-up fs-4 text-white-50">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                        </span>
+                        {% endif %}
                     </span>
                     <!--end::Amount-->
                     <!--begin::Subtitle-->
-                    <span class="text-white opacity-75 pt-1 fw-semibold fs-6">Casi Questo Mese</span>
+                    <span class="text-white opacity-90 pt-1 fw-bold fs-5 letter-spacing-1">Casi Questo Mese</span>
                     <!--end::Subtitle-->
                 </div>
                 <!--end::Title-->
@@ -106,22 +124,30 @@
     <!--begin::Col-->
     <div class="col-md-6 col-lg-6 col-xl-6 col-xxl-3 mb-md-5 mb-xl-10">
         <!--begin::Card widget 20-->
-        <div class="card card-flush h-xl-100 bgi-no-repeat bgi-size-contain bgi-position-x-end bg-primary" style="background-image: url('{% static "media/patterns/vector-1.png" %}')">
+        <div class="card card-flush h-xl-100 hover-elevate-up shadow-sm transition-all duration-200" style="background: linear-gradient(135deg, #3F51B5 0%, #283593 100%)">
             <!--begin::Header-->
             <div class="card-header pt-5 pb-5">
                 <!--begin::Title-->
-                <div class="card-title d-flex flex-column">
+                <div class="card-title d-flex flex-column" data-bs-toggle="tooltip" data-bs-placement="top" title="Tempo medio di risoluzione dei casi">
                     <!--begin::Amount-->
-                    <span class="fs-2hx fw-bold text-white me-2 lh-1 ls-n2">
+                    <span class="fs-2hx fw-bolder text-white me-2 lh-1 ls-n2 mb-3 animate__animated animate__fadeIn">
                         <i class="ki-duotone ki-timer fs-2hx text-white me-2">
                             <span class="path1"></span>
                             <span class="path2"></span>
                         </i>
                         {{ tempo_medio_risoluzione }}
+                        {% if tempo_medio_risoluzione < previous_tempo %}
+                        <span class="fs-4 ms-2">
+                            <i class="ki-duotone ki-arrow-down fs-4 text-white-50">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                        </span>
+                        {% endif %}
                     </span>
                     <!--end::Amount-->
                     <!--begin::Subtitle-->
-                    <span class="text-white opacity-75 pt-1 fw-semibold fs-6">Tempo Medio Risoluzion (giorni)</span>
+                    <span class="text-white opacity-90 pt-1 fw-bold fs-5 letter-spacing-1">Tempo Medio Risoluzione (giorni)</span>
                     <!--end::Subtitle-->
                 </div>
                 <!--end::Title-->
