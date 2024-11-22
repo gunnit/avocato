@@ -1,93 +1,80 @@
 <!--begin::Resolution Prospects-->
-<div class="accordion-item mb-5 border rounded-3 shadow-sm">
-    <h2 class="accordion-header">
-        <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#prospettiveRisoluzione">
-            <i class="ki-duotone ki-target fs-2 me-3">
-                <span class="path1"></span>
-                <span class="path2"></span>
-            </i>
-            10. Prospettive di Risoluzione
-        </button>
-    </h2>
-    <div id="prospettiveRisoluzione" class="accordion-collapse collapse" data-bs-parent="#analisiAccordion">
-        <div class="accordion-body">
-            <div class="mb-8">
-                <h3 class="fs-4 fw-bold mb-4">Possibili Esiti</h3>
-                <div class="row g-5">
-                    <div class="col-md-4">
-                        <div class="notice d-flex bg-light-success rounded border-success border border-dashed p-6">
-                            <i class="ki-duotone ki-chart-line-up fs-2tx text-success me-4">
-                                <span class="path1"></span>
-                                <span class="path2"></span>
-                            </i>
-                            <div class="d-flex flex-stack flex-grow-1">
-                                <div class="fw-semibold">
-                                    <h4 class="text-gray-900 fw-bold">Esito Favorevole</h4>
-                                    <div class="fs-6 text-gray-700">{{ analisi_json.prospettive_risoluzione.esito_favorevole }}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="notice d-flex bg-light-warning rounded border-warning border border-dashed p-6">
-                            <i class="ki-duotone ki-chart-line fs-2tx text-warning me-4">
-                                <span class="path1"></span>
-                                <span class="path2"></span>
-                            </i>
-                            <div class="d-flex flex-stack flex-grow-1">
-                                <div class="fw-semibold">
-                                    <h4 class="text-gray-900 fw-bold">Esito Intermedio</h4>
-                                    <div class="fs-6 text-gray-700">{{ analisi_json.prospettive_risoluzione.esito_intermedio }}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="notice d-flex bg-light-danger rounded border-danger border border-dashed p-6">
-                            <i class="ki-duotone ki-chart-line-down fs-2tx text-danger me-4">
-                                <span class="path1"></span>
-                                <span class="path2"></span>
-                            </i>
-                            <div class="d-flex flex-stack flex-grow-1">
-                                <div class="fw-semibold">
-                                    <h4 class="text-gray-900 fw-bold">Esito Sfavorevole</h4>
-                                    <div class="fs-6 text-gray-700">{{ analisi_json.prospettive_risoluzione.esito_sfavorevole }}</div>
-                                </div>
-                            </div>
+<div class="mb-0">
+    <div class="mb-8">
+        <h3 class="fs-4 fw-bold mb-4">Possibili Esiti</h3>
+        <div class="row g-5">
+            <div class="col-md-4">
+                <div class="notice d-flex bg-light-success rounded border-success border border-dashed p-6">
+                    <i class="ki-duotone ki-chart-line-up fs-2tx text-success me-4">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                    <div class="d-flex flex-stack flex-grow-1">
+                        <div class="fw-semibold">
+                            <h4 class="text-gray-900 fw-bold">Esito Favorevole</h4>
+                            <div class="fs-6 text-gray-700">{{ analisi_json.prospettive_risoluzione.esito_favorevole }}</div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="col-md-4">
+                <div class="notice d-flex bg-light-warning rounded border-warning border border-dashed p-6">
+                    <i class="ki-duotone ki-chart-line fs-2tx text-warning me-4">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                    <div class="d-flex flex-stack flex-grow-1">
+                        <div class="fw-semibold">
+                            <h4 class="text-gray-900 fw-bold">Esito Intermedio</h4>
+                            <div class="fs-6 text-gray-700">{{ analisi_json.prospettive_risoluzione.esito_intermedio }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="notice d-flex bg-light-danger rounded border-danger border border-dashed p-6">
+                    <i class="ki-duotone ki-chart-line-down fs-2tx text-danger me-4">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                    <div class="d-flex flex-stack flex-grow-1">
+                        <div class="fw-semibold">
+                            <h4 class="text-gray-900 fw-bold">Esito Sfavorevole</h4>
+                            <div class="fs-6 text-gray-700">{{ analisi_json.prospettive_risoluzione.esito_sfavorevole }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            <div class="row g-5">
-                <div class="col-md-6">
-                    <h3 class="fs-4 fw-bold mb-4">Strategie di Risoluzione</h3>
-                    <div class="bg-light rounded p-4">
-                        {% for strategia in analisi_json.prospettive_risoluzione.strategie_risoluzione %}
-                            <div class="d-flex align-items-center border-bottom py-3">
-                                <i class="ki-duotone ki-arrow-right-square fs-2 me-3 text-primary">
-                                    <span class="path1"></span>
-                                    <span class="path2"></span>
-                                </i>
-                                <span class="fs-6">{{ strategia }}</span>
-                            </div>
-                        {% endfor %}
+    <div class="row g-5">
+        <div class="col-md-6">
+            <h3 class="fs-4 fw-bold mb-4">Strategie di Risoluzione</h3>
+            <div class="bg-light rounded p-4">
+                {% for strategia in analisi_json.prospettive_risoluzione.strategie_risoluzione %}
+                    <div class="d-flex align-items-center border-bottom py-3">
+                        <i class="ki-duotone ki-arrow-right-square fs-2 me-3 text-primary">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        <span class="fs-6">{{ strategia }}</span>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <h3 class="fs-4 fw-bold mb-4">Prossimi Passi</h3>
-                    <div class="bg-light rounded p-4">
-                        {% for passo in analisi_json.prospettive_risoluzione.prossimi_passi %}
-                            <div class="d-flex align-items-center border-bottom py-3">
-                                <i class="ki-duotone ki-arrow-forward fs-2 me-3 text-primary">
-                                    <span class="path1"></span>
-                                    <span class="path2"></span>
-                                </i>
-                                <span class="fs-6">{{ passo }}</span>
-                            </div>
-                        {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h3 class="fs-4 fw-bold mb-4">Prossimi Passi</h3>
+            <div class="bg-light rounded p-4">
+                {% for passo in analisi_json.prospettive_risoluzione.prossimi_passi %}
+                    <div class="d-flex align-items-center border-bottom py-3">
+                        <i class="ki-duotone ki-arrow-forward fs-2 me-3 text-primary">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        <span class="fs-6">{{ passo }}</span>
                     </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </div>

@@ -1,114 +1,101 @@
 <!--begin::Defense Strategies-->
-<div class="accordion-item mb-5 border rounded-3 shadow-sm">
-    <h2 class="accordion-header">
-        <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#strategieDifesa">
-            <i class="ki-duotone ki-shield-tick fs-2 me-3">
+<div class="mb-0">
+    <div class="mb-8">
+        <h3 class="fs-4 fw-bold mb-4">Argomenti Principali</h3>
+        <div class="notice d-flex bg-light-success rounded border-success border border-dashed p-6">
+            <i class="ki-duotone ki-message-text-2 fs-2tx text-success me-4">
+                <span class="path1"></span>
+                <span class="path2"></span>
+                <span class="path3"></span>
+            </i>
+            <div class="d-flex flex-stack flex-grow-1">
+                <div class="fw-semibold">
+                    <div class="fs-6 text-gray-700">
+                        <ul class="list-unstyled mb-0">
+                            {% for arg in analisi_json.strategie_difesa.argomenti_principali %}
+                                <li class="d-flex align-items-center py-2">
+                                    <span class="bullet bullet-dot bg-success me-3"></span>
+                                    <span class="fs-6">{{ arg }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-5 mb-8">
+        <div class="col-md-6">
+            <h3 class="fs-4 fw-bold mb-4">Contro-Argomentazioni</h3>
+            <div class="bg-light-warning rounded p-4">
+                {% for contro in analisi_json.strategie_difesa.contro_argomentazioni %}
+                    <div class="d-flex align-items-center border-bottom py-3">
+                        <i class="ki-duotone ki-message-question fs-2 me-3 text-warning">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                        </i>
+                        <div>
+                            <span class="fs-6 fw-bold d-block">{{ contro.argomento }}</span>
+                            <span class="fs-7 text-gray-600">{{ contro.risposta }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h3 class="fs-4 fw-bold mb-4">Punti di Forza</h3>
+            <div class="bg-light-success rounded p-4">
+                {% for punto in analisi_json.strategie_difesa.punti_forza %}
+                    <div class="d-flex align-items-center border-bottom py-3">
+                        <i class="ki-duotone ki-star fs-2 me-3 text-success">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        <span class="fs-6">{{ punto }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-8">
+        <h3 class="fs-4 fw-bold mb-4">Approccio Difensivo</h3>
+        <div class="bg-light rounded p-4">
+            {% for fase in analisi_json.strategie_difesa.approccio_difensivo %}
+                <div class="d-flex align-items-center border-bottom py-3">
+                    <i class="ki-duotone ki-arrow-right-square fs-2 me-3 text-primary">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                    <div>
+                        <span class="fs-6 fw-bold d-block">{{ fase.titolo }}</span>
+                        <span class="fs-7 text-gray-600">{{ fase.descrizione }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="mb-0">
+        <h3 class="fs-4 fw-bold mb-4">Criticità da Affrontare</h3>
+        <div class="notice d-flex bg-light-danger rounded border-danger border border-dashed p-6">
+            <i class="ki-duotone ki-warning-2 fs-2tx text-danger me-4">
                 <span class="path1"></span>
                 <span class="path2"></span>
             </i>
-            2. Strategie di Difesa
-        </button>
-    </h2>
-    <div id="strategieDifesa" class="accordion-collapse collapse" data-bs-parent="#analisiAccordion">
-        <div class="accordion-body">
-            <div class="mb-8">
-                <h3 class="fs-4 fw-bold mb-4">Argomenti Principali</h3>
-                <div class="notice d-flex bg-light-success rounded border-success border border-dashed p-6">
-                    <i class="ki-duotone ki-message-text-2 fs-2tx text-success me-4">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                        <span class="path3"></span>
-                    </i>
-                    <div class="d-flex flex-stack flex-grow-1">
-                        <div class="fw-semibold">
-                            <div class="fs-6 text-gray-700">
-                                <ul class="list-unstyled mb-0">
-                                    {% for arg in analisi_json.strategie_difesa.argomenti_principali %}
-                                        <li class="d-flex align-items-center py-2">
-                                            <span class="bullet bullet-dot bg-success me-3"></span>
-                                            <span class="fs-6">{{ arg }}</span>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row g-5 mb-8">
-                <div class="col-md-6">
-                    <h3 class="fs-4 fw-bold mb-4">Contro-Argomentazioni</h3>
-                    <div class="bg-light-warning rounded p-4">
-                        {% for contro in analisi_json.strategie_difesa.contro_argomentazioni %}
-                            <div class="d-flex align-items-center border-bottom py-3">
-                                <i class="ki-duotone ki-message-question fs-2 me-3 text-warning">
-                                    <span class="path1"></span>
-                                    <span class="path2"></span>
-                                    <span class="path3"></span>
-                                </i>
-                                <div>
-                                    <span class="fs-6 fw-bold d-block">{{ contro.argomento }}</span>
-                                    <span class="fs-7 text-gray-600">{{ contro.risposta }}</span>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <h3 class="fs-4 fw-bold mb-4">Punti di Forza</h3>
-                    <div class="bg-light-success rounded p-4">
-                        {% for punto in analisi_json.strategie_difesa.punti_forza %}
-                            <div class="d-flex align-items-center border-bottom py-3">
-                                <i class="ki-duotone ki-star fs-2 me-3 text-success">
-                                    <span class="path1"></span>
-                                    <span class="path2"></span>
-                                </i>
-                                <span class="fs-6">{{ punto }}</span>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-
-            <div class="mb-8">
-                <h3 class="fs-4 fw-bold mb-4">Approccio Difensivo</h3>
-                <div class="bg-light rounded p-4">
-                    {% for fase in analisi_json.strategie_difesa.approccio_difensivo %}
-                        <div class="d-flex align-items-center border-bottom py-3">
-                            <i class="ki-duotone ki-arrow-right-square fs-2 me-3 text-primary">
-                                <span class="path1"></span>
-                                <span class="path2"></span>
-                            </i>
-                            <div>
-                                <span class="fs-6 fw-bold d-block">{{ fase.titolo }}</span>
-                                <span class="fs-7 text-gray-600">{{ fase.descrizione }}</span>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <div class="mb-0">
-                <h3 class="fs-4 fw-bold mb-4">Criticità da Affrontare</h3>
-                <div class="notice d-flex bg-light-danger rounded border-danger border border-dashed p-6">
-                    <i class="ki-duotone ki-warning-2 fs-2tx text-danger me-4">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                    </i>
-                    <div class="d-flex flex-stack flex-grow-1">
-                        <div class="fw-semibold">
-                            <div class="fs-6 text-gray-700">
-                                <ul class="list-unstyled mb-0">
-                                    {% for criticita in analisi_json.strategie_difesa.criticita %}
-                                        <li class="d-flex align-items-center py-2">
-                                            <span class="bullet bullet-dot bg-danger me-3"></span>
-                                            <span class="fs-6">{{ criticita }}</span>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
+            <div class="d-flex flex-stack flex-grow-1">
+                <div class="fw-semibold">
+                    <div class="fs-6 text-gray-700">
+                        <ul class="list-unstyled mb-0">
+                            {% for criticita in analisi_json.strategie_difesa.criticita %}
+                                <li class="d-flex align-items-center py-2">
+                                    <span class="bullet bullet-dot bg-danger me-3"></span>
+                                    <span class="fs-6">{{ criticita }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
             </div>

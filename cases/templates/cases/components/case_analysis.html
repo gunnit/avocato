@@ -41,66 +41,155 @@
 
         <!--begin::Card body-->
         <div class="card-body py-4">
-            <div class="accordion custom-accordion" id="analisiAccordion">
-                <!--begin::Legal Analysis-->
-                <div class="accordion-item mb-5 shadow-sm hover-elevate-up transition-all">
-                    {% include "cases/components/case_analysis_legal.html" %}
+            <div class="d-flex flex-column flex-lg-row">
+                <!--begin::Tabs Navigation-->
+                <div class="nav nav-tabs nav-pills border-0 flex-column align-items-start me-lg-7 mb-5 mb-lg-0" role="tablist">
+                    <a class="nav-link active w-100 mb-3" data-bs-toggle="tab" href="#tab_legal" role="tab">
+                        <i class="ki-duotone ki-law fs-2 me-2"><span class="path1"></span><span class="path2"></span></i>
+                        Analisi Legale
+                    </a>
+                    <a class="nav-link w-100 mb-3" data-bs-toggle="tab" href="#tab_defense" role="tab">
+                        <i class="ki-duotone ki-shield-tick fs-2 me-2"><span class="path1"></span><span class="path2"></span></i>
+                        Strategie Difensive
+                    </a>
+                    <a class="nav-link w-100 mb-3" data-bs-toggle="tab" href="#tab_evidence" role="tab">
+                        <i class="ki-duotone ki-document fs-2 me-2"><span class="path1"></span><span class="path2"></span></i>
+                        Gestione Prove
+                    </a>
+                    <a class="nav-link w-100 mb-3" data-bs-toggle="tab" href="#tab_actions" role="tab">
+                        <i class="ki-duotone ki-rocket fs-2 me-2"><span class="path1"></span><span class="path2"></span></i>
+                        Azioni Immediate
+                    </a>
+                    <a class="nav-link w-100 mb-3" data-bs-toggle="tab" href="#tab_timeline" role="tab">
+                        <i class="ki-duotone ki-calendar fs-2 me-2"><span class="path1"></span><span class="path2"></span></i>
+                        Timeline
+                    </a>
+                    <a class="nav-link w-100 mb-3" data-bs-toggle="tab" href="#tab_risks" role="tab">
+                        <i class="ki-duotone ki-warning fs-2 me-2"><span class="path1"></span><span class="path2"></span></i>
+                        Analisi Rischi
+                    </a>
+                    <a class="nav-link w-100 mb-3" data-bs-toggle="tab" href="#tab_support" role="tab">
+                        <i class="ki-duotone ki-abstract-26 fs-2 me-2"><span class="path1"></span><span class="path2"></span></i>
+                        Supporto
+                    </a>
+                    <a class="nav-link w-100 mb-3" data-bs-toggle="tab" href="#tab_recommendations" role="tab">
+                        <i class="ki-duotone ki-message-text-2 fs-2 me-2"><span class="path1"></span><span class="path2"></span></i>
+                        Raccomandazioni
+                    </a>
+                    <a class="nav-link w-100 mb-3" data-bs-toggle="tab" href="#tab_economic" role="tab">
+                        <i class="ki-duotone ki-dollar fs-2 me-2"><span class="path1"></span><span class="path2"></span></i>
+                        Aspetti Economici
+                    </a>
+                    <a class="nav-link w-100 mb-3" data-bs-toggle="tab" href="#tab_resolution" role="tab">
+                        <i class="ki-duotone ki-flag fs-2 me-2"><span class="path1"></span><span class="path2"></span></i>
+                        Prospettive
+                    </a>
                 </div>
-                <!--end::Legal Analysis-->
+                <!--end::Tabs Navigation-->
 
-                <!--begin::Defense Strategies-->
-                <div class="accordion-item mb-5 shadow-sm hover-elevate-up transition-all">
-                    {% include "cases/components/case_analysis_defense.html" %}
-                </div>
-                <!--end::Defense Strategies-->
+                <!--begin::Tab Content-->
+                <div class="tab-content flex-grow-1" id="analysisTabContent">
+                    <!--begin::Legal Analysis-->
+                    <div class="tab-pane fade show active" id="tab_legal" role="tabpanel">
+                        <div class="card card-flush shadow-sm">
+                            <div class="card-body">
+                                {% include "cases/components/case_analysis_legal.html" %}
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::Legal Analysis-->
 
-                <!--begin::Evidence Management-->
-                <div class="accordion-item mb-5 shadow-sm hover-elevate-up transition-all">
-                    {% include "cases/components/case_analysis_evidence.html" %}
-                </div>
-                <!--end::Evidence Management-->
+                    <!--begin::Defense Strategies-->
+                    <div class="tab-pane fade" id="tab_defense" role="tabpanel">
+                        <div class="card card-flush shadow-sm">
+                            <div class="card-body">
+                                {% include "cases/components/case_analysis_defense.html" %}
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::Defense Strategies-->
 
-                <!--begin::Immediate Actions-->
-                <div class="accordion-item mb-5 shadow-sm hover-elevate-up transition-all">
-                    {% include "cases/components/case_analysis_actions.html" %}
-                </div>
-                <!--end::Immediate Actions-->
+                    <!--begin::Evidence Management-->
+                    <div class="tab-pane fade" id="tab_evidence" role="tabpanel">
+                        <div class="card card-flush shadow-sm">
+                            <div class="card-body">
+                                {% include "cases/components/case_analysis_evidence.html" %}
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::Evidence Management-->
 
-                <!--begin::Timeline-->
-                <div class="accordion-item mb-5 shadow-sm hover-elevate-up transition-all">
-                    {% include "cases/components/case_analysis_timeline.html" %}
-                </div>
-                <!--end::Timeline-->
+                    <!--begin::Immediate Actions-->
+                    <div class="tab-pane fade" id="tab_actions" role="tabpanel">
+                        <div class="card card-flush shadow-sm">
+                            <div class="card-body">
+                                {% include "cases/components/case_analysis_actions.html" %}
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::Immediate Actions-->
 
-                <!--begin::Risk Analysis-->
-                <div class="accordion-item mb-5 shadow-sm hover-elevate-up transition-all">
-                    {% include "cases/components/case_analysis_risks.html" %}
-                </div>
-                <!--end::Risk Analysis-->
+                    <!--begin::Timeline-->
+                    <div class="tab-pane fade" id="tab_timeline" role="tabpanel">
+                        <div class="card card-flush shadow-sm">
+                            <div class="card-body">
+                                {% include "cases/components/case_analysis_timeline.html" %}
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::Timeline-->
 
-                <!--begin::Support and Resources-->
-                <div class="accordion-item mb-5 shadow-sm hover-elevate-up transition-all">
-                    {% include "cases/components/case_analysis_support.html" %}
-                </div>
-                <!--end::Support and Resources-->
+                    <!--begin::Risk Analysis-->
+                    <div class="tab-pane fade" id="tab_risks" role="tabpanel">
+                        <div class="card card-flush shadow-sm">
+                            <div class="card-body">
+                                {% include "cases/components/case_analysis_risks.html" %}
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::Risk Analysis-->
 
-                <!--begin::Recommendations-->
-                <div class="accordion-item mb-5 shadow-sm hover-elevate-up transition-all">
-                    {% include "cases/components/case_analysis_recommendations.html" %}
-                </div>
-                <!--end::Recommendations-->
+                    <!--begin::Support and Resources-->
+                    <div class="tab-pane fade" id="tab_support" role="tabpanel">
+                        <div class="card card-flush shadow-sm">
+                            <div class="card-body">
+                                {% include "cases/components/case_analysis_support.html" %}
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::Support and Resources-->
 
-                <!--begin::Economic Aspects-->
-                <div class="accordion-item mb-5 shadow-sm hover-elevate-up transition-all">
-                    {% include "cases/components/case_analysis_economic.html" %}
-                </div>
-                <!--end::Economic Aspects-->
+                    <!--begin::Recommendations-->
+                    <div class="tab-pane fade" id="tab_recommendations" role="tabpanel">
+                        <div class="card card-flush shadow-sm">
+                            <div class="card-body">
+                                {% include "cases/components/case_analysis_recommendations.html" %}
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::Recommendations-->
 
-                <!--begin::Resolution Prospects-->
-                <div class="accordion-item mb-5 shadow-sm hover-elevate-up transition-all">
-                    {% include "cases/components/case_analysis_resolution.html" %}
+                    <!--begin::Economic Aspects-->
+                    <div class="tab-pane fade" id="tab_economic" role="tabpanel">
+                        <div class="card card-flush shadow-sm">
+                            <div class="card-body">
+                                {% include "cases/components/case_analysis_economic.html" %}
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::Economic Aspects-->
+
+                    <!--begin::Resolution Prospects-->
+                    <div class="tab-pane fade" id="tab_resolution" role="tabpanel">
+                        <div class="card card-flush shadow-sm">
+                            <div class="card-body">
+                                {% include "cases/components/case_analysis_resolution.html" %}
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::Resolution Prospects-->
                 </div>
-                <!--end::Resolution Prospects-->
+                <!--end::Tab Content-->
             </div>
         </div>
         <!--end::Card body-->
@@ -111,59 +200,49 @@
 
 <!-- Add custom styles -->
 <style>
-    .custom-accordion .accordion-item {
-        border-radius: 0.75rem;
-        border: 1px solid rgba(0,0,0,0.1);
-        overflow: hidden;
+    /* Vertical Tab Navigation Styles */
+    .nav-tabs {
+        min-width: 250px;
+        border-bottom: 0;
+        border-right: 2px solid var(--bs-gray-200);
     }
 
-    .custom-accordion .accordion-button {
-        padding: 1.5rem;
-        font-weight: 600;
-        font-size: 1.1rem;
-        color: var(--bs-gray-800);
-        background: var(--bs-gray-100);
+    .nav-tabs .nav-link {
+        border: none;
+        color: var(--bs-gray-600);
+        padding: 1rem 1.5rem;
+        font-weight: 500;
         transition: all 0.3s ease;
+        border-right: 2px solid transparent;
+        margin-right: -2px;
+        border-radius: 0.5rem 0 0 0.5rem;
     }
 
-    .custom-accordion .accordion-button:not(.collapsed) {
-        background: var(--bs-primary);
-        color: white;
+    .nav-tabs .nav-link:hover {
+        color: var(--bs-primary);
+        background: var(--bs-light);
+        border-right-color: var(--bs-primary-light);
     }
 
-    .custom-accordion .accordion-button:focus {
-        box-shadow: none;
-        border-color: var(--bs-primary);
+    .nav-tabs .nav-link.active {
+        color: var(--bs-primary);
+        background: var(--bs-light);
+        border-right-color: var(--bs-primary);
     }
 
-    .custom-accordion .accordion-body {
-        padding: 2rem;
-        background: white;
+    /* Tab Content Styles */
+    .tab-content {
+        padding-left: 1.5rem;
     }
 
-    @media (max-width: 767px) {
-        .card-header {
-            flex-direction: column;
-            align-items: stretch;
-            gap: 1rem;
-        }
+    .tab-pane {
+        animation: fadeIn 0.3s ease-in-out;
+    }
 
-        .card-toolbar {
-            justify-content: stretch;
-        }
-
-        .btn-lg {
-            width: 100%;
-        }
-
-        .custom-accordion .accordion-button {
-            padding: 1rem;
-            font-size: 1rem;
-        }
-
-        .custom-accordion .accordion-body {
-            padding: 1rem;
-        }
+    .card-flush {
+        box-shadow: 0 0.1rem 1rem 0.25rem rgba(0, 0, 0, 0.05);
+        border-radius: 0.75rem;
+        border: none;
     }
 
     /* Loading animation for regenerate button */
@@ -190,6 +269,44 @@
         }
         to {
             transform: rotate(1turn);
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 991px) {
+        .nav-tabs {
+            min-width: 100%;
+            border-right: 0;
+            border-bottom: 2px solid var(--bs-gray-200);
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-tabs .nav-link {
+            border-right: 0;
+            border-bottom: 2px solid transparent;
+            margin-right: 0;
+            margin-bottom: -2px;
+            border-radius: 0.5rem 0.5rem 0 0;
+        }
+
+        .nav-tabs .nav-link:hover,
+        .nav-tabs .nav-link.active {
+            border-right-color: transparent;
+            border-bottom-color: var(--bs-primary);
+        }
+
+        .tab-content {
+            padding-left: 0;
         }
     }
 </style>

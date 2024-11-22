@@ -1,76 +1,63 @@
 <!--begin::Risk Analysis-->
-<div class="accordion-item mb-5 border rounded-3 shadow-sm">
-    <h2 class="accordion-header">
-        <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#analisiRischi">
-            <i class="ki-duotone ki-warning-2 fs-2 me-3">
-                <span class="path1"></span>
-                <span class="path2"></span>
-            </i>
-            6. Analisi dei Rischi
-        </button>
-    </h2>
-    <div id="analisiRischi" class="accordion-collapse collapse" data-bs-parent="#analisiAccordion">
-        <div class="accordion-body">
-            <div class="row g-5 mb-8">
-                <div class="col-md-6">
-                    <div class="notice d-flex bg-light-success rounded border-success border border-dashed p-6">
-                        <i class="ki-duotone ki-chart-simple-up fs-2tx text-success me-4">
-                            <span class="path1"></span>
-                            <span class="path2"></span>
-                        </i>
-                        <div class="d-flex flex-stack flex-grow-1">
-                            <div class="fw-semibold">
-                                <h4 class="text-gray-900 fw-bold">Scenario Migliore</h4>
-                                <div class="fs-6 text-gray-700">{{ analisi_json.analisi_rischi.scenario_migliore }}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="notice d-flex bg-light-danger rounded border-danger border border-dashed p-6">
-                        <i class="ki-duotone ki-chart-simple-down fs-2tx text-danger me-4">
-                            <span class="path1"></span>
-                            <span class="path2"></span>
-                        </i>
-                        <div class="d-flex flex-stack flex-grow-1">
-                            <div class="fw-semibold">
-                                <h4 class="text-gray-900 fw-bold">Scenario Peggiore</h4>
-                                <div class="fs-6 text-gray-700">{{ analisi_json.analisi_rischi.scenario_peggiore }}</div>
-                            </div>
-                        </div>
+<div class="mb-0">
+    <div class="row g-5 mb-8">
+        <div class="col-md-6">
+            <div class="notice d-flex bg-light-success rounded border-success border border-dashed p-6">
+                <i class="ki-duotone ki-chart-simple-up fs-2tx text-success me-4">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                </i>
+                <div class="d-flex flex-stack flex-grow-1">
+                    <div class="fw-semibold">
+                        <h4 class="text-gray-900 fw-bold">Scenario Migliore</h4>
+                        <div class="fs-6 text-gray-700">{{ analisi_json.analisi_rischi.scenario_migliore }}</div>
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="col-md-6">
+            <div class="notice d-flex bg-light-danger rounded border-danger border border-dashed p-6">
+                <i class="ki-duotone ki-chart-simple-down fs-2tx text-danger me-4">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                </i>
+                <div class="d-flex flex-stack flex-grow-1">
+                    <div class="fw-semibold">
+                        <h4 class="text-gray-900 fw-bold">Scenario Peggiore</h4>
+                        <div class="fs-6 text-gray-700">{{ analisi_json.analisi_rischi.scenario_peggiore }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            <div class="row g-5">
-                <div class="col-md-6">
-                    <h3 class="fs-4 fw-bold mb-4">Fattori Critici</h3>
-                    <div class="bg-light rounded p-4">
-                        {% for fattore in analisi_json.analisi_rischi.fattori_critici %}
-                            <div class="d-flex align-items-center border-bottom py-3">
-                                <i class="ki-duotone ki-flag-2 fs-2 me-3 text-warning">
-                                    <span class="path1"></span>
-                                    <span class="path2"></span>
-                                </i>
-                                <span class="fs-6">{{ fattore }}</span>
-                            </div>
-                        {% endfor %}
+    <div class="row g-5">
+        <div class="col-md-6">
+            <h3 class="fs-4 fw-bold mb-4">Fattori Critici</h3>
+            <div class="bg-light rounded p-4">
+                {% for fattore in analisi_json.analisi_rischi.fattori_critici %}
+                    <div class="d-flex align-items-center border-bottom py-3">
+                        <i class="ki-duotone ki-flag-2 fs-2 me-3 text-warning">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        <span class="fs-6">{{ fattore }}</span>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <h3 class="fs-4 fw-bold mb-4">Strategie di Mitigazione</h3>
-                    <div class="bg-light rounded p-4">
-                        {% for strategia in analisi_json.analisi_rischi.strategie_mitigazione %}
-                            <div class="d-flex align-items-center border-bottom py-3">
-                                <i class="ki-duotone ki-shield-tick fs-2 me-3 text-success">
-                                    <span class="path1"></span>
-                                    <span class="path2"></span>
-                                </i>
-                                <span class="fs-6">{{ strategia }}</span>
-                            </div>
-                        {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h3 class="fs-4 fw-bold mb-4">Strategie di Mitigazione</h3>
+            <div class="bg-light rounded p-4">
+                {% for strategia in analisi_json.analisi_rischi.strategie_mitigazione %}
+                    <div class="d-flex align-items-center border-bottom py-3">
+                        <i class="ki-duotone ki-shield-tick fs-2 me-3 text-success">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        <span class="fs-6">{{ strategia }}</span>
                     </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </div>

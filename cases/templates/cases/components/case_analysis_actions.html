@@ -1,70 +1,57 @@
 <!--begin::Immediate Actions-->
-<div class="accordion-item mb-5 border rounded-3 shadow-sm">
-    <h2 class="accordion-header">
-        <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#azioniImmediate">
-            <i class="ki-duotone ki-bolt fs-2 me-3">
+<div class="mb-0">
+    <div class="mb-8">
+        <h3 class="fs-4 fw-bold mb-4">Passi Urgenti</h3>
+        <div class="notice d-flex bg-light-danger rounded border-danger border border-dashed p-6">
+            <i class="ki-duotone ki-information-5 fs-2tx text-danger me-4">
                 <span class="path1"></span>
                 <span class="path2"></span>
+                <span class="path3"></span>
             </i>
-            4. Azioni Immediate
-        </button>
-    </h2>
-    <div id="azioniImmediate" class="accordion-collapse collapse" data-bs-parent="#analisiAccordion">
-        <div class="accordion-body">
-            <div class="mb-8">
-                <h3 class="fs-4 fw-bold mb-4">Passi Urgenti</h3>
-                <div class="notice d-flex bg-light-danger rounded border-danger border border-dashed p-6">
-                    <i class="ki-duotone ki-information-5 fs-2tx text-danger me-4">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                        <span class="path3"></span>
-                    </i>
-                    <div class="d-flex flex-stack flex-grow-1">
-                        <div class="fw-semibold">
-                            <div class="fs-6 text-gray-700">
-                                <ul class="list-unstyled mb-0">
-                                    {% for passo in analisi_json.azioni_immediate.passi_urgenti %}
-                                        <li class="d-flex align-items-center py-2">
-                                            <span class="bullet bullet-dot bg-danger me-3"></span>
-                                            <span class="fs-6">{{ passo }}</span>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
+            <div class="d-flex flex-stack flex-grow-1">
+                <div class="fw-semibold">
+                    <div class="fs-6 text-gray-700">
+                        <ul class="list-unstyled mb-0">
+                            {% for passo in analisi_json.azioni_immediate.passi_urgenti %}
+                                <li class="d-flex align-items-center py-2">
+                                    <span class="bullet bullet-dot bg-danger me-3"></span>
+                                    <span class="fs-6">{{ passo }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div class="row g-5">
-                <div class="col-md-6">
-                    <h3 class="fs-4 fw-bold mb-4">Misure Cautelari</h3>
-                    <div class="bg-light rounded p-4">
-                        {% for misura in analisi_json.azioni_immediate.misure_cautelari %}
-                            <div class="d-flex align-items-center border-bottom py-3">
-                                <i class="ki-duotone ki-shield-tick fs-2 me-3 text-primary">
-                                    <span class="path1"></span>
-                                    <span class="path2"></span>
-                                </i>
-                                <span class="fs-6">{{ misura }}</span>
-                            </div>
-                        {% endfor %}
+    <div class="row g-5">
+        <div class="col-md-6">
+            <h3 class="fs-4 fw-bold mb-4">Misure Cautelari</h3>
+            <div class="bg-light rounded p-4">
+                {% for misura in analisi_json.azioni_immediate.misure_cautelari %}
+                    <div class="d-flex align-items-center border-bottom py-3">
+                        <i class="ki-duotone ki-shield-tick fs-2 me-3 text-primary">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        <span class="fs-6">{{ misura }}</span>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <h3 class="fs-4 fw-bold mb-4">Azioni Preventive</h3>
-                    <div class="bg-light rounded p-4">
-                        {% for azione in analisi_json.azioni_immediate.azioni_preventive %}
-                            <div class="d-flex align-items-center border-bottom py-3">
-                                <i class="ki-duotone ki-check-square fs-2 me-3 text-primary">
-                                    <span class="path1"></span>
-                                    <span class="path2"></span>
-                                </i>
-                                <span class="fs-6">{{ azione }}</span>
-                            </div>
-                        {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h3 class="fs-4 fw-bold mb-4">Azioni Preventive</h3>
+            <div class="bg-light rounded p-4">
+                {% for azione in analisi_json.azioni_immediate.azioni_preventive %}
+                    <div class="d-flex align-items-center border-bottom py-3">
+                        <i class="ki-duotone ki-check-square fs-2 me-3 text-primary">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        <span class="fs-6">{{ azione }}</span>
                     </div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </div>

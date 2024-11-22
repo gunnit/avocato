@@ -1,65 +1,50 @@
 <!--begin::Support and Resources-->
-<div class="accordion-item mb-5 border rounded-3 shadow-sm">
-    <h2 class="accordion-header">
-        <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#supportoRisorse">
-            <i class="ki-duotone ki-people fs-2 me-3">
-                <span class="path1"></span>
-                <span class="path2"></span>
-                <span class="path3"></span>
-                <span class="path4"></span>
-            </i>
-            7. Supporto e Risorse
-        </button>
-    </h2>
-    <div id="supportoRisorse" class="accordion-collapse collapse" data-bs-parent="#analisiAccordion">
-        <div class="accordion-body">
-            <div class="row g-5 mb-8">
-                <div class="col-md-6">
-                    <h3 class="fs-4 fw-bold mb-4">Professionisti</h3>
-                    <div class="bg-light rounded p-4">
-                        {% for prof in analisi_json.supporto_risorse.professionisti %}
-                            <div class="d-flex align-items-center border-bottom py-3">
-                                <i class="ki-duotone ki-profile-user fs-2 me-3 text-primary">
-                                    <span class="path1"></span>
-                                    <span class="path2"></span>
-                                    <span class="path3"></span>
-                                </i>
-                                <span class="fs-6">{{ prof }}</span>
-                            </div>
-                        {% endfor %}
+<div class="mb-0">
+    <div class="row g-5 mb-8">
+        <div class="col-md-6">
+            <h3 class="fs-4 fw-bold mb-4">Professionisti</h3>
+            <div class="bg-light rounded p-4">
+                {% for prof in analisi_json.supporto_risorse.professionisti %}
+                    <div class="d-flex align-items-center border-bottom py-3">
+                        <i class="ki-duotone ki-profile-user fs-2 me-3 text-primary">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                        </i>
+                        <span class="fs-6">{{ prof }}</span>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <h3 class="fs-4 fw-bold mb-4">Servizi di Supporto</h3>
-                    <div class="bg-light rounded p-4">
-                        {% for servizio in analisi_json.supporto_risorse.servizi_supporto %}
-                            <div class="d-flex align-items-center border-bottom py-3">
-                                <i class="ki-duotone ki-briefcase fs-2 me-3 text-primary">
-                                    <span class="path1"></span>
-                                    <span class="path2"></span>
-                                </i>
-                                <span class="fs-6">{{ servizio }}</span>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
+                {% endfor %}
             </div>
+        </div>
+        <div class="col-md-6">
+            <h3 class="fs-4 fw-bold mb-4">Servizi di Supporto</h3>
+            <div class="bg-light rounded p-4">
+                {% for servizio in analisi_json.supporto_risorse.servizi_supporto %}
+                    <div class="d-flex align-items-center border-bottom py-3">
+                        <i class="ki-duotone ki-briefcase fs-2 me-3 text-primary">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        <span class="fs-6">{{ servizio }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 
-            <div class="mb-0">
-                <h3 class="fs-4 fw-bold mb-4">Contatti Utili</h3>
-                <div class="bg-light-info rounded p-4">
-                    {% for contatto in analisi_json.supporto_risorse.contatti_utili %}
-                        <div class="d-flex align-items-center border-bottom py-3">
-                            <i class="ki-duotone ki-call fs-2 me-3 text-info">
-                                <span class="path1"></span>
-                                <span class="path2"></span>
-                                <span class="path3"></span>
-                            </i>
-                            <span class="fs-6">{{ contatto }}</span>
-                        </div>
-                    {% endfor %}
+    <div class="mb-0">
+        <h3 class="fs-4 fw-bold mb-4">Contatti Utili</h3>
+        <div class="bg-light-info rounded p-4">
+            {% for contatto in analisi_json.supporto_risorse.contatti_utili %}
+                <div class="d-flex align-items-center border-bottom py-3">
+                    <i class="ki-duotone ki-call fs-2 me-3 text-info">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                        <span class="path3"></span>
+                    </i>
+                    <span class="fs-6">{{ contatto }}</span>
                 </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 </div>

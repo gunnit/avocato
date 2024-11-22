@@ -1,93 +1,79 @@
 <!--begin::Legal Analysis-->
-<div class="accordion-item mb-5 border rounded-3 shadow-sm">
-    <h2 class="accordion-header">
-        <button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#analisiLegale" aria-expanded="true">
-            <i class="ki-duotone ki-book fs-2 me-3">
-                <span class="path1"></span>
-                <span class="path2"></span>
-                <span class="path3"></span>
-            </i>
-            1. Analisi Legale
-        </button>
-    </h2>
-    <div id="analisiLegale" class="accordion-collapse collapse show" data-bs-parent="#analisiAccordion">
-        <div class="accordion-body">
-            <div class="mb-8">
-                <h3 class="fs-4 fw-bold mb-4">Quadro Normativo</h3>
-                <div class="bg-light rounded p-4">
-                    {% for norma in analisi_json.analisi_legale.quadro_normativo %}
-                        <div class="d-flex align-items-center border-bottom py-3">
-                            <i class="ki-duotone ki-scroll fs-2 me-3 text-primary">
-                                <span class="path1"></span>
-                                <span class="path2"></span>
-                                <span class="path3"></span>
-                            </i>
-                            <div>
-                                <span class="fs-6 fw-bold d-block">{{ norma.titolo }}</span>
-                                <span class="fs-7 text-gray-600">{{ norma.descrizione }}</span>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <div class="row g-5 mb-8">
-                <div class="col-md-6">
-                    <h3 class="fs-4 fw-bold mb-4">Precedenti Rilevanti</h3>
-                    <div class="bg-light rounded p-4">
-                        {% for precedente in analisi_json.analisi_legale.precedenti_rilevanti %}
-                            <div class="d-flex align-items-center border-bottom py-3">
-                                <i class="ki-duotone ki-note-2 fs-2 me-3 text-primary">
-                                    <span class="path1"></span>
-                                    <span class="path2"></span>
-                                </i>
-                                <div>
-                                    <span class="fs-6 fw-bold d-block">{{ precedente.riferimento }}</span>
-                                    <span class="fs-7 text-gray-600">{{ precedente.esito }}</span>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <h3 class="fs-4 fw-bold mb-4">Giurisprudenza</h3>
-                    <div class="bg-light rounded p-4">
-                        {% for sentenza in analisi_json.analisi_legale.giurisprudenza %}
-                            <div class="d-flex align-items-center border-bottom py-3">
-                                <i class="ki-duotone ki-law fs-2 me-3 text-primary">
-                                    <span class="path1"></span>
-                                    <span class="path2"></span>
-                                </i>
-                                <div>
-                                    <span class="fs-6 fw-bold d-block">{{ sentenza.riferimento }}</span>
-                                    <span class="fs-7 text-gray-600">{{ sentenza.principio }}</span>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-
-            <div class="mb-0">
-                <h3 class="fs-4 fw-bold mb-4">Punti Legali Chiave</h3>
-                <div class="notice d-flex bg-light-primary rounded border-primary border border-dashed p-6">
-                    <i class="ki-duotone ki-abstract-26 fs-2tx text-primary me-4">
+<div class="mb-0">
+    <div class="mb-8">
+        <h3 class="fs-4 fw-bold mb-4">Quadro Normativo</h3>
+        <div class="bg-light rounded p-4">
+            {% for norma in analisi_json.analisi_legale.quadro_normativo %}
+                <div class="d-flex align-items-center border-bottom py-3">
+                    <i class="ki-duotone ki-scroll fs-2 me-3 text-primary">
                         <span class="path1"></span>
                         <span class="path2"></span>
+                        <span class="path3"></span>
                     </i>
-                    <div class="d-flex flex-stack flex-grow-1">
-                        <div class="fw-semibold">
-                            <div class="fs-6 text-gray-700">
-                                <ul class="list-unstyled mb-0">
-                                    {% for punto in analisi_json.analisi_legale.punti_chiave %}
-                                        <li class="d-flex align-items-center py-2">
-                                            <span class="bullet bullet-dot bg-primary me-3"></span>
-                                            <span class="fs-6">{{ punto }}</span>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
+                    <div>
+                        <span class="fs-6 fw-bold d-block">{{ norma.titolo }}</span>
+                        <span class="fs-7 text-gray-600">{{ norma.descrizione }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="row g-5 mb-8">
+        <div class="col-md-6">
+            <h3 class="fs-4 fw-bold mb-4">Precedenti Rilevanti</h3>
+            <div class="bg-light rounded p-4">
+                {% for precedente in analisi_json.analisi_legale.precedenti_rilevanti %}
+                    <div class="d-flex align-items-center border-bottom py-3">
+                        <i class="ki-duotone ki-note-2 fs-2 me-3 text-primary">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        <div>
+                            <span class="fs-6 fw-bold d-block">{{ precedente.riferimento }}</span>
+                            <span class="fs-7 text-gray-600">{{ precedente.esito }}</span>
                         </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h3 class="fs-4 fw-bold mb-4">Giurisprudenza</h3>
+            <div class="bg-light rounded p-4">
+                {% for sentenza in analisi_json.analisi_legale.giurisprudenza %}
+                    <div class="d-flex align-items-center border-bottom py-3">
+                        <i class="ki-duotone ki-law fs-2 me-3 text-primary">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        <div>
+                            <span class="fs-6 fw-bold d-block">{{ sentenza.riferimento }}</span>
+                            <span class="fs-7 text-gray-600">{{ sentenza.principio }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-0">
+        <h3 class="fs-4 fw-bold mb-4">Punti Legali Chiave</h3>
+        <div class="notice d-flex bg-light-primary rounded border-primary border border-dashed p-6">
+            <i class="ki-duotone ki-abstract-26 fs-2tx text-primary me-4">
+                <span class="path1"></span>
+                <span class="path2"></span>
+            </i>
+            <div class="d-flex flex-stack flex-grow-1">
+                <div class="fw-semibold">
+                    <div class="fs-6 text-gray-700">
+                        <ul class="list-unstyled mb-0">
+                            {% for punto in analisi_json.analisi_legale.punti_chiave %}
+                                <li class="d-flex align-items-center py-2">
+                                    <span class="bullet bullet-dot bg-primary me-3"></span>
+                                    <span class="fs-6">{{ punto }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
             </div>
