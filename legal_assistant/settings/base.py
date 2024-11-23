@@ -78,6 +78,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/assets/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Add STATIC_ROOT setting
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'assets'),
 ]
