@@ -7,7 +7,7 @@ from .views.documentary_evidence_views import (
     documentary_evidence_edit,
     analyze_evidence
 )
-from .views.user_views import profile
+from .views.user_views import profile, configurazione_studio
 from .views.landing_views import landing_view
 from .views.legal_memory_views import (
     memoria_difensiva,
@@ -51,4 +51,5 @@ urlpatterns = [
 
     # User URLs
     path('profile/', profile, name='profile'),
+    path('configurazione-studio/', configurazione_studio, name='configurazione_studio'),
 ]

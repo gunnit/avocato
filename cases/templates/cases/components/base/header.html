@@ -28,7 +28,7 @@
             <div class="app-header-menu app-header-mobile-drawer align-items-stretch">
                 <!--begin::Menu-->
                 <div class="menu menu-rounded menu-column menu-lg-row my-5 my-lg-0 align-items-stretch fw-semibold px-2 px-lg-0" id="kt_app_header_menu" data-kt-menu="true">
-                    <!-- Quick Tools Menu -->
+                    <!-- Strumenti Rapidi -->
                     <div class="menu-item">
                         <a href="#" class="menu-link">
                             <span class="menu-icon">
@@ -37,18 +37,7 @@
                                     <span class="path2"></span>
                                 </i>
                             </span>
-                            <span class="menu-title">Ricerca Rapida</span>
-                        </a>
-                    </div>
-                    <div class="menu-item">
-                        <a href="#" class="menu-link">
-                            <span class="menu-icon">
-                                <i class="ki-duotone ki-notification-status fs-2">
-                                    <span class="path1"></span>
-                                    <span class="path2"></span>
-                                </i>
-                            </span>
-                            <span class="menu-title">Notifiche</span>
+                            <span class="menu-title">Ricerca Giurisprudenza</span>
                         </a>
                     </div>
                     <div class="menu-item">
@@ -59,7 +48,40 @@
                                     <span class="path2"></span>
                                 </i>
                             </span>
-                            <span class="menu-title">Calendario</span>
+                            <span class="menu-title">Agenda Udienze</span>
+                        </a>
+                    </div>
+                    <div class="menu-item">
+                        <a href="#" class="menu-link">
+                            <span class="menu-icon">
+                                <i class="ki-duotone ki-notification-status fs-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                            </span>
+                            <span class="menu-title">Scadenze</span>
+                        </a>
+                    </div>
+                    <div class="menu-item">
+                        <a href="#" class="menu-link">
+                            <span class="menu-icon">
+                                <i class="ki-duotone ki-document fs-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                            </span>
+                            <span class="menu-title">Redazione Atti</span>
+                        </a>
+                    </div>
+                    <div class="menu-item">
+                        <a href="{% url 'configurazione_studio' %}" class="menu-link">
+                            <span class="menu-icon">
+                                <i class="ki-duotone ki-office-bag fs-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                            </span>
+                            <span class="menu-title">Studio Legale</span>
                         </a>
                     </div>
                 </div>
@@ -94,20 +116,23 @@
                         </div>
                         <div class="separator my-2"></div>
                         <div class="menu-item px-5">
-                            <a href="{% url 'profile' %}" class="menu-link px-5">Il Mio Profilo</a>
+                            <a href="{% url 'profile' %}" class="menu-link px-5">Profilo Avvocato</a>
                         </div>
                         <div class="menu-item px-5">
-                            <a href="#" class="menu-link px-5">Impostazioni</a>
+                            <a href="{% url 'configurazione_studio' %}" class="menu-link px-5">Configurazione Studio</a>
+                        </div>
+                        <div class="menu-item px-5">
+                            <a href="#" class="menu-link px-5">Fatturazione</a>
                         </div>
                         <div class="separator my-2"></div>
                         <div class="menu-item px-5">
-                            <a href="{% url 'logout' %}" class="menu-link px-5">Logout</a>
+                            <a href="{% url 'logout' %}" class="menu-link px-5">Disconnetti</a>
                         </div>
                     </div>
                 </div>
                 {% else %}
                 <div class="app-navbar-item ms-1 ms-md-3">
-                    <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+                    <a href="{% url 'login' %}" class="btn btn-primary">Accedi</a>
                 </div>
                 {% endif %}
             </div>

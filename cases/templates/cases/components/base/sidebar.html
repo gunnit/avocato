@@ -5,8 +5,13 @@
     <div class="app-sidebar-logo px-6" id="kt_app_sidebar_logo">
         <!--begin::Logo image-->
         <a href="{% url 'lista_casi' %}">
-            <img alt="Logo" src="{% static 'media/logos/default-small.svg' %}" class="h-25px app-sidebar-logo-default">
-            <img alt="Logo" src="{% static 'media/logos/default-small.svg' %}" class="h-20px app-sidebar-logo-minimize">
+            {% if studio and studio.logo %}
+                <img alt="Logo" src="{{ studio.logo.url }}" class="h-25px app-sidebar-logo-default">
+                <img alt="Logo" src="{{ studio.logo.url }}" class="h-20px app-sidebar-logo-minimize">
+            {% else %}
+                <img alt="Logo" src="{% static 'media/logos/default-small.svg' %}" class="h-25px app-sidebar-logo-default">
+                <img alt="Logo" src="{% static 'media/logos/default-small.svg' %}" class="h-20px app-sidebar-logo-minimize">
+            {% endif %}
         </a>
         <!--end::Logo image-->
         <!--begin::Sidebar toggle-->
@@ -28,10 +33,10 @@
             <div id="kt_app_sidebar_menu_scroll" class="scroll-y my-5 mx-3" data-kt-scroll="true" data-kt-scroll-activate="true" data-kt-scroll-height="auto" data-kt-scroll-dependencies="#kt_app_sidebar_logo, #kt_app_sidebar_footer" data-kt-scroll-wrappers="#kt_app_sidebar_menu" data-kt-scroll-offset="5px" data-kt-scroll-save-state="true">
                 <!--begin::Menu-->
                 <div class="menu menu-column menu-rounded menu-sub-indention fw-semibold fs-6" id="#kt_app_sidebar_menu" data-kt-menu="true" data-kt-menu-expand="false">
-                    <!-- Gestione Casi Section -->
+                    <!-- Gestione Fascicoli Section -->
                     <div class="menu-item pt-5">
                         <div class="menu-content">
-                            <span class="menu-heading fw-bold text-uppercase fs-7">Gestione Casi</span>
+                            <span class="menu-heading fw-bold text-uppercase fs-7">Gestione Fascicoli</span>
                         </div>
                     </div>
                     <div class="menu-item">
@@ -42,7 +47,7 @@
                                     <span class="path2"></span>
                                 </i>
                             </span>
-                            <span class="menu-title">Lista Cas</span>
+                            <span class="menu-title">Registro Fascicoli</span>
                         </a>
                     </div>
                     <div class="menu-item">
@@ -53,14 +58,14 @@
                                     <span class="path2"></span>
                                 </i>
                             </span>
-                            <span class="menu-title">Nuovo Caso</span>
+                            <span class="menu-title">Nuovo Fascicolo</span>
                         </a>
                     </div>
 
-                    <!-- Strumenti Section -->
+                    <!-- Strumenti Legali -->
                     <div class="menu-item pt-5">
                         <div class="menu-content">
-                            <span class="menu-heading fw-bold text-uppercase fs-7">Strumenti</span>
+                            <span class="menu-heading fw-bold text-uppercase fs-7">Strumenti Legali</span>
                         </div>
                     </div>
                     <div class="menu-item">
@@ -71,7 +76,7 @@
                                     <span class="path2"></span>
                                 </i>
                             </span>
-                            <span class="menu-title">Legal RAG</span>
+                            <span class="menu-title">Analisi Giuridica IA</span>
                         </a>
                     </div>
                     <div class="menu-item">
@@ -82,7 +87,7 @@
                                     <span class="path2"></span>
                                 </i>
                             </span>
-                            <span class="menu-title">Ricerca Cassazione</span>
+                            <span class="menu-title">Ricerca Giurisprudenziale</span>
                         </a>
                     </div>
                     <div class="menu-item">
@@ -93,14 +98,14 @@
                                     <span class="path2"></span>
                                 </i>
                             </span>
-                            <span class="menu-title">Estrai Testo PDF</span>
+                            <span class="menu-title">Digitalizzazione Atti</span>
                         </a>
                     </div>
 
-                    <!-- Archivio Section -->
+                    <!-- Archivio Legale -->
                     <div class="menu-item pt-5">
                         <div class="menu-content">
-                            <span class="menu-heading fw-bold text-uppercase fs-7">Archivio</span>
+                            <span class="menu-heading fw-bold text-uppercase fs-7">Archivio Legale</span>
                         </div>
                     </div>
                     <div class="menu-item">
@@ -111,7 +116,7 @@
                                     <span class="path2"></span>
                                 </i>
                             </span>
-                            <span class="menu-title">Documenti</span>
+                            <span class="menu-title">Atti Giudiziari</span>
                         </a>
                     </div>
                     <div class="menu-item">
@@ -122,14 +127,14 @@
                                     <span class="path2"></span>
                                 </i>
                             </span>
-                            <span class="menu-title">Statistiche</span>
+                            <span class="menu-title">Analisi Statistica</span>
                         </a>
                     </div>
 
-                    <!-- Impostazioni Section -->
+                    <!-- Impostazioni Studio -->
                     <div class="menu-item pt-5">
                         <div class="menu-content">
-                            <span class="menu-heading fw-bold text-uppercase fs-7">Impostazioni</span>
+                            <span class="menu-heading fw-bold text-uppercase fs-7">Impostazioni Studio</span>
                         </div>
                     </div>
                     <div class="menu-item">
@@ -140,18 +145,18 @@
                                     <span class="path2"></span>
                                 </i>
                             </span>
-                            <span class="menu-title">Profilo</span>
+                            <span class="menu-title">Profilo Avvocato</span>
                         </a>
                     </div>
                     <div class="menu-item">
-                        <a class="menu-link" href="#">
+                        <a class="menu-link" href="{% url 'configurazione_studio' %}">
                             <span class="menu-icon">
                                 <i class="ki-duotone ki-gear fs-2">
                                     <span class="path1"></span>
                                     <span class="path2"></span>
                                 </i>
                             </span>
-                            <span class="menu-title">Configurazione</span>
+                            <span class="menu-title">Configurazione Studio</span>
                         </a>
                     </div>
                 </div>

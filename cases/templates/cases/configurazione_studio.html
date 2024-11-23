@@ -1,0 +1,273 @@
+{% extends "cases/base.html" %}
+
+{% block title %}Configurazione Studio{% endblock %}
+
+{% block page_title %}Configurazione Studio{% endblock %}
+
+{% block breadcrumbs %}
+<!--begin::Item-->
+<li class="breadcrumb-item">
+    <span class="bullet bg-gray-500 w-5px h-2px"></span>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item text-muted">Configurazione Studio</li>
+<!--end::Item-->
+{% endblock %}
+
+{% block content %}
+<!--begin::Row-->
+<div class="row g-5 g-xl-10 mb-5 mb-xl-10">
+    <!--begin::Col-->
+    <div class="col-12">
+        <!--begin::Card-->
+        <div class="card">
+            <!--begin::Card header-->
+            <div class="card-header border-0 pt-6">
+                <div class="card-title">
+                    <h3 class="fw-bold m-0">Impostazioni Studio Legale</h3>
+                </div>
+            </div>
+            <!--end::Card header-->
+
+            <!--begin::Card body-->
+            <div class="card-body">
+                <form id="studio-settings-form" class="form" action="{% url 'configurazione_studio' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!--begin::Row-->
+                    <div class="row mb-8">
+                        <!--begin::Col-->
+                        <div class="col-xl-3">
+                            <div class="fs-6 fw-semibold mt-2 mb-3">Logo Studio</div>
+                        </div>
+                        <!--end::Col-->
+                        
+                        <!--begin::Col-->
+                        <div class="col-xl-9 fv-row">
+                            <div class="image-input image-input-outline" data-kt-image-input="true">
+                                {% if studio.logo %}
+                                    <div class="image-input-wrapper w-125px h-125px" style="background-image: url('{{ studio.logo.url }}')"></div>
+                                {% else %}
+                                    <div class="image-input-wrapper w-125px h-125px" style="background-image: url('/media/logos/default-small.svg')"></div>
+                                {% endif %}
+                                
+                                <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change">
+                                    <i class="ki-duotone ki-pencil fs-7">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                    </i>
+                                    <input type="file" name="logo" accept=".png, .jpg, .jpeg" />
+                                </label>
+                            </div>
+                            <div class="form-text">Formati consentiti: png, jpg, jpeg.</div>
+                        </div>
+                        <!--end::Col-->
+                    </div>
+                    <!--end::Row-->
+
+                    <!--begin::Row-->
+                    <div class="row mb-8">
+                        <!--begin::Col-->
+                        <div class="col-xl-3">
+                            <div class="fs-6 fw-semibold mt-2 mb-3">Nome Studio</div>
+                        </div>
+                        <!--end::Col-->
+
+                        <!--begin::Col-->
+                        <div class="col-xl-9 fv-row">
+                            <input type="text" class="form-control form-control-solid" name="studio_name" value="{{ studio.nome }}" placeholder="Inserisci il nome dello studio" />
+                        </div>
+                        <!--end::Col-->
+                    </div>
+                    <!--end::Row-->
+
+                    <!--begin::Row-->
+                    <div class="row mb-8">
+                        <!--begin::Col-->
+                        <div class="col-xl-3">
+                            <div class="fs-6 fw-semibold mt-2 mb-3">Indirizzo</div>
+                        </div>
+                        <!--end::Col-->
+
+                        <!--begin::Col-->
+                        <div class="col-xl-9 fv-row">
+                            <input type="text" class="form-control form-control-solid mb-3" name="address_line1" value="{{ studio.indirizzo }}" placeholder="Indirizzo" />
+                            <input type="text" class="form-control form-control-solid mb-3" name="address_line2" value="{{ studio.citta }}" placeholder="Città" />
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <input type="text" class="form-control form-control-solid" name="cap" value="{{ studio.cap }}" placeholder="CAP" />
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <input type="text" class="form-control form-control-solid" name="province" value="{{ studio.provincia }}" placeholder="Provincia" />
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control form-control-solid" name="country" value="{{ studio.paese|default:'Italia' }}" placeholder="Paese" />
+                                </div>
+                            </div>
+                        </div>
+                        <!--end::Col-->
+                    </div>
+                    <!--end::Row-->
+
+                    <!--begin::Row-->
+                    <div class="row mb-8">
+                        <!--begin::Col-->
+                        <div class="col-xl-3">
+                            <div class="fs-6 fw-semibold mt-2 mb-3">Contatti</div>
+                        </div>
+                        <!--end::Col-->
+
+                        <!--begin::Col-->
+                        <div class="col-xl-9 fv-row">
+                            <input type="email" class="form-control form-control-solid mb-3" name="email" value="{{ studio.email }}" placeholder="Email" />
+                            <input type="tel" class="form-control form-control-solid mb-3" name="phone" value="{{ studio.telefono }}" placeholder="Telefono" />
+                            <input type="tel" class="form-control form-control-solid" name="fax" value="{{ studio.fax }}" placeholder="Fax" />
+                        </div>
+                        <!--end::Col-->
+                    </div>
+                    <!--end::Row-->
+
+                    <!--begin::Row-->
+                    <div class="row mb-8">
+                        <!--begin::Col-->
+                        <div class="col-xl-3">
+                            <div class="fs-6 fw-semibold mt-2 mb-3">Specializzazioni</div>
+                        </div>
+                        <!--end::Col-->
+
+                        <!--begin::Col-->
+                        <div class="col-xl-9 fv-row">
+                            <select class="form-select form-select-solid" name="specializations" data-control="select2" data-placeholder="Seleziona specializzazioni" data-allow-clear="true" multiple="multiple">
+                                <option></option>
+                                {% for value, label in studio.SPECIALIZATION_CHOICES %}
+                                    <option value="{{ value }}" {% if value in specializations %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <!--end::Col-->
+                    </div>
+                    <!--end::Row-->
+
+                    <!--begin::Row-->
+                    <div class="row mb-8">
+                        <!--begin::Col-->
+                        <div class="col-xl-3">
+                            <div class="fs-6 fw-semibold mt-2 mb-3">Impostazioni IA</div>
+                        </div>
+                        <!--end::Col-->
+
+                        <!--begin::Col-->
+                        <div class="col-xl-9">
+                            <div class="fv-row mb-3">
+                                <div class="form-check form-switch form-check-custom form-check-solid">
+                                    <input class="form-check-input" type="checkbox" value="1" id="ai_suggestions" name="ai_suggestions" {% if studio.ai_suggestions_enabled %}checked{% endif %} />
+                                    <label class="form-check-label fw-semibold text-gray-400 ms-3" for="ai_suggestions">
+                                        Abilita suggerimenti IA
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="fv-row mb-3">
+                                <div class="form-check form-switch form-check-custom form-check-solid">
+                                    <input class="form-check-input" type="checkbox" value="1" id="ai_analysis" name="ai_analysis" {% if studio.ai_analysis_enabled %}checked{% endif %} />
+                                    <label class="form-check-label fw-semibold text-gray-400 ms-3" for="ai_analysis">
+                                        Abilita analisi automatica dei documenti
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="fv-row">
+                                <div class="form-check form-switch form-check-custom form-check-solid">
+                                    <input class="form-check-input" type="checkbox" value="1" id="ai_templates" name="ai_templates" {% if studio.ai_templates_enabled %}checked{% endif %} />
+                                    <label class="form-check-label fw-semibold text-gray-400 ms-3" for="ai_templates">
+                                        Abilita generazione automatica modelli
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end::Col-->
+                    </div>
+                    <!--end::Row-->
+
+                    <!--begin::Separator-->
+                    <div class="separator mb-8"></div>
+                    <!--end::Separator-->
+
+                    <!--begin::Actions-->
+                    <div class="row">
+                        <div class="col-xl-9 offset-xl-3">
+                            <button type="submit" class="btn btn-primary" id="studio_settings_submit">
+                                <span class="indicator-label">Salva Modifiche</span>
+                                <span class="indicator-progress">Attendi...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                            </button>
+                        </div>
+                    </div>
+                    <!--end::Actions-->
+                </form>
+            </div>
+            <!--end::Card body-->
+        </div>
+        <!--end::Card-->
+    </div>
+    <!--end::Col-->
+</div>
+<!--end::Row-->
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Initialize form validation and submission
+var form = document.querySelector("#studio-settings-form");
+var submitButton = document.querySelector("#studio_settings_submit");
+
+// Initialize form validation
+var validator = FormValidation.formValidation(form, {
+    fields: {
+        'studio_name': {
+            validators: {
+                notEmpty: {
+                    message: 'Il nome dello studio è obbligatorio'
+                }
+            }
+        },
+        'email': {
+            validators: {
+                notEmpty: {
+                    message: 'L\'email è obbligatoria'
+                },
+                emailAddress: {
+                    message: 'L\'indirizzo email non è valido'
+                }
+            }
+        }
+    },
+    plugins: {
+        trigger: new FormValidation.plugins.Trigger(),
+        bootstrap: new FormValidation.plugins.Bootstrap5({
+            rowSelector: '.fv-row',
+            eleInvalidClass: '',
+            eleValidClass: ''
+        })
+    }
+});
+
+// Handle form submission
+submitButton.addEventListener('click', function (e) {
+    // Don't prevent form submission - let it go through to the server
+    validator.validate();
+});
+
+// Initialize Select2 for specializations
+$(document).ready(function() {
+    $('[name="specializations"]').select2({
+        tags: true
+    });
+});
+
+// Initialize image input
+var imageInput = document.querySelector('[data-kt-image-input="true"]');
+if (imageInput) {
+    new KTImageInput(imageInput);
+}
+</script>
+{% endblock %}

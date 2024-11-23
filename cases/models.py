@@ -88,3 +88,42 @@ class DocumentaryEvidence(models.Model):
 
     def __str__(self):
         return f"Doc. {self.exhibit_number} - {self.title}"
+
+class StudioLegale(models.Model):
+    SPECIALIZATION_CHOICES = [
+        ('civile', 'Diritto Civile'),
+        ('penale', 'Diritto Penale'),
+        ('amministrativo', 'Diritto Amministrativo'),
+        ('lavoro', 'Diritto del Lavoro'),
+        ('famiglia', 'Diritto di Famiglia'),
+        ('societario', 'Diritto Societario'),
+        ('tributario', 'Diritto Tributario'),
+        ('immobiliare', 'Diritto Immobiliare')
+    ]
+
+    nome = models.CharField(max_length=200, verbose_name='Nome Studio')
+    logo = models.ImageField(upload_to='studio_logos/', blank=True, null=True)
+    indirizzo = models.CharField(max_length=200)
+    citta = models.CharField(max_length=100)
+    cap = models.CharField(max_length=10)
+    provincia = models.CharField(max_length=2)
+    paese = models.CharField(max_length=100, default='Italia')
+    email = models.EmailField()
+    telefono = models.CharField(max_length=20)
+    fax = models.CharField(max_length=20, blank=True)
+    specializzazioni = models.JSONField(default=list)
+    
+    # AI Settings
+    ai_suggestions_enabled = models.BooleanField(default=True, verbose_name='Suggerimenti IA')
+    ai_analysis_enabled = models.BooleanField(default=True, verbose_name='Analisi Automatica')
+    ai_templates_enabled = models.BooleanField(default=True, verbose_name='Generazione Modelli')
+
+    data_creazione = models.DateTimeField(auto_now_add=True)
+    data_modifica = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Studio Legale'
+        verbose_name_plural = 'Studi Legali'
+
+    def __str__(self):
+        return self.nome
