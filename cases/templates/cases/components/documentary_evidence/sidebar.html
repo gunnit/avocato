@@ -1,84 +1,299 @@
 {% load static %}
 <!--begin::Sidebar-->
-<div class="card card-flush py-4">
-    <!--begin::Card header-->
-    <div class="card-header">
-        <div class="card-title">
-            <h3 class="fw-bold">Informazioni</h3>
-        </div>
-    </div>
-    <!--end::Card header-->
-
-    <!--begin::Card body-->
-    <div class="card-body pt-0">
-        <div class="d-flex flex-column gap-5">
-            <!--begin::Status-->
-            <div class="d-flex flex-column">
-                <div class="fw-bold text-gray-800 mb-2">Stato Autenticazione</div>
-                {% if document.authentication_status == 'pending' %}
-                <span class="badge badge-warning">In Attesa</span>
-                {% elif document.authentication_status == 'authenticated' %}
-                <span class="badge badge-success">Autenticato</span>
-                {% else %}
-                <span class="badge badge-secondary">Non Richiesto</span>
-                {% endif %}
+<div class="d-flex flex-column gap-7">
+    <!--begin::Status card-->
+    <div class="card card-flush py-4">
+        <!--begin::Card header-->
+        <div class="card-header">
+            <div class="card-title">
+                <h3 class="fw-bold">Stato Documento</h3>
             </div>
-            <!--end::Status-->
+        </div>
+        <!--end::Card header-->
 
-            <!--begin::Document Type-->
-            <div class="d-flex flex-column">
-                <div class="fw-bold text-gray-800 mb-2">Tipo Documento</div>
-                <div class="text-gray-600">
-                    {% if document.document_type == 'atto_citazione' %}
-                    Atto di Citazione
-                    {% elif document.document_type == 'comparsa_costituzione' %}
-                    Comparsa di Costituzione
-                    {% elif document.document_type == 'memoria_183' %}
-                    Memoria ex art. 183
-                    {% elif document.document_type == 'doc_contabili' %}
-                    Documenti Contabili
-                    {% elif document.document_type == 'perizia_tecnica' %}
-                    Perizia Tecnica
-                    {% elif document.document_type == 'corrispondenza' %}
-                    Corrispondenza
-                    {% elif document.document_type == 'contratto' %}
-                    Contratto
-                    {% elif document.document_type == 'doc_amministrativo' %}
-                    Documento Amministrativo
-                    {% elif document.document_type == 'verbale' %}
-                    Verbale
-                    {% elif document.document_type == 'sentenza' %}
-                    Sentenza
+        <!--begin::Card body-->
+        <div class="card-body pt-0">
+            <div class="d-flex flex-column gap-5">
+                <!--begin::Status-->
+                <div class="d-flex flex-column">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="ki-duotone ki-shield-tick fs-3 me-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        <span class="fw-bold text-gray-800">Stato Autenticazione</span>
+                    </div>
+                    {% if document.authentication_status == 'pending' %}
+                    <div class="d-flex align-items-center">
+                        <span class="bullet bullet-dot bg-warning me-2"></span>
+                        <span class="badge badge-light-warning">In Attesa di Autenticazione</span>
+                    </div>
+                    {% elif document.authentication_status == 'authenticated' %}
+                    <div class="d-flex align-items-center">
+                        <span class="bullet bullet-dot bg-success me-2"></span>
+                        <span class="badge badge-light-success">Autenticato</span>
+                    </div>
                     {% else %}
-                    Altro
+                    <div class="d-flex align-items-center">
+                        <span class="bullet bullet-dot bg-gray-300 me-2"></span>
+                        <span class="badge badge-light">Non Richiesto</span>
+                    </div>
                     {% endif %}
                 </div>
-            </div>
-            <!--end::Document Type-->
+                <!--end::Status-->
 
-            <!--begin::Dates-->
-            <div class="d-flex flex-column">
-                <div class="fw-bold text-gray-800 mb-2">Data Aggiunta</div>
-                <div class="text-gray-600">{{ document.date_added|date:"d/m/Y H:i" }}</div>
-            </div>
-            <div class="d-flex flex-column">
-                <div class="fw-bold text-gray-800 mb-2">Ultima Modifica</div>
-                <div class="text-gray-600">{{ document.date_updated|date:"d/m/Y H:i" }}</div>
-            </div>
-            <!--end::Dates-->
+                <!--begin::Document Type-->
+                <div class="d-flex flex-column">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="ki-duotone ki-document fs-3 me-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        <span class="fw-bold text-gray-800">Tipo Documento</span>
+                    </div>
+                    {% if document.document_type == 'atto_citazione' %}
+                    <span class="badge badge-light-danger">Atto di Citazione</span>
+                    {% elif document.document_type == 'comparsa_costituzione' %}
+                    <span class="badge badge-light-info">Comparsa di Costituzione</span>
+                    {% elif document.document_type == 'memoria_183' %}
+                    <span class="badge badge-light-warning">Memoria ex art. 183</span>
+                    {% elif document.document_type == 'doc_contabili' %}
+                    <span class="badge badge-light-success">Documenti Contabili</span>
+                    {% elif document.document_type == 'perizia_tecnica' %}
+                    <span class="badge badge-light-primary">Perizia Tecnica</span>
+                    {% else %}
+                    <span class="badge badge-light">{{ document.get_document_type_display }}</span>
+                    {% endif %}
+                </div>
+                <!--end::Document Type-->
 
-            <!--begin::File-->
-            <div class="d-flex flex-column">
-                <div class="fw-bold text-gray-800 mb-2">File</div>
-                {% if document.document_file %}
-                <div class="text-gray-600 fs-7">{{ document.document_file.name }}</div>
-                {% else %}
-                <div class="text-gray-600 fst-italic">Nessun file caricato</div>
-                {% endif %}
+                <!--begin::Timeline-->
+                <div class="d-flex flex-column">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="ki-duotone ki-calendar fs-3 me-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        <span class="fw-bold text-gray-800">Timeline</span>
+                    </div>
+                    <div class="d-flex flex-column gap-2">
+                        <div class="d-flex align-items-center">
+                            <div class="w-35px text-gray-500 fs-7 me-3">Aggiunto</div>
+                            <div class="flex-grow-1">
+                                <div class="fw-semibold text-gray-800">{{ document.date_added|date:"d/m/Y" }}</div>
+                                <div class="text-gray-600 fs-7">{{ document.date_added|date:"H:i" }}</div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="w-35px text-gray-500 fs-7 me-3">Modificato</div>
+                            <div class="flex-grow-1">
+                                <div class="fw-semibold text-gray-800">{{ document.date_updated|date:"d/m/Y" }}</div>
+                                <div class="text-gray-600 fs-7">{{ document.date_updated|date:"H:i" }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end::Timeline-->
             </div>
-            <!--end::File-->
         </div>
+        <!--end::Card body-->
     </div>
-    <!--end::Card body-->
+    <!--end::Status card-->
+
+    <!--begin::File card-->
+    {% if document.document_file %}
+    <div class="card card-flush py-4">
+        <!--begin::Card header-->
+        <div class="card-header">
+            <div class="card-title">
+                <h3 class="fw-bold">File Allegato</h3>
+            </div>
+        </div>
+        <!--end::Card header-->
+
+        <!--begin::Card body-->
+        <div class="card-body pt-0">
+            <div class="d-flex flex-column gap-5">
+                <div class="symbol symbol-70px symbol-lg-150px mb-4">
+                    <span class="symbol-label bg-light-primary">
+                        <i class="ki-duotone ki-file fs-3x text-primary">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                    </span>
+                </div>
+
+                <div class="d-flex flex-column gap-2">
+                    <div class="fw-bold text-gray-800 fs-5">{{ document.document_file.name }}</div>
+                    <div class="text-gray-600 fs-7">
+                        <span id="fileSize">Caricamento...</span> • 
+                        <span id="fileType">{{ document.document_file.name|filesizeformat }}</span>
+                    </div>
+                </div>
+
+                <div class="separator my-5"></div>
+
+                <div class="d-flex flex-column gap-3">
+                    <a href="{{ document.document_file.url }}" class="btn btn-primary hover-elevate-up" target="_blank">
+                        <i class="ki-duotone ki-eye fs-2 me-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        Visualizza File
+                    </a>
+                    <a href="{{ document.document_file.url }}" class="btn btn-light hover-elevate-up" download>
+                        <i class="ki-duotone ki-cloud-download fs-2 me-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        Scarica File
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!--end::Card body-->
+    </div>
+    {% endif %}
+    <!--end::File card-->
+
+    <!--begin::Related documents-->
+    <div class="card card-flush py-4">
+        <!--begin::Card header-->
+        <div class="card-header">
+            <div class="card-title">
+                <h3 class="fw-bold">Documenti Correlati</h3>
+            </div>
+        </div>
+        <!--end::Card header-->
+
+        <!--begin::Card body-->
+        <div class="card-body pt-0">
+            {% if related_documents %}
+            <div class="d-flex flex-column gap-5">
+                {% for related in related_documents %}
+                <div class="d-flex align-items-center">
+                    <div class="symbol symbol-40px me-3">
+                        <span class="symbol-label bg-light-primary">
+                            <i class="ki-duotone ki-document fs-2 text-primary">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                        </span>
+                    </div>
+                    <div class="d-flex flex-column flex-grow-1">
+                        <a href="{% url 'documentary_evidence_detail' caso.id related.id %}" class="text-gray-900 text-hover-primary fw-bold">
+                            {{ related.title }}
+                        </a>
+                        <span class="text-gray-600 fs-7">Doc. N° {{ related.exhibit_number }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="notice d-flex bg-light-primary rounded border-primary border border-dashed p-6">
+                <i class="ki-duotone ki-information fs-2tx text-primary me-4">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                </i>
+                <div class="d-flex flex-stack flex-grow-1">
+                    <div class="fw-semibold">
+                        <h4 class="text-gray-900 fw-bold">Nessun Documento Correlato</h4>
+                        <div class="fs-6 text-gray-700">Non ci sono documenti correlati a questo documento</div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <!--end::Card body-->
+    </div>
+    <!--end::Related documents-->
 </div>
 <!--end::Sidebar-->
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get file size
+    if (document.getElementById('fileSize')) {
+        fetch('{{ document.document_file.url }}')
+            .then(response => {
+                const size = response.headers.get('content-length');
+                document.getElementById('fileSize').textContent = formatFileSize(size);
+            })
+            .catch(error => {
+                console.error('Error fetching file size:', error);
+                document.getElementById('fileSize').textContent = 'N/D';
+            });
+    }
+});
+
+function formatFileSize(bytes) {
+    if (!bytes) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+</script>
+
+<style>
+/* Enhanced card styling */
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 1.5rem 0.5rem rgba(0, 0, 0, 0.075);
+}
+
+/* Badge styling */
+.badge {
+    font-weight: 500;
+    padding: 0.5rem 0.75rem;
+}
+
+/* Button hover effects */
+.hover-elevate-up {
+    transition: all 0.3s ease;
+}
+
+.hover-elevate-up:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1.5rem 0.5rem rgba(0, 0, 0, 0.075);
+}
+
+/* Timeline styling */
+.w-35px {
+    width: 35px !important;
+}
+
+/* Notice styling */
+.notice {
+    transition: all 0.3s ease;
+}
+
+.notice:hover {
+    transform: translateX(5px);
+}
+
+/* Symbol animations */
+.symbol-label {
+    transition: all 0.3s ease;
+}
+
+.symbol-label:hover {
+    transform: scale(1.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 991.98px) {
+    .symbol-lg-150px {
+        width: 100px !important;
+        height: 100px !important;
+    }
+    
+    .card-body {
+        padding: 1.5rem;
+    }
+}
+</style>

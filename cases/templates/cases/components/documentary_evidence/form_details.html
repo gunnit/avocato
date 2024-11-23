@@ -1,0 +1,219 @@
+{% load static %}
+<!--begin::Document Details-->
+<div class="mb-5">
+    <div class="mb-5">
+        <label for="title" class="form-label fw-bold required">Titolo del Documento</label>
+        <input type="text" class="form-control form-control-lg" id="title" name="title" 
+               value="{{ document.title|default:'' }}" required
+               placeholder="Inserisci un titolo descrittivo">
+        <div class="invalid-feedback">
+            Inserisci un titolo per il documento.
+        </div>
+    </div>
+
+    <div class="mb-5">
+        <label for="document_type" class="form-label fw-bold required">Tipo di Documento</label>
+        <select class="form-select form-select-lg" id="document_type" name="document_type" required>
+            <option value="">Seleziona tipo...</option>
+            <option value="atto_citazione" {% if document.document_type == 'atto_citazione' %}selected{% endif %}>
+                Atto di Citazione
+            </option>
+            <option value="comparsa_costituzione" {% if document.document_type == 'comparsa_costituzione' %}selected{% endif %}>
+                Comparsa di Costituzione
+            </option>
+            <option value="memoria_183" {% if document.document_type == 'memoria_183' %}selected{% endif %}>
+                Memoria ex art. 183
+            </option>
+            <option value="doc_contabili" {% if document.document_type == 'doc_contabili' %}selected{% endif %}>
+                Documenti Contabili
+            </option>
+            <option value="perizia_tecnica" {% if document.document_type == 'perizia_tecnica' %}selected{% endif %}>
+                Perizia Tecnica
+            </option>
+            <option value="corrispondenza" {% if document.document_type == 'corrispondenza' %}selected{% endif %}>
+                Corrispondenza
+            </option>
+            <option value="contratto" {% if document.document_type == 'contratto' %}selected{% endif %}>
+                Contratto
+            </option>
+            <option value="doc_amministrativo" {% if document.document_type == 'doc_amministrativo' %}selected{% endif %}>
+                Documento Amministrativo
+            </option>
+            <option value="verbale" {% if document.document_type == 'verbale' %}selected{% endif %}>
+                Verbale
+            </option>
+            <option value="sentenza" {% if document.document_type == 'sentenza' %}selected{% endif %}>
+                Sentenza
+            </option>
+            <option value="altro" {% if document.document_type == 'altro' %}selected{% endif %}>
+                Altro
+            </option>
+        </select>
+        <div class="invalid-feedback">
+            Seleziona il tipo di documento.
+        </div>
+    </div>
+
+    <div class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <label for="description" class="form-label fw-bold required">Descrizione</label>
+            <button type="button" class="btn btn-light-primary btn-sm" onclick="generateDescription()">
+                <i class="ki-duotone ki-robot fs-2 me-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                </i>
+                Genera Descrizione
+            </button>
+        </div>
+        <textarea class="form-control" id="description" name="description" 
+                  rows="4" required
+                  placeholder="Descrivi brevemente il contenuto del documento">{{ document.description|default:'' }}</textarea>
+        <div class="invalid-feedback">
+            Inserisci una descrizione per il documento.
+        </div>
+    </div>
+</div>
+<!--end::Document Details-->
+
+<script>
+function generateDescription() {
+    const button = event.currentTarget;
+    const originalHtml = button.innerHTML;
+    const descriptionField = document.getElementById('description');
+    const documentType = document.getElementById('document_type').value;
+    const title = document.getElementById('title').value;
+    
+    if (!documentType || !title) {
+        // Show error toast
+        Swal.fire({
+            text: "Inserisci il titolo e il tipo di documento prima di generare la descrizione",
+            icon: "error",
+            buttonsStyling: false,
+            confirmButtonText: "Ok",
+            customClass: {
+                confirmButton: "btn btn-primary"
+            }
+        });
+        return;
+    }
+    
+    // Show loading state
+    button.innerHTML = `
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Generazione in corso...
+    `;
+    button.disabled = true;
+
+    // Make API call to generate description
+    fetch('{% url "generate_description" caso.id %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify({
+            document_type: documentType,
+            title: title
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.content) {
+            descriptionField.value = data.content;
+            
+            // Show success state
+            button.innerHTML = `
+                <i class="ki-duotone ki-check fs-2 me-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                </i>
+                Descrizione Generata
+            `;
+            button.classList.remove('btn-light-primary');
+            button.classList.add('btn-light-success');
+            
+            // Show success toast
+            Swal.fire({
+                text: "Descrizione generata con successo",
+                icon: "success",
+                buttonsStyling: false,
+                confirmButtonText: "Ok",
+                customClass: {
+                    confirmButton: "btn btn-primary"
+                }
+            });
+        } else {
+            throw new Error('No content in response');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        
+        // Show error state
+        button.innerHTML = `
+            <i class="ki-duotone ki-cross-circle fs-2 me-2">
+                <span class="path1"></span>
+                <span class="path2"></span>
+            </i>
+            Errore
+        `;
+        button.classList.remove('btn-light-primary');
+        button.classList.add('btn-light-danger');
+        
+        // Show error toast
+        Swal.fire({
+            text: "Si è verificato un errore durante la generazione della descrizione",
+            icon: "error",
+            buttonsStyling: false,
+            confirmButtonText: "Ok",
+            customClass: {
+                confirmButton: "btn btn-primary"
+            }
+        });
+    })
+    .finally(() => {
+        // Reset button after delay
+        setTimeout(() => {
+            button.innerHTML = originalHtml;
+            button.disabled = false;
+            button.classList.remove('btn-light-success', 'btn-light-danger');
+            button.classList.add('btn-light-primary');
+        }, 3000);
+    });
+}
+</script>
+
+<style>
+/* Enhanced form control styling */
+.form-control, .form-select {
+    transition: border-color 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--kt-primary);
+    box-shadow: 0 0 0 0.25rem rgba(var(--kt-primary-rgb), 0.1);
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Required field indicator */
+.required:after {
+    content: "*";
+    position: relative;
+    font-size: inherit;
+    color: var(--kt-danger);
+    padding-left: 0.25rem;
+    font-weight: 600;
+}
+</style>

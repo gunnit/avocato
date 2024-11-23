@@ -1,0 +1,96 @@
+{% load static %}
+<!--begin::Authentication Details-->
+<div class="mb-5">
+    <div class="mb-5">
+        <label for="authentication_status" class="form-label fw-bold required">Stato Autenticazione</label>
+        <select class="form-select form-select-lg" id="authentication_status" name="authentication_status" required>
+            <option value="pending" {% if document.authentication_status == 'pending' %}selected{% endif %}>
+                In attesa di autenticazione
+            </option>
+            <option value="authenticated" {% if document.authentication_status == 'authenticated' %}selected{% endif %}>
+                Autenticato
+            </option>
+            <option value="not_required" {% if document.authentication_status == 'not_required' %}selected{% endif %}>
+                Autenticazione non necessaria
+            </option>
+        </select>
+        <div class="text-muted fs-7 mt-2">
+            Seleziona lo stato di autenticazione del documento
+        </div>
+    </div>
+
+    <div class="mb-5">
+        <label for="authentication_notes" class="form-label fw-bold">Note sull'Autenticazione</label>
+        <textarea class="form-control" id="authentication_notes" name="authentication_notes" 
+                  rows="3" placeholder="Inserisci eventuali note sull'autenticazione...">{{ document.authentication_notes|default:'' }}</textarea>
+        <div class="text-muted fs-7 mt-2">
+            Aggiungi note opzionali sul processo di autenticazione
+        </div>
+    </div>
+
+    <div class="separator my-10"></div>
+
+    <div class="d-flex justify-content-between">
+        <a href="{% url 'documentary_evidence_list' caso.id %}" class="btn btn-light">
+            <i class="ki-duotone ki-arrow-left fs-2 me-2">
+                <span class="path1"></span>
+                <span class="path2"></span>
+            </i>
+            Torna alla Lista
+        </a>
+        <button type="submit" class="btn btn-primary" id="submitBtn">
+            {% if action == 'add' %}
+            <i class="ki-duotone ki-plus-square fs-2 me-2">
+                <span class="path1"></span>
+                <span class="path2"></span>
+                <span class="path3"></span>
+            </i>
+            Aggiungi Documento
+            {% else %}
+            <i class="ki-duotone ki-save-2 fs-2 me-2">
+                <span class="path1"></span>
+                <span class="path2"></span>
+            </i>
+            Salva Modifiche
+            {% endif %}
+        </button>
+    </div>
+</div>
+<!--end::Authentication Details-->
+
+<style>
+/* Enhanced form styling */
+.form-select {
+    transition: border-color 0.2s ease;
+}
+
+.form-select:focus {
+    border-color: var(--kt-primary);
+    box-shadow: 0 0 0 0.25rem rgba(var(--kt-primary-rgb), 0.1);
+}
+
+/* Button animations */
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Required field indicator */
+.required:after {
+    content: "*";
+    position: relative;
+    font-size: inherit;
+    color: var(--kt-danger);
+    padding-left: 0.25rem;
+    font-weight: 600;
+}
+
+/* Separator styling */
+.separator {
+    height: 1px;
+    background-color: var(--kt-gray-200);
+}
+</style>

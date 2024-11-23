@@ -1,40 +1,233 @@
 {% load static %}
 <!--begin::Card header-->
 <div class="card-header pt-7">
-    <!--begin::Title-->
-    <div class="card-title">
-        <h2 class="fw-bold">Documento N° {{ document.exhibit_number }}</h2>
+    <!--begin::Title and metadata-->
+    <div class="card-title d-flex flex-column">
+        <div class="d-flex align-items-center mb-2">
+            <h2 class="fw-bold me-3 mb-0">Documento N° {{ document.exhibit_number }}</h2>
+            {% if document.document_type == 'atto_citazione' %}
+            <span class="badge badge-light-danger fs-7">Atto di Citazione</span>
+            {% elif document.document_type == 'comparsa_costituzione' %}
+            <span class="badge badge-light-info fs-7">Comparsa di Costituzione</span>
+            {% elif document.document_type == 'memoria_183' %}
+            <span class="badge badge-light-warning fs-7">Memoria ex art. 183</span>
+            {% elif document.document_type == 'doc_contabili' %}
+            <span class="badge badge-light-success fs-7">Documenti Contabili</span>
+            {% elif document.document_type == 'perizia_tecnica' %}
+            <span class="badge badge-light-primary fs-7">Perizia Tecnica</span>
+            {% else %}
+            <span class="badge badge-light fs-7">{{ document.get_document_type_display }}</span>
+            {% endif %}
+        </div>
+        <div class="d-flex align-items-center text-gray-600 fs-6">
+            <div class="d-flex align-items-center me-4">
+                <i class="ki-duotone ki-calendar-tick fs-6 me-1">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                </i>
+                Aggiunto il {{ document.date_added|date:"d/m/Y" }}
+            </div>
+            <div class="d-flex align-items-center me-4">
+                <i class="ki-duotone ki-shield-tick fs-6 me-1">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                </i>
+                {% if document.authentication_status == 'pending' %}
+                <span class="text-warning">In Attesa di Autenticazione</span>
+                {% elif document.authentication_status == 'authenticated' %}
+                <span class="text-success">Autenticato</span>
+                {% else %}
+                <span>Autenticazione Non Necessaria</span>
+                {% endif %}
+            </div>
+            {% if document.document_file %}
+            <div class="d-flex align-items-center">
+                <i class="ki-duotone ki-document fs-6 me-1">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                </i>
+                <span>{{ document.document_file.name }}</span>
+            </div>
+            {% endif %}
+        </div>
     </div>
-    <!--end::Title-->
+    <!--end::Title and metadata-->
 
     <!--begin::Toolbar-->
     <div class="card-toolbar">
         <div class="d-flex flex-stack flex-wrap gap-4">
-            <button id="analyzeBtn" class="btn btn-light-primary" onclick="analyzeEvidence()">
-                <i class="ki-duotone ki-brain fs-2">
-                    <span class="path1"></span>
-                    <span class="path2"></span>
-                </i>
-                Analizza Documento
+            <button id="analyzeBtn" class="btn btn-primary hover-elevate-up" onclick="analyzeEvidence()">
+                <span class="indicator-label">
+                    <i class="ki-duotone ki-brain fs-2 me-2">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                    Analizza Documento
+                </span>
+                <span class="indicator-progress">
+                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                    Analisi in corso...
+                </span>
             </button>
-            <a href="{% url 'documentary_evidence_edit' caso.id document.id %}" class="btn btn-light-warning">
-                <i class="ki-duotone ki-pencil fs-2">
-                    <span class="path1"></span>
-                    <span class="path2"></span>
-                </i>
-                Modifica
-            </a>
-            {% if document.document_file %}
-            <a href="{{ document.document_file.url }}" class="btn btn-light-info" target="_blank">
-                <i class="ki-duotone ki-document fs-2">
-                    <span class="path1"></span>
-                    <span class="path2"></span>
-                </i>
-                Scarica
-            </a>
-            {% endif %}
+            
+            <div class="d-flex gap-2">
+                <a href="{% url 'documentary_evidence_edit' caso.id document.id %}" 
+                   class="btn btn-icon btn-light-warning hover-elevate-up"
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="top"
+                   title="Modifica Documento">
+                    <i class="ki-duotone ki-pencil fs-2">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                </a>
+                {% if document.document_file %}
+                <a href="{{ document.document_file.url }}" 
+                   class="btn btn-icon btn-light-info hover-elevate-up"
+                   target="_blank"
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="top"
+                   title="Scarica Documento">
+                    <i class="ki-duotone ki-document fs-2">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                </a>
+                {% endif %}
+                <button type="button" 
+                        class="btn btn-icon btn-light-primary hover-elevate-up" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#shareDocumentModal"
+                        title="Condividi Documento">
+                    <i class="ki-duotone ki-share fs-2">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                        <span class="path3"></span>
+                    </i>
+                </button>
+            </div>
         </div>
     </div>
     <!--end::Toolbar-->
 </div>
 <!--end::Card header-->
+
+<!--begin::Share Modal-->
+<div class="modal fade" id="shareDocumentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Condividi Documento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-5">
+                    <label class="form-label fw-bold">Link al Documento</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" value="{{ request.scheme }}://{{ request.get_host }}{% url 'documentary_evidence_detail' caso.id document.id %}" readonly>
+                        <button class="btn btn-light-primary" type="button" onclick="copyToClipboard(this)">
+                            <i class="ki-duotone ki-copy fs-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                        </button>
+                    </div>
+                </div>
+                <div class="separator my-5"></div>
+                <div class="mb-5">
+                    <label class="form-label fw-bold">Condividi via Email</label>
+                    <input type="email" class="form-control" placeholder="Inserisci indirizzo email">
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary">
+                        <i class="ki-duotone ki-send fs-2 me-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        Invia
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--end::Share Modal-->
+
+<style>
+/* Enhanced button animations */
+.hover-elevate-up {
+    transition: all 0.3s ease;
+}
+
+.hover-elevate-up:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1.5rem 0.5rem rgba(0, 0, 0, 0.075);
+}
+
+/* Loading state for analyze button */
+.indicator-progress {
+    display: none;
+}
+
+.btn.loading {
+    pointer-events: none;
+}
+
+.btn.loading .indicator-label {
+    display: none;
+}
+
+.btn.loading .indicator-progress {
+    display: inline-block;
+}
+
+/* Badge styling */
+.badge {
+    font-weight: 500;
+    padding: 0.5rem 0.75rem;
+}
+
+/* Metadata icons */
+.ki-duotone {
+    line-height: 1;
+    vertical-align: middle;
+}
+</style>
+
+<script>
+// Initialize tooltips
+document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function(tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+
+// Copy to clipboard functionality
+function copyToClipboard(button) {
+    const input = button.parentElement.querySelector('input');
+    input.select();
+    document.execCommand('copy');
+    
+    // Show feedback
+    const originalHtml = button.innerHTML;
+    button.innerHTML = '<i class="ki-duotone ki-check fs-2"><span class="path1"></span><span class="path2"></span></i>';
+    button.classList.add('btn-success');
+    
+    setTimeout(() => {
+        button.innerHTML = originalHtml;
+        button.classList.remove('btn-success');
+    }, 2000);
+}
+
+// Analyze button loading state
+function analyzeEvidence() {
+    const button = document.getElementById('analyzeBtn');
+    button.classList.add('loading');
+    
+    // Your analysis logic here
+    // When complete, remove loading state:
+    // button.classList.remove('loading');
+}
+</script>
