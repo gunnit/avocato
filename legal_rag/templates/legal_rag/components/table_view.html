@@ -1,0 +1,48 @@
+<!-- Begin Table View -->
+<div class="tab-pane fade show active" id="kt_tab_table" role="tabpanel">
+    <div class="d-flex flex-column gap-5">
+        <!-- Table Filters -->
+        <div class="d-flex align-items-center gap-2">
+            <select class="form-select form-select-sm w-200px" id="bookFilter">
+                <option value="">Tutti i Libri</option>
+            </select>
+            <select class="form-select form-select-sm w-200px" id="titleFilter">
+                <option value="">Tutti i Titoli</option>
+            </select>
+        </div>
+
+        <!-- Table -->
+        <div class="table-responsive">
+            <table class="table table-row-bordered table-row-gray-100 align-middle gs-0 gy-3">
+                <thead>
+                    <tr class="fw-bold text-muted">
+                        <th class="min-w-80px">Articolo</th>
+                        <th class="min-w-150px">Titolo</th>
+                        <th class="min-w-200px">Libro</th>
+                        <th class="min-w-100px text-end">Azioni</th>
+                    </tr>
+                </thead>
+                <tbody id="articlesTableBody">
+                    <!-- Table content will be populated dynamically -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="d-flex flex-wrap gap-2 py-2">
+                <select class="form-select form-select-sm w-100px" id="pageSizeSelect">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                <span class="text-muted pt-2">elementi per pagina</span>
+            </div>
+            <ul class="pagination" id="pagination">
+                <!-- Pagination will be populated dynamically -->
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- End Table View -->

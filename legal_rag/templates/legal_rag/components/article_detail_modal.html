@@ -1,0 +1,38 @@
+<!-- Article Detail Modal -->
+<div class="modal fade" id="articleDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="articleDetailTitle">Dettaglio Articolo</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-column gap-5">
+                    <div class="article-metadata">
+                        <div class="d-flex flex-wrap gap-5">
+                            <div class="d-flex flex-column gap-1">
+                                <span class="text-muted fs-7">Libro</span>
+                                <span class="fw-bold" id="articleDetailBook"></span>
+                            </div>
+                            <div class="d-flex flex-column gap-1">
+                                <span class="text-muted fs-7">Titolo</span>
+                                <span class="fw-bold" id="articleDetailTitleSection"></span>
+                            </div>
+                            <div class="d-flex flex-column gap-1">
+                                <span class="text-muted fs-7">Sezione</span>
+                                <span class="fw-bold" id="articleDetailSection"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="article-content">
+                        <h4 class="mb-4" id="articleDetailHeading"></h4>
+                        <div class="fs-6" id="articleDetailContent"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Chiudi</button>
+            </div>
+        </div>
+    </div>
+</div>
