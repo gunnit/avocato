@@ -1,102 +1,140 @@
 # Dataset for Italian Legal Assistant Fine-tuning
 
-This dataset is designed for fine-tuning language models to create a specialized Italian legal assistant. The data is formatted according to OpenAI's chat fine-tuning specifications.
+This dataset is designed for fine-tuning language models to create a specialized Italian legal assistant, with particular focus on recent criminal law jurisprudence from the Cassazione.
 
 ## Dataset Structure
 
 The dataset consists of two main files:
 
-1. `legal_training.jsonl` - Contains the primary training examples
-2. `legal_validation.jsonl` - Contains validation examples for evaluating model performance
+1. `legal_training.jsonl` - Contains 30 training examples covering both civil and criminal law
+2. `legal_validation.jsonl` - Contains 13 validation examples for evaluating model performance
+
+## Content Coverage
+
+### Recent Criminal Law Jurisprudence (2024)
+- Ne bis in idem principles
+  - Administrative/criminal proceedings intersection
+  - International cooperation in evidence gathering
+- Precautionary Measures
+  - Tempus regit actum application
+  - Restraining orders in plea bargaining
+- Public Official Offenses
+  - Political criticism defense
+  - Local government officials' qualification
+- Economic Crimes
+  - Embezzlement by public service employees
+  - Unauthorized practice of law
+- Procedural Issues
+  - Jurisdictional competence
+  - International cooperation
+  - Evidence admissibility
+
+### Criminal Procedure
+- Plea Bargaining
+- Jurisdictional Competence
+- Evidence Rules
+- Appeal Procedures
+- Statute of Limitations
+- International Cooperation
+  - Transnational intercepts
+  - Evidence sharing
+
+### Civil Law
+- Civil Procedure
+- Contract Law
+- Legal Documentation
+- Damage Calculations
+- Procedural Requirements
 
 ## Data Format
 
 Each example follows the chat completion format with:
 - System message defining the assistant's role
 - User message containing a legal query
-- Assistant message providing a detailed, professional response with references to Italian law
-
-## Content Coverage
-
-The dataset includes examples covering various aspects of Italian law:
-- Civil Procedure (decreto ingiuntivo, termini processuali)
-- Contract Law (responsabilità contrattuale)
-- Criminal Procedure (costituzione di parte civile)
-- Legal Documentation (memorie difensive)
-- Damage Calculations (danno biologico)
-- Procedural Requirements and Deadlines
+- Assistant message providing:
+  - Relevant laws and articles
+  - Recent Cassazione decisions with citations
+  - Legal principles and interpretation
+  - Procedural requirements
+  - Practical implications
 
 ## Usage Instructions
 
-1. Use `legal_training.jsonl` as the training file when creating a fine-tuning job
-2. Use `legal_validation.jsonl` as the validation file to monitor training progress
+1. Use `legal_training.jsonl` as the training file
+2. Use `legal_validation.jsonl` as the validation file
 3. Recommended model: gpt-4o-mini-2024-07-18
 4. Suggested hyperparameters:
    - n_epochs: 3-4
    - batch_size: default
    - learning_rate_multiplier: default
 
-## Fine-tuning Steps
-
-1. Upload the training file:
-```python
-from openai import OpenAI
-client = OpenAI()
-
-client.files.create(
-  file=open("legal_training.jsonl", "rb"),
-  purpose="fine-tune"
-)
-```
-
-2. Upload the validation file:
-```python
-client.files.create(
-  file=open("legal_validation.jsonl", "rb"),
-  purpose="fine-tune"
-)
-```
-
-3. Create the fine-tuning job:
-```python
-client.fine_tuning.jobs.create(
-  training_file="file-abc123", # Replace with your training file ID
-  validation_file="file-def456", # Replace with your validation file ID
-  model="gpt-4o-mini-2024-07-18"
-)
-```
-
-## Data Quality
-
-Each example in the dataset:
-- Contains accurate legal information
-- Includes relevant legal citations
-- Maintains professional language and tone
-- Follows a consistent format
-- Provides comprehensive yet concise responses
-
-## Expected Outcomes
+## Expected Capabilities
 
 The fine-tuned model should be able to:
-- Provide accurate Italian legal advice
-- Reference relevant laws and jurisprudence
-- Maintain professional communication style
-- Handle various types of legal queries
-- Give structured and detailed responses
+1. Provide accurate legal advice incorporating 2024 jurisprudence
+2. Reference specific Cassazione decisions with proper citations
+3. Explain complex legal principles and their practical application
+4. Apply legal rules to specific situations
+5. Identify relevant procedural requirements
+6. Maintain professional legal terminology
+7. Structure responses with clear legal reasoning
+8. Handle international and transnational legal issues
 
-## Monitoring Training
+## Data Quality Assurance
 
-Monitor the training progress using:
-```python
-client.fine_tuning.jobs.list_events(
-  fine_tuning_job_id="ftjob-abc123" # Replace with your job ID
-)
-```
+Each example has been verified for:
+1. Legal Accuracy
+- Current and correct legal principles
+- Accurate citation of recent jurisprudence
+- Proper interpretation of laws
 
-## Best Practices
+2. Professional Standards
+- Formal legal terminology
+- Clear structure and organization
+- Logical reasoning flow
 
-1. Start with the provided examples and gradually add more specific cases
-2. Monitor validation loss to prevent overfitting
-3. Test the model with various legal queries before production use
-4. Keep the system message consistent across all examples
-5. Ensure responses maintain professional legal terminology
+3. Practical Utility
+- Real-world applicability
+- Procedural guidance
+- Implementation considerations
+
+4. Citation Quality
+- Complete references to laws
+- Specific Cassazione decisions
+- Relevant articles and sections
+
+## Best Practices for Use
+
+1. Regular Updates
+- Monitor new Cassazione decisions
+- Update examples with recent jurisprudence
+- Remove outdated legal interpretations
+
+2. Quality Control
+- Verify legal accuracy
+- Check citation formats
+- Ensure professional terminology
+- Test practical applicability
+
+3. Implementation
+- Start with recent examples
+- Monitor validation metrics
+- Test across different legal scenarios
+- Maintain consistent formatting
+
+## Training Recommendations
+
+1. Initial Training
+- Begin with core legal principles
+- Focus on recent jurisprudence
+- Emphasize practical application
+
+2. Validation Process
+- Test against known legal scenarios
+- Verify citation accuracy
+- Check reasoning consistency
+
+3. Ongoing Maintenance
+- Regular updates with new decisions
+- Removal of obsolete interpretations
+- Quality assurance reviews

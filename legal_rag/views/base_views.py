@@ -7,6 +7,7 @@ from django.views.decorators.http import require_http_methods
 import json
 import requests
 import os
+from serpapi import GoogleSearch
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(ensure_csrf_cookie, name='dispatch')
@@ -25,6 +26,12 @@ class ImagePdfAssistantView(TemplateView):
 class CassazioneSearchView(TemplateView):
     """View for rendering the Cassazione search interface"""
     template_name = 'legal_rag/cassazione_search.html'
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(ensure_csrf_cookie, name='dispatch')
+class PenalCodeSearchView(TemplateView):
+    """View for rendering the Penal Code search interface"""
+    template_name = 'legal_rag/penal_code_search.html'
 
 @login_required
 @require_http_methods(["POST"])
@@ -72,6 +79,80 @@ def cassazione_search_api(request):
                     'link': result.get('link', ''),
                     'snippet': result.get('snippet', '')
                 })
+
+        return JsonResponse({'results': formatted_results})
+
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+@login_required
+@require_http_methods(["POST"])
+def penal_code_search_api(request):
+    """API endpoint for searching Penal Code articles using SerpAPI"""
+    try:
+        data = json.loads(request.body)
+        article_number = data.get('article_number')
+        
+        if not article_number:
+            return JsonResponse({'error': 'Article number is required'}, status=400)
+
+        # Search using SerpAPI
+        params = {
+            "engine": "google",
+            "q": f"site:testolegge.com/codice-penale/articolo-{article_number}",
+            "api_key": os.environ.get('SERPAPI_KEY'),
+            "gl": "it",  # Set region to Italy
+            "hl": "it",  # Set language to Italian
+            "num": 1,    # We only need the first result
+            "start": 0
+        }
+
+        search = GoogleSearch(params)
+        results = search.get_dict()
+
+        if 'error' in results:
+            return JsonResponse({'error': results['error']}, status=500)
+
+        if 'organic_results' not in results or not results['organic_results']:
+            return JsonResponse({'error': 'Article not found'}, status=404)
+
+        # Get the article URL
+        article_url = results['organic_results'][0].get('link', '')
+        article_title = results['organic_results'][0].get('title', '')
+
+        # Now search for the full text
+        params = {
+            "engine": "google",
+            "q": f"\"{article_number}\" \"Articolo {article_number}\" \"Chiunque\" site:testolegge.com/codice-penale",
+            "api_key": os.environ.get('SERPAPI_KEY'),
+            "gl": "it",
+            "hl": "it",
+            "num": 10
+        }
+
+        search = GoogleSearch(params)
+        full_text_results = search.get_dict()
+
+        # Get the full text from the search results
+        full_text = ""
+        if 'organic_results' in full_text_results:
+            # Combine snippets from all results
+            snippets = []
+            for result in full_text_results['organic_results']:
+                snippet = result.get('snippet', '').strip()
+                if snippet and 'Articolo' in snippet and str(article_number) in snippet:
+                    snippets.append(snippet)
+
+            # Use the longest snippet as it's likely to be the most complete
+            full_text = max(snippets, key=len) if snippets else results['organic_results'][0].get('snippet', '')
+
+        formatted_results = [{
+            'title': article_title,
+            'link': article_url,
+            'snippet': full_text
+        }]
 
         return JsonResponse({'results': formatted_results})
 

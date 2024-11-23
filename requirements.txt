@@ -19,3 +19,4 @@ python-decouple
 django-storages[azure]
 django-cors-headers
 openparse[ml]
+google-search-results

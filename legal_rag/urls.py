@@ -1,6 +1,11 @@
 from django.urls import path
 from . import views
-from .views.base_views import CassazioneSearchView, cassazione_search_api
+from .views.base_views import (
+    CassazioneSearchView, 
+    cassazione_search_api,
+    PenalCodeSearchView,
+    penal_code_search_api
+)
 from .views.pdf_views import analyze_extracted_text
 
 app_name = 'legal_rag'
@@ -13,4 +18,6 @@ urlpatterns = [
     path('analyze-text/', analyze_extracted_text, name='analyze_text'),
     path('cassazione/', CassazioneSearchView.as_view(), name='cassazione_search'),
     path('cassazione-search/', cassazione_search_api, name='cassazione_search_api'),
+    path('penal-code/', PenalCodeSearchView.as_view(), name='penal_code_search'),
+    path('penal-code-search/', penal_code_search_api, name='penal_code_search_api'),
 ]
