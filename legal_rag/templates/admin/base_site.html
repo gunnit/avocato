@@ -1,0 +1,125 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | Legal RAG Admin{% endblock %}
+
+{% block extrastyle %}
+<style>
+    :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #34495e;
+        --accent-color: #3498db;
+        --success-color: #27ae60;
+        --warning-color: #f39c12;
+        --error-color: #e74c3c;
+    }
+
+    #header {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    #branding h1 {
+        color: white;
+    }
+
+    .module h2, .module caption, .inline-group h2 {
+        background: var(--secondary-color);
+    }
+
+    div.breadcrumbs {
+        background: var(--secondary-color);
+    }
+
+    .button, input[type=submit], input[type=button], .submit-row input, a.button {
+        background: var(--accent-color);
+    }
+
+    .button:hover, input[type=submit]:hover, input[type=button]:hover {
+        background: var(--primary-color);
+    }
+
+    .button.default, input[type=submit].default, .submit-row input.default {
+        background: var(--success-color);
+    }
+
+    /* Custom styles for penal code admin */
+    .field-content_preview span {
+        display: block;
+        max-width: 500px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .field-view_description span {
+        display: block;
+        max-width: 400px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Hierarchical view improvements */
+    .inline-group {
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+
+    .inline-related {
+        border-bottom: 1px solid #eee;
+    }
+
+    /* Better form layouts */
+    .wide {
+        width: 100%;
+        max-width: 800px;
+    }
+
+    .field-content textarea {
+        min-height: 200px;
+        font-family: monospace;
+    }
+
+    /* Status indicators */
+    .field-article_count, .field-title_count {
+        font-weight: bold;
+        color: var(--accent-color);
+    }
+
+    /* Responsive improvements */
+    @media (max-width: 1024px) {
+        .field-content_preview span,
+        .field-view_description span {
+            max-width: 300px;
+        }
+    }
+
+    /* Better table views */
+    #result_list {
+        border-radius: 4px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    #result_list thead th {
+        background: var(--secondary-color);
+        color: white;
+    }
+
+    #result_list tbody tr:hover {
+        background-color: #f5f5f5;
+    }
+</style>
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+        Legal RAG Administration
+    </a>
+</h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
