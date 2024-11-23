@@ -8,7 +8,6 @@ from django.core.paginator import Paginator
 import json
 import requests
 import os
-from serpapi import GoogleSearch
 from ..models import PenalCodeBook, PenalCodeTitle, PenalCodeArticle
 
 @method_decorator(login_required, name='dispatch')
@@ -80,8 +79,8 @@ def penal_code_articles(request):
     """API endpoint for getting paginated articles with optional filters"""
     try:
         # Get filter parameters
-        book_id = request.GET.get('book_id')
-        title_id = request.GET.get('title_id')
+        book_id = request.GET.get('book')
+        search = request.GET.get('search')
         page = int(request.GET.get('page', 1))
         page_size = int(request.GET.get('page_size', 10))
 
@@ -91,8 +90,8 @@ def penal_code_articles(request):
         # Apply filters
         if book_id:
             articles = articles.filter(title__book_id=book_id)
-        if title_id:
-            articles = articles.filter(title_id=title_id)
+        if search:
+            articles = articles.filter(number__icontains=search)
 
         # Paginate results
         paginator = Paginator(articles, page_size)
@@ -187,95 +186,6 @@ def cassazione_search_api(request):
                     'link': result.get('link', ''),
                     'snippet': result.get('snippet', '')
                 })
-
-        return JsonResponse({'results': formatted_results})
-
-    except json.JSONDecodeError:
-        return JsonResponse({'error': 'Invalid JSON data'}, status=400)
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
-
-@login_required
-@require_http_methods(["POST"])
-def penal_code_search_api(request):
-    """API endpoint for searching Penal Code articles using SerpAPI"""
-    try:
-        data = json.loads(request.body)
-        article_number = data.get('article_number')
-        
-        if not article_number:
-            return JsonResponse({'error': 'Article number is required'}, status=400)
-
-        # First search: Get the exact article URL
-        params = {
-            "engine": "google",
-            "q": f"site:testolegge.com/codice-penale/articolo-{article_number}",
-            "api_key": os.environ.get('SERPAPI_KEY'),
-            "gl": "it",
-            "hl": "it",
-            "num": 1,
-            "start": 0,
-            "filter": 0,  # Disable duplicate content filter
-            "no_cache": True  # Disable caching to get fresh results
-        }
-
-        search = GoogleSearch(params)
-        results = search.get_dict()
-
-        if 'error' in results:
-            return JsonResponse({'error': results['error']}, status=500)
-
-        if 'organic_results' not in results or not results['organic_results']:
-            return JsonResponse({'error': 'Article not found'}, status=404)
-
-        # Get the article URL and title
-        article_url = results['organic_results'][0].get('link', '')
-        article_title = results['organic_results'][0].get('title', '')
-
-        # Second search: Get the full text using multiple specific queries
-        full_text_queries = [
-            f"\"Articolo {article_number}\" \"Chiunque\" site:testolegge.com/codice-penale/articolo-{article_number}",
-            f"\"Art. {article_number}\" intext:\"Chiunque\" site:testolegge.com/codice-penale",
-            f"\"Articolo {article_number}\" intext:\"pena\" site:testolegge.com/codice-penale"
-        ]
-
-        all_snippets = []
-        for query in full_text_queries:
-            params = {
-                "engine": "google",
-                "q": query,
-                "api_key": os.environ.get('SERPAPI_KEY'),
-                "gl": "it",
-                "hl": "it",
-                "num": 10,
-                "filter": 0,
-                "no_cache": True
-            }
-
-            search = GoogleSearch(params)
-            full_text_results = search.get_dict()
-
-            if 'organic_results' in full_text_results:
-                for result in full_text_results['organic_results']:
-                    snippet = result.get('snippet', '').strip()
-                    if snippet and 'Articolo' in snippet and str(article_number) in snippet:
-                        # Clean up the snippet
-                        snippet = snippet.replace('...', ' ').strip()
-                        all_snippets.append(snippet)
-
-        # Combine all unique snippets
-        if all_snippets:
-            # Sort snippets by length (longest first) and combine them
-            all_snippets.sort(key=len, reverse=True)
-            full_text = all_snippets[0]  # Use the longest snippet
-        else:
-            full_text = results['organic_results'][0].get('snippet', '')
-
-        formatted_results = [{
-            'title': article_title,
-            'link': article_url,
-            'snippet': full_text
-        }]
 
         return JsonResponse({'results': formatted_results})
 

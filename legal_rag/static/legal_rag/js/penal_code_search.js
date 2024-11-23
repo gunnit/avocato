@@ -1,31 +1,46 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize variables
     let currentPage = 1;
-    let pageSize = 10;
+    let pageSize = 12;
     let totalPages = 1;
     let articles = [];
     let books = [];
-    let titles = [];
 
     // Initialize components
-    const searchForm = document.getElementById('penalCodeSearchForm');
-    const searchResults = document.getElementById('searchResults');
-    const resultsContent = document.getElementById('resultsContent');
-    const loadingSpinner = document.getElementById('loadingSpinner');
     const bookFilter = document.getElementById('bookFilter');
-    const titleFilter = document.getElementById('titleFilter');
     const pageSizeSelect = document.getElementById('pageSizeSelect');
-    const articlesTableBody = document.getElementById('articlesTableBody');
+    const articlesCardGrid = document.getElementById('articlesCardGrid');
     const pagination = document.getElementById('pagination');
+    const articleCardTemplate = document.getElementById('articleCardTemplate');
+    const articleSearch = document.getElementById('articleSearch');
 
     // Load initial data
     loadBooks();
     loadArticles();
 
     // Event Listeners
-    bookFilter.addEventListener('change', handleBookFilterChange);
-    titleFilter.addEventListener('change', handleTitleFilterChange);
-    pageSizeSelect.addEventListener('change', handlePageSizeChange);
+    if (bookFilter) {
+        bookFilter.addEventListener('change', handleBookFilterChange);
+    }
+    if (pageSizeSelect) {
+        pageSizeSelect.addEventListener('change', handlePageSizeChange);
+    }
+    if (articleSearch) {
+        articleSearch.addEventListener('input', debounce(handleArticleSearch, 300));
+    }
+
+    // Debounce function to limit API calls
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
 
     // Functions to handle data loading
     async function loadBooks() {
@@ -52,46 +67,58 @@ document.addEventListener('DOMContentLoaded', function() {
             articles = data.results;
             totalPages = Math.ceil(data.count / pageSize);
             
-            renderArticlesTable();
+            renderArticlesCards();
             renderPagination();
         } catch (error) {
             console.error('Error loading articles:', error);
+            articlesCardGrid.innerHTML = '<div class="alert alert-danger">Si è verificato un errore durante il caricamento degli articoli.</div>';
         }
     }
 
     // UI Rendering Functions
     function populateBookFilter() {
+        if (!bookFilter) return;
         bookFilter.innerHTML = '<option value="">Tutti i Libri</option>';
         books.forEach(book => {
             bookFilter.innerHTML += `<option value="${book.id}">Libro ${book.number} - ${book.name}</option>`;
         });
     }
 
-    function renderArticlesTable() {
-        articlesTableBody.innerHTML = '';
+    function renderArticlesCards() {
+        if (!articlesCardGrid || !articleCardTemplate) return;
+        
+        if (articles.length === 0) {
+            articlesCardGrid.innerHTML = '<div class="col-12"><div class="alert alert-info">Nessun articolo trovato.</div></div>';
+            return;
+        }
+
+        articlesCardGrid.innerHTML = '';
         articles.forEach(article => {
-            articlesTableBody.innerHTML += `
-                <tr>
-                    <td>Art. ${article.number}</td>
-                    <td>${article.heading}</td>
-                    <td>${article.book_name}</td>
-                    <td class="text-end">
-                        <button class="btn btn-sm btn-icon btn-light-primary" onclick="showArticleDetail(${article.id})">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </td>
-                </tr>
-            `;
+            const template = articleCardTemplate.innerHTML
+                .replace('{article_number}', article.number)
+                .replace('{title}', article.heading || '')
+                .replace('{book}', article.book_name || '');
+            
+            articlesCardGrid.innerHTML += template;
+        });
+
+        // Add click handlers to view buttons
+        document.querySelectorAll('.article-card .btn-light-primary').forEach((btn, index) => {
+            btn.onclick = () => showArticleDetail(articles[index].id);
         });
     }
 
     function renderPagination() {
+        if (!pagination) return;
+        
         pagination.innerHTML = '';
         
+        if (totalPages <= 1) return;
+
         // Previous button
         pagination.innerHTML += `
             <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-                <a class="page-link" href="#" onclick="changePage(${currentPage - 1})">
+                <a class="page-link" href="#" onclick="event.preventDefault(); changePage(${currentPage - 1})">
                     <i class="fas fa-chevron-left"></i>
                 </a>
             </li>
@@ -102,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
                 pagination.innerHTML += `
                     <li class="page-item ${i === currentPage ? 'active' : ''}">
-                        <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+                        <a class="page-link" href="#" onclick="event.preventDefault(); changePage(${i})">${i}</a>
                     </li>
                 `;
             } else if (i === currentPage - 3 || i === currentPage + 3) {
@@ -117,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Next button
         pagination.innerHTML += `
             <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
-                <a class="page-link" href="#" onclick="changePage(${currentPage + 1})">
+                <a class="page-link" href="#" onclick="event.preventDefault(); changePage(${currentPage + 1})">
                     <i class="fas fa-chevron-right"></i>
                 </a>
             </li>
@@ -128,30 +155,33 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleBookFilterChange() {
         const bookId = bookFilter.value;
         currentPage = 1;
-        loadArticles({ book_id: bookId });
-        
-        // Load titles for selected book
-        if (bookId) {
-            loadTitles(bookId);
-        } else {
-            titleFilter.innerHTML = '<option value="">Tutti i Titoli</option>';
-            titleFilter.disabled = true;
-        }
-    }
-
-    function handleTitleFilterChange() {
-        const titleId = titleFilter.value;
-        currentPage = 1;
-        loadArticles({
-            book_id: bookFilter.value,
-            title_id: titleId
-        });
+        loadArticles({ book: bookId });
     }
 
     function handlePageSizeChange() {
         pageSize = parseInt(pageSizeSelect.value);
         currentPage = 1;
-        loadArticles();
+        loadArticles(getActiveFilters());
+    }
+
+    function handleArticleSearch(event) {
+        const searchValue = event.target.value.trim();
+        currentPage = 1;
+        loadArticles({
+            ...getActiveFilters(),
+            search: searchValue
+        });
+    }
+
+    function getActiveFilters() {
+        const filters = {};
+        if (bookFilter && bookFilter.value) {
+            filters.book = bookFilter.value;
+        }
+        if (articleSearch && articleSearch.value.trim()) {
+            filters.search = articleSearch.value.trim();
+        }
+        return filters;
     }
 
     // Article Detail Functions
@@ -160,117 +190,33 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await fetch(`/legal-rag/articles/${articleId}/`);
             const article = await response.json();
             
+            const detailModal = document.getElementById('articleDetailModal');
+            if (!detailModal) {
+                console.error('Article detail modal not found');
+                return;
+            }
+
             document.getElementById('articleDetailTitle').textContent = `Articolo ${article.number}`;
             document.getElementById('articleDetailBook').textContent = article.book_name;
             document.getElementById('articleDetailTitleSection').textContent = article.title_name;
             document.getElementById('articleDetailSection').textContent = article.section_name || 'N/A';
             document.getElementById('articleDetailHeading').textContent = article.heading;
-            document.getElementById('articleDetailContent').innerHTML = formatText(article.content);
             
-            new bootstrap.Modal(document.getElementById('articleDetailModal')).show();
+            // Directly insert HTML content for enhanced formatting
+            const contentElement = document.getElementById('articleDetailContent');
+            contentElement.innerHTML = article.content;
+            
+            new bootstrap.Modal(detailModal).show();
         } catch (error) {
             console.error('Error loading article details:', error);
         }
     }
 
-    // Helper Functions
-    function formatText(text) {
-        return text.split('. ')
-            .filter(sentence => sentence.trim() !== '')
-            .map(sentence => `<p class="mb-2">${escapeHtml(sentence.trim())}${sentence.trim().endsWith('.') ? '' : '.'}</p>`)
-            .join('');
-    }
-
-    function escapeHtml(unsafe) {
-        return unsafe
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
-
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-
-    // Search Form Handler
-    searchForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const articleNumber = document.getElementById('articleNumber').value;
-        if (!articleNumber) return;
-
-        searchResults.classList.remove('d-none');
-        loadingSpinner.classList.remove('d-none');
-        resultsContent.innerHTML = '';
-
-        try {
-            const response = await fetch('/legal-rag/penal-code-search/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({ article_number: articleNumber })
-            });
-
-            const data = await response.json();
-            loadingSpinner.classList.add('d-none');
-
-            if (data.error) {
-                resultsContent.innerHTML = `<div class="alert alert-danger">${escapeHtml(data.error)}</div>`;
-                return;
-            }
-
-            if (data.results && data.results.length > 0) {
-                resultsContent.innerHTML = data.results.map(result => `
-                    <div class="border rounded p-5 mb-5">
-                        <div class="mb-3">
-                            <h3 class="text-dark fw-bold text-hover-primary mb-1 fs-5">
-                                ${escapeHtml(result.title || 'Articolo del Codice Penale')}
-                            </h3>
-                        </div>
-                        <div class="text-gray-600 fw-semibold fs-7 mb-4">
-                            ${formatText(result.snippet)}
-                        </div>
-                        <div class="d-flex flex-stack">
-                            <div class="d-flex align-items-center">
-                                <button class="btn btn-sm btn-light" onclick="showArticleDetail(${result.id})">
-                                    <i class="fas fa-eye me-2"></i>Visualizza Dettagli
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-            } else {
-                resultsContent.innerHTML = '<div class="alert alert-info">Nessun risultato trovato.</div>';
-            }
-        } catch (error) {
-            loadingSpinner.classList.add('d-none');
-            resultsContent.innerHTML = '<div class="alert alert-danger">Si è verificato un errore durante la ricerca.</div>';
-        }
-    });
-
     // Expose pagination function to window
     window.changePage = function(newPage) {
         if (newPage >= 1 && newPage <= totalPages) {
             currentPage = newPage;
-            loadArticles({
-                book_id: bookFilter.value,
-                title_id: titleFilter.value
-            });
+            loadArticles(getActiveFilters());
         }
     }
 });

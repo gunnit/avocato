@@ -1,41 +1,45 @@
-<!-- Begin Table View -->
-<div class="tab-pane fade show active" id="kt_tab_table" role="tabpanel">
-    <div class="d-flex flex-column gap-5">
-        <!-- Table Filters -->
-        <div class="d-flex align-items-center gap-2">
-            <select class="form-select form-select-sm w-200px" id="bookFilter">
-                <option value="">Tutti i Libri</option>
-            </select>
-            <select class="form-select form-select-sm w-200px" id="titleFilter">
-                <option value="">Tutti i Titoli</option>
-            </select>
+<!-- Begin Card View -->
+<div class="tab-pane fade show active p-5" id="kt_tab_cards" role="tabpanel">
+    <div class="d-flex flex-column gap-8">
+        <!-- Search and Filters -->
+        <div class="card">
+            <div class="card-body p-8">
+                <div class="d-flex flex-column flex-md-row gap-5">
+                    <!-- Article Search -->
+                    <div class="flex-grow-1">
+                        <label class="form-label fw-bold mb-3">Cerca Articolo</label>
+                        <div class="position-relative">
+                            <span class="position-absolute top-50 translate-middle-y ms-4">
+                                <i class="fas fa-search text-gray-500 fs-4"></i>
+                            </span>
+                            <input type="text" class="form-control form-control-lg form-control-solid ps-12" 
+                                id="articleSearch" 
+                                placeholder="Inserisci il numero dell'articolo...">
+                        </div>
+                    </div>
+                    <!-- Book Filter -->
+                    <div class="w-200px">
+                        <label class="form-label fw-bold mb-3">Libro</label>
+                        <select class="form-select form-select-lg form-select-solid" id="bookFilter">
+                            <option value="">Tutti i Libri</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Table -->
-        <div class="table-responsive">
-            <table class="table table-row-bordered table-row-gray-100 align-middle gs-0 gy-3">
-                <thead>
-                    <tr class="fw-bold text-muted">
-                        <th class="min-w-80px">Articolo</th>
-                        <th class="min-w-150px">Titolo</th>
-                        <th class="min-w-200px">Libro</th>
-                        <th class="min-w-100px text-end">Azioni</th>
-                    </tr>
-                </thead>
-                <tbody id="articlesTableBody">
-                    <!-- Table content will be populated dynamically -->
-                </tbody>
-            </table>
+        <!-- Cards Grid -->
+        <div class="row g-5" id="articlesCardGrid">
+            <!-- Cards will be populated dynamically -->
         </div>
 
         <!-- Pagination -->
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <div class="d-flex flex-wrap gap-2 py-2">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-4 pt-5">
+            <div class="d-flex flex-wrap gap-3 py-2">
                 <select class="form-select form-select-sm w-100px" id="pageSizeSelect">
-                    <option value="10">10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
+                    <option value="12">12</option>
+                    <option value="24">24</option>
+                    <option value="48">48</option>
                 </select>
                 <span class="text-muted pt-2">elementi per pagina</span>
             </div>
@@ -45,4 +49,162 @@
         </div>
     </div>
 </div>
-<!-- End Table View -->
+
+<!-- Article Detail Modal -->
+<div class="modal fade" id="articleDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="articleDetailTitle"></h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-column gap-4">
+                    <!-- Article Metadata -->
+                    <div class="d-flex flex-column gap-2">
+                        <div class="d-flex align-items-center">
+                            <span class="badge badge-light-primary fs-7 fw-bold me-2">Libro</span>
+                            <span class="text-gray-700" id="articleDetailBook"></span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="badge badge-light-primary fs-7 fw-bold me-2">Titolo</span>
+                            <span class="text-gray-700" id="articleDetailTitleSection"></span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="badge badge-light-primary fs-7 fw-bold me-2">Sezione</span>
+                            <span class="text-gray-700" id="articleDetailSection"></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Article Heading -->
+                    <div class="text-center mb-4">
+                        <h4 class="fs-2 fw-bold text-gray-900" id="articleDetailHeading"></h4>
+                    </div>
+                    
+                    <!-- Article Content -->
+                    <div class="border rounded p-6 bg-light-primary article-content">
+                        <div id="articleDetailContent" class="legal-article-content"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.hover-elevate-up {
+    transition: transform 0.3s ease;
+}
+
+.hover-elevate-up:hover {
+    transform: translateY(-5px);
+}
+
+.article-card .card {
+    border: 1px solid #e4e6ef;
+    transition: all 0.3s ease;
+}
+
+.article-card .card:hover {
+    border-color: #009ef7;
+}
+
+#articleSearch {
+    height: 50px;
+    font-size: 1.1rem;
+}
+
+#articleSearch:focus {
+    border-color: #009ef7;
+    box-shadow: 0 0 0 0.2rem rgba(0, 158, 247, 0.25);
+}
+
+.badge-light-primary {
+    color: #009ef7;
+    background-color: #f1faff;
+}
+
+.form-label {
+    font-size: 0.95rem;
+    color: #3f4254;
+}
+
+/* Card Template for Dynamic Population */
+.article-card-template {
+    display: none;
+}
+
+/* Increased spacing */
+.gap-8 {
+    gap: 2rem !important;
+}
+
+.p-8 {
+    padding: 2rem !important;
+}
+
+/* Legal Article Content Styling */
+.legal-article-content {
+    font-family: 'Times New Roman', Times, serif;
+    line-height: 1.6;
+    color: #1e1e1e;
+}
+
+.legal-article-content p {
+    margin-bottom: 1rem;
+    text-align: justify;
+}
+
+.legal-article-content strong {
+    color: #009ef7;
+}
+
+.legal-article-content ul, 
+.legal-article-content ol {
+    margin-bottom: 1rem;
+    padding-left: 2rem;
+}
+
+.legal-article-content li {
+    margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .article-card {
+        margin-bottom: 1.5rem;
+    }
+    
+    .p-8 {
+        padding: 1.5rem !important;
+    }
+}
+</style>
+
+<!-- Card Template for JavaScript -->
+<template id="articleCardTemplate">
+    <div class="col-12 col-md-6 col-xl-4 article-card">
+        <div class="card h-100 shadow-sm hover-elevate-up">
+            <div class="card-body p-8 d-flex flex-column">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="d-flex align-items-center">
+                        <span class="badge badge-light-primary fs-7 fw-bold me-2">Art.</span>
+                        <span class="fs-2 fw-bolder text-gray-800">{article_number}</span>
+                    </div>
+                    <div class="ms-auto">
+                        <button class="btn btn-icon btn-light-primary btn-sm">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <h3 class="card-title mb-4 fs-4 text-gray-900">{title}</h3>
+                <div class="text-gray-600 flex-grow-1">
+                    <span class="badge badge-light fs-8 fw-bold mb-2">
+                        <i class="fas fa-book text-gray-600 me-2"></i>
+                        {book}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<!-- End Card View -->
