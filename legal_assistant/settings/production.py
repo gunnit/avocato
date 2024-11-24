@@ -14,6 +14,9 @@ ALLOWED_HOSTS = [
     '*',  # Temporarily allow all hosts for troubleshooting
 ]
 
+# Add WhiteNoise to INSTALLED_APPS
+INSTALLED_APPS = ['whitenoise.runserver_nostatic'] + INSTALLED_APPS
+
 # Database configuration for Azure PostgreSQL
 DATABASES = {
     'default': {
@@ -53,15 +56,18 @@ except Exception:
     MEDIA_URL = '/media/'
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Static files configuration
-STATIC_URL = '/static/'  # Changed from /assets/ to /static/
+# Static files configuration - use same paths as base.py
+STATIC_URL = '/assets/'  # Match base.py setting
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'assets'),  # Match base.py setting
 ]
 
 # WhiteNoise configuration
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+WHITENOISE_MANIFEST_STRICT = False  # More forgiving in production
+WHITENOISE_AUTOREFRESH = False
+WHITENOISE_USE_FINDERS = False
 
 # Security settings
 SECURE_SSL_REDIRECT = env.bool('DJANGO_SECURE_SSL_REDIRECT', default=True)
@@ -97,6 +103,11 @@ LOGGING = {
         'django': {
             'handlers': ['console'],
             'level': env('DJANGO_LOG_LEVEL', default='INFO'),
+            'propagate': False,
+        },
+        'whitenoise': {
+            'handlers': ['console'],
+            'level': 'INFO',
             'propagate': False,
         },
     }
