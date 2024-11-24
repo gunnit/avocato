@@ -2,7 +2,7 @@ from .base import *
 
 # Security settings
 DEBUG = env.bool('DEBUG', default=False)
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = env('DJANGO_SECRET_KEY')  # Changed from SECRET_KEY to DJANGO_SECRET_KEY
 
 # Azure Web App default domain and your custom domain
 ALLOWED_HOSTS = [
