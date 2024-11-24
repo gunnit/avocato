@@ -1,8 +1,9 @@
 from .base import *
+import os
 
 # Security settings
 DEBUG = env.bool('DEBUG', default=False)
-SECRET_KEY = env('DJANGO_SECRET_KEY')  # Changed from SECRET_KEY to DJANGO_SECRET_KEY
+SECRET_KEY = env('DJANGO_SECRET_KEY')
 
 # Azure Web App default domain and your custom domain
 ALLOWED_HOSTS = [
@@ -26,9 +27,10 @@ DATABASES = {
     }
 }
 
-# Middleware - Remove WhiteNoise since we're using Google Cloud's static file serving
+# Middleware configuration
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Add WhiteNoise for static files
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -52,11 +54,14 @@ except Exception:
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Static files configuration
-STATIC_URL = '/assets/'  # Match base.py
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Required for collectstatic
+STATIC_URL = '/static/'  # Changed from /assets/ to /static/
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'assets'),
+    os.path.join(BASE_DIR, 'static'),
 ]
+
+# WhiteNoise configuration
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Security settings
 SECURE_SSL_REDIRECT = env.bool('DJANGO_SECURE_SSL_REDIRECT', default=True)
