@@ -3,19 +3,21 @@ import os
 
 # Security settings
 DEBUG = env.bool('DEBUG', default=False)
-SECRET_KEY = env('DJANGO_SECRET_KEY')
+SECRET_KEY = env('DJANGO_SECRET_KEY', default='django-insecure-o2d6u5@lq4$zdtt%64^w!8i4g6yjb!hqnbt)xaph2u++3$wi2@')
 
 # Azure Web App default domain and your custom domain
 ALLOWED_HOSTS = [
-    'avocato.azurewebsites.net',  # Default Azure domain
+    'avocato.azurewebsites.net',
     'avocato-fvhmgsdxgtcbdxhz.germanywestcentral-01.azurewebsites.net',
     '.azurewebsites.net',
-    'viagea.oa.r.appspot.com',  # Google App Engine domain
+    os.environ.get('WEBSITE_HOSTNAME', ''),  # Azure App Service hostname
     '*',  # Temporarily allow all hosts for troubleshooting
 ]
 
-# Add WhiteNoise to INSTALLED_APPS
-INSTALLED_APPS = ['whitenoise.runserver_nostatic'] + INSTALLED_APPS
+# Add WhiteNoise to INSTALLED_APPS before django.contrib.staticfiles
+INSTALLED_APPS = [
+    'whitenoise.runserver_nostatic',  # Add this before django.contrib.staticfiles
+] + INSTALLED_APPS
 
 # Database configuration for Azure PostgreSQL
 DATABASES = {
@@ -26,14 +28,17 @@ DATABASES = {
         'PASSWORD': env('DB_PASSWORD'),
         'HOST': env('DB_HOST', default='projectschool.postgres.database.azure.com'),
         'PORT': env('DB_PORT', default='5432'),
-        'OPTIONS': {'sslmode': 'require'},
+        'OPTIONS': {
+            'sslmode': 'require',
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
     }
 }
 
-# Middleware configuration
+# Middleware configuration - ensure WhiteNoise is after SecurityMiddleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Add WhiteNoise for static files
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Add WhiteNoise right after SecurityMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -56,18 +61,19 @@ except Exception:
     MEDIA_URL = '/media/'
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Static files configuration - use same paths as base.py
-STATIC_URL = '/assets/'  # Match base.py setting
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# Static files configuration - use environment variables
+STATIC_URL = os.environ.get('DJANGO_STATIC_URL', '/assets/')
+STATIC_ROOT = os.environ.get('DJANGO_STATIC_ROOT', os.path.join(BASE_DIR, 'staticfiles'))
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'assets'),  # Match base.py setting
+    os.path.join(BASE_DIR, 'assets'),
 ]
 
 # WhiteNoise configuration
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 WHITENOISE_MANIFEST_STRICT = False  # More forgiving in production
-WHITENOISE_AUTOREFRESH = False
 WHITENOISE_USE_FINDERS = False
+WHITENOISE_AUTOREFRESH = False
+WHITENOISE_SKIP_COMPRESS_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'zip', 'gz', 'tgz', 'bz2', 'tbz', 'xz', 'br', 'swf', 'flv', 'woff', 'woff2']
 
 # Security settings
 SECURE_SSL_REDIRECT = env.bool('DJANGO_SECURE_SSL_REDIRECT', default=True)
@@ -86,32 +92,58 @@ CORS_ALLOWED_ORIGINS = [
 ]
 CORS_ALLOW_CREDENTIALS = True
 
-# Logging configuration
+# Comprehensive logging configuration
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'django.log'),
+            'formatter': 'verbose',
         },
     },
     'root': {
-        'handlers': ['console'],
+        'handlers': ['console', 'file'],
         'level': 'INFO',
     },
     'loggers': {
         'django': {
-            'handlers': ['console'],
+            'handlers': ['console', 'file'],
             'level': env('DJANGO_LOG_LEVEL', default='INFO'),
             'propagate': False,
         },
-        'whitenoise': {
+        'django.db.backends': {
+            'level': 'INFO',
             'handlers': ['console'],
+            'propagate': False,
+        },
+        'whitenoise': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'gunicorn': {
+            'handlers': ['console', 'file'],
             'level': 'INFO',
             'propagate': False,
         },
     }
 }
+
+# Ensure logs directory exists
+if not os.path.exists(os.path.join(BASE_DIR, 'logs')):
+    os.makedirs(os.path.join(BASE_DIR, 'logs'))
 
 # API Keys
 ANTHROPIC_API_KEY = env('ANTHROPIC_API_KEY')
