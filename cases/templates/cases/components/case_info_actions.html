@@ -1,3 +1,11 @@
+{% load static %}
+
+<!-- Load CSS -->
+<link href="{% static 'css/loader.css' %}" rel="stylesheet" type="text/css" />
+
+<!-- Load JavaScript -->
+<script src="{% static 'js/loader.js' %}"></script>
+
 <!--begin::Case actions-->
 <div class="card card-flush h-100">
     <!--begin::Card header-->
@@ -117,7 +125,9 @@
                 <!--end::Action-->
 
                 <!--begin::Action-->
-                <a href="{% url 'rigenera_analisi' caso.id %}" class="btn btn-flex btn-light-info px-6 py-5 hover-elevate-up">
+                <button type="button" 
+                    onclick="handleRegenerate('{% url 'rigenera_analisi' caso.id %}');" 
+                    class="btn btn-flex btn-light-info px-6 py-5 hover-elevate-up regenerate-btn">
                     <span class="symbol symbol-25px me-3">
                         <i class="ki-duotone ki-arrows-circle fs-1">
                             <span class="path1"></span>
@@ -128,7 +138,7 @@
                         <span class="fs-5 fw-bolder">Rigenera Analisi</span>
                         <span class="fs-7">Aggiorna l'analisi del caso</span>
                     </span>
-                </a>
+                </button>
                 <!--end::Action-->
             </div>
         </div>
