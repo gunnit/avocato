@@ -1,5 +1,6 @@
-from .base import *
 import os
+
+from .base import *
 
 # Security settings
 DEBUG = env.bool('DEBUG', default=False)
@@ -10,14 +11,13 @@ ALLOWED_HOSTS = [
     'avocato.azurewebsites.net',
     'avocato-fvhmgsdxgtcbdxhz.germanywestcentral-01.azurewebsites.net',
     '.azurewebsites.net',
-    os.environ.get('WEBSITE_HOSTNAME', ''),  # Azure App Service hostname
-    '*',  # Temporarily allow all hosts for troubleshooting
+    os.environ.get('WEBSITE_HOSTNAME', 'localhost'),  # Azure App Service hostname
 ]
 
 # Add WhiteNoise to INSTALLED_APPS before django.contrib.staticfiles
 INSTALLED_APPS = [
-    'whitenoise.runserver_nostatic',  # Add this before django.contrib.staticfiles
-] + INSTALLED_APPS
+                     'whitenoise.runserver_nostatic',  # Add this before django.contrib.staticfiles
+                 ] + INSTALLED_APPS
 
 # Database configuration for Azure PostgreSQL
 DATABASES = {
@@ -28,10 +28,6 @@ DATABASES = {
         'PASSWORD': env('DB_PASSWORD'),
         'HOST': env('DB_HOST', default='projectschool.postgres.database.azure.com'),
         'PORT': env('DB_PORT', default='5432'),
-        'OPTIONS': {
-            'sslmode': 'require',
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
     }
 }
 
@@ -48,24 +44,14 @@ MIDDLEWARE = [
 ]
 
 # File Storage Configuration
-try:
-    AZURE_ACCOUNT_KEY = env('AZURE_STORAGE_ACCOUNT_KEY')
-    DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
-    AZURE_ACCOUNT_NAME = env('AZURE_STORAGE_ACCOUNT_NAME', default='greg123')
-    AZURE_CONTAINER = env('AZURE_STORAGE_CONTAINER_NAME', default='media')
-    AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
-    AZURE_LOCATION = env('AZURE_LOCATION', default='francecentral')
-except Exception:
-    # Fall back to local file storage if Azure storage is not configured
-    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+DEFAULT_FILE_STORAGE = 'cases.views.azure.AzureMediaStorage'
 
 # Static files configuration - use environment variables
 STATIC_URL = os.environ.get('DJANGO_STATIC_URL', '/assets/')
 STATIC_ROOT = os.environ.get('DJANGO_STATIC_ROOT', os.path.join(BASE_DIR, 'staticfiles'))
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'assets'),
+    os.path.join(BASE_DIR, 'static'),
 ]
 
 # WhiteNoise configuration
@@ -73,18 +59,19 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 WHITENOISE_MANIFEST_STRICT = False  # More forgiving in production
 WHITENOISE_USE_FINDERS = False
 WHITENOISE_AUTOREFRESH = False
-WHITENOISE_SKIP_COMPRESS_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'zip', 'gz', 'tgz', 'bz2', 'tbz', 'xz', 'br', 'swf', 'flv', 'woff', 'woff2']
+WHITENOISE_SKIP_COMPRESS_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'zip', 'gz', 'tgz', 'bz2', 'tbz', 'xz',
+                                       'br', 'swf', 'flv', 'woff', 'woff2']
 
 # Security settings
-SECURE_SSL_REDIRECT = env.bool('DJANGO_SECURE_SSL_REDIRECT', default=True)
-SESSION_COOKIE_SECURE = env.bool('DJANGO_SESSION_COOKIE_SECURE', default=True)
-CSRF_COOKIE_SECURE = env.bool('DJANGO_CSRF_COOKIE_SECURE', default=True)
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_HSTS_SECONDS = env.int('DJANGO_SECURE_HSTS_SECONDS', default=31536000)
-SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('DJANGO_SECURE_HSTS_SUBDOMAINS', default=True)
-SECURE_HSTS_PRELOAD = env.bool('DJANGO_SECURE_HSTS_PRELOAD', default=True)
+# SECURE_SSL_REDIRECT = env.bool('DJANGO_SECURE_SSL_REDIRECT', default=True)
+# SESSION_COOKIE_SECURE = env.bool('DJANGO_SESSION_COOKIE_SECURE', default=True)
+# CSRF_COOKIE_SECURE = env.bool('DJANGO_CSRF_COOKIE_SECURE', default=True)
+# SECURE_BROWSER_XSS_FILTER = True
+# SECURE_CONTENT_TYPE_NOSNIFF = True
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# SECURE_HSTS_SECONDS = env.int('DJANGO_SECURE_HSTS_SECONDS', default=31536000)
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('DJANGO_SECURE_HSTS_SUBDOMAINS', default=True)
+# SECURE_HSTS_PRELOAD = env.bool('DJANGO_SECURE_HSTS_PRELOAD', default=True)
 
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
