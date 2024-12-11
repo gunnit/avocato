@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="150" viewBox="0 0 300 150">
+    <rect width="300" height="150" fill="#4A90E2"/>
+    <text x="20" y="70" fill="white" font-size="40" font-family="Arial" font-weight="bold">AI Lawyer</text>
+    
+    <!-- Scales of Justice -->
+    <g transform="translate(200, 40)">
+        <line x1="-10" y1="0" x2="10" y2="0" stroke="white" stroke-width="2"/>
+        <line x1="0" y1="0" x2="0" y2="40" stroke="white" stroke-width="2"/>
+        <line x1="-10" y1="0" x2="-30" y2="20" stroke="white" stroke-width="2"/>
+        <line x1="10" y1="0" x2="30" y2="20" stroke="white" stroke-width="2"/>
+        <circle cx="-30" cy="20" r="10" fill="white"/>
+        <circle cx="30" cy="20" r="10" fill="white"/>
+    </g>
+    
+    <!-- Gavel -->
+    <g transform="translate(50, 40)">
+        <rect x="0" y="0" width="10" height="40" fill="white"/>
+        <rect x="5" y="-10" width="30" height="10" fill="white" transform="rotate(15, 5, -10)"/>
+    </g>
+</svg>

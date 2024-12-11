@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="120" height="30" viewBox="0 0 120 30" xmlns="http://www.w3.org/2000/svg">
+    <!-- Logo Text -->
+    <text x="5" y="22" font-family="Arial" font-size="20" font-weight="bold" fill="#20AA3E">Avoccato</text>
+    <!-- AI Symbol -->
+    <text x="90" y="22" font-family="Arial" font-size="20" font-weight="bold" fill="#03A588">AI</text>
+    <!-- Decorative Line -->
+    <line x1="5" y1="25" x2="115" y2="25" stroke="#20AA3E" stroke-width="2" stroke-opacity="0.3"/>
+</svg>
