@@ -1,0 +1,48 @@
+name: Trigger auto deployment for avocato
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ master ]
+    paths:
+    - '**'
+    - '.github/workflows/avocato-AutoDeployTrigger-0dfbdf8d-29ac-405e-87f1-85d090310eef.yml'
+
+  # Allow manual trigger 
+  workflow_dispatch:      
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions: 
+      id-token: write #This is required for requesting the OIDC JWT Token
+      contents: read #Required when GH token is used to authenticate with private repo
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AVOCATO_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AVOCATO_AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AVOCATO_AZURE_SUBSCRIPTION_ID }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ${{ github.workspace }}
+          _dockerfilePathKey_: _dockerfilePath_
+          registryUrl: pugliairegistry.azurecr.io
+          registryUsername: ${{ secrets.AVOCATO_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.AVOCATO_REGISTRY_PASSWORD }}
+          containerAppName: avocato
+          resourceGroup: avocato
+          imageToBuild: pugliairegistry.azurecr.io/avocato:${{ github.sha }}
+          _buildArgumentsKey_: |
+            _buildArgumentsValues_
+
+
