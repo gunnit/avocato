@@ -7,7 +7,7 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('cases.urls')),
-    path('legal-rag/', include('legal_rag.urls')),  # Add the legal RAG system URLs
+    path('legal-rag/', include('legal_rag.urls', namespace='legal_rag')),  # Added namespace parameter
     
     # Authentication URLs
     path('login/', auth_views.LoginView.as_view(), name='login'),

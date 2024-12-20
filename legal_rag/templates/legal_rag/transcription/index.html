@@ -1,0 +1,107 @@
+{% extends "cases/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Audio/Video Transcription</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <form id="transcriptionForm" class="mb-5">
+                        <div class="mb-3">
+                            <label for="mediaFile" class="form-label">Select Audio/Video File</label>
+                            <input type="file" class="form-control" id="mediaFile" accept=".flac,.mp3,.mp4,.mpeg,.mpga,.m4a,.ogg,.wav,.webm">
+                            <div class="form-text">
+                                Supported formats: FLAC, MP3, MP4, MPEG, MPGA, M4A, OGG, WAV, WEBM
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Transcribe</button>
+                    </form>
+
+                    <!-- Loading spinner -->
+                    <div id="loadingSpinner" class="d-none text-center mb-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Transcribing your file...</p>
+                    </div>
+
+                    <!-- Results section -->
+                    <div id="results" class="d-none">
+                        <h4>Transcription Results:</h4>
+                        <div class="border rounded p-3 bg-light">
+                            <pre id="transcriptionText" class="mb-0" style="white-space: pre-wrap;"></pre>
+                        </div>
+                    </div>
+
+                    <!-- Error alert -->
+                    <div id="errorAlert" class="alert alert-danger d-none" role="alert">
+                        <p id="errorMessage"></p>
+                        <p id="errorDetails" class="mt-2 mb-0 small"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('transcriptionForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const fileInput = document.getElementById('mediaFile');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const results = document.getElementById('results');
+    const transcriptionText = document.getElementById('transcriptionText');
+    const errorAlert = document.getElementById('errorAlert');
+    const errorMessage = document.getElementById('errorMessage');
+    const errorDetails = document.getElementById('errorDetails');
+    
+    if (!fileInput.files.length) {
+        errorMessage.textContent = 'Please select a file';
+        errorDetails.textContent = '';
+        errorAlert.classList.remove('d-none');
+        return;
+    }
+
+    // Hide previous results/errors
+    results.classList.add('d-none');
+    errorAlert.classList.add('d-none');
+    
+    // Show loading spinner
+    loadingSpinner.classList.remove('d-none');
+    
+    const formData = new FormData();
+    formData.append('file', fileInput.files[0]);
+    
+    try {
+        const response = await fetch('/legal-rag/transcription/transcribe/', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            transcriptionText.textContent = data.text;
+            results.classList.remove('d-none');
+        } else {
+            errorMessage.textContent = data.error || 'Transcription failed';
+            errorDetails.textContent = data.details || '';
+            errorAlert.classList.remove('d-none');
+        }
+    } catch (error) {
+        errorMessage.textContent = 'Error processing request';
+        errorDetails.textContent = error.message;
+        errorAlert.classList.remove('d-none');
+    } finally {
+        loadingSpinner.classList.add('d-none');
+    }
+});
+</script>
+{% endblock %}

@@ -69,7 +69,7 @@
                         </div>
                     </div>
                     <div class="menu-item">
-                        <a class="menu-link" href="{% url 'legal_rag:index' %}">
+                        <a class="menu-link" href="{% url 'legal_rag:rag_assistant' %}">
                             <span class="menu-icon">
                                 <i class="ki-duotone ki-book fs-2">
                                     <span class="path1"></span>
@@ -103,7 +103,7 @@
                         </a>
                     </div>
                     <div class="menu-item">
-                        <a class="menu-link" href="{% url 'legal_rag:image_pdf' %}">
+                        <a class="menu-link" href="{% url 'legal_rag:image_pdf_assistant' %}">
                             <span class="menu-icon">
                                 <i class="ki-duotone ki-document fs-2">
                                     <span class="path1"></span>
@@ -111,6 +111,17 @@
                                 </i>
                             </span>
                             <span class="menu-title">Digitalizzazione Atti</span>
+                        </a>
+                    </div>
+                    <div class="menu-item">
+                        <a class="menu-link" href="{% url 'legal_rag:transcription' %}">
+                            <span class="menu-icon">
+                                <i class="ki-duotone ki-microphone fs-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                            </span>
+                            <span class="menu-title">Trascrizione Audio/Video</span>
                         </a>
                     </div>
 
