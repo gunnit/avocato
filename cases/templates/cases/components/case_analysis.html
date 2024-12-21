@@ -24,7 +24,7 @@
             <!--begin::Card toolbar-->
             <div class="card-toolbar">
                 <div class="d-flex justify-content-end" data-kt-user-table-toolbar="base">
-                    <button type="button" class="btn btn-primary btn-lg pulse" onclick="window.location.href='{% url 'rigenera_analisi' caso.id %}'">
+                    <button type="button" class="btn btn-primary btn-lg pulse" id="regenerateBtn" data-url="{% url 'rigenera_analisi' caso.id %}">
                         <span class="pulse-ring"></span>
                         <i class="ki-duotone ki-arrows-circle fs-2 me-2">
                             <span class="path1"></span>
@@ -314,18 +314,23 @@
 <!-- Add custom script for loading state -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const regenerateBtn = document.querySelector('.btn-primary');
+    const regenerateBtn = document.getElementById('regenerateBtn');
     
     regenerateBtn.addEventListener('click', function(e) {
+        // Prevent default button behavior
+        e.preventDefault();
+        
+        // Get the URL from data attribute
+        const url = this.getAttribute('data-url');
+        
+        // Add loading state
         this.classList.add('loading');
         const originalText = this.innerHTML;
         this.innerHTML = '<span class="spinner"></span> Rigenerando...';
+        this.disabled = true;
         
-        // Restore button state after navigation
-        setTimeout(() => {
-            this.classList.remove('loading');
-            this.innerHTML = originalText;
-        }, 500);
+        // Navigate to the regenerate URL
+        window.location.href = url;
     });
 });
 </script>

@@ -37,7 +37,7 @@
                     <!--begin::Title-->
                     <div class="flex-grow-1">
                         <div class="d-flex flex-column">
-                            <a href="{% url 'dettaglio_caso' caso.id %}" class="text-gray-900 text-hover-primary fs-2 fw-bold mb-1 text-truncate">{{ caso.titolo }}</a>
+<a href="{% url 'dettaglio_caso' caso.id %}" class="text-gray-900 text-hover-primary fs-2 fw-bold mb-1">{{ caso.titolo|truncatewords:10 }}</a>
                             <div class="d-flex align-items-center">
                                 <span class="badge badge-light-{% if caso.stato == 'In corso' %}primary{% elif caso.stato == 'Completato' %}success{% else %}warning{% endif %} fw-bold me-2">{{ caso.stato }}</span>
                                 <span class="text-gray-500 fs-7">ID: #{{ caso.id }}</span>

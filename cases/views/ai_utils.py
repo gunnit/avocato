@@ -6,11 +6,15 @@ import os
 load_dotenv()
 
 def analizza_caso(caso_id):
+    print(f"[DEBUG] Starting analizza_caso for caso_id: {caso_id}")
     caso = Caso.objects.get(id=caso_id)
+    print(f"[DEBUG] Retrieved case: {caso.titolo}")
     
-    client = anthropic.Anthropic(
-        api_key=os.getenv('ANTHROPIC_API_KEY')
-    )
+    api_key = os.getenv('ANTHROPIC_API_KEY')
+    print(f"[DEBUG] Got API key (length: {len(api_key) if api_key else 0})")
+    
+    client = anthropic.Anthropic(api_key=api_key)
+    print("[DEBUG] Created Anthropic client")
     
     prompt = f"""
     Analizza il seguente caso secondo la legge italiana e fornisci una risposta in formato JSON strutturato come segue:
@@ -108,6 +112,7 @@ def analizza_caso(caso_id):
     """
     
     try:
+        print("[DEBUG] Sending request to Anthropic API...")
         response = client.messages.create(
             model="claude-3-5-sonnet-20241022",
             max_tokens=4000,
@@ -116,6 +121,10 @@ def analizza_caso(caso_id):
                 "content": prompt
             }]
         )
-        return response.content[0].text
+        print("[DEBUG] Got response from Anthropic API")
+        result = response.content[0].text
+        print(f"[DEBUG] Response length: {len(result)}")
+        return result
     except Exception as e:
-        return f"Errore durante l'analisi AI: {str(e)}"
+        print(f"[DEBUG] Error in analizza_caso: {str(e)}")
+        raise Exception(f"Errore durante l'analisi AI: {str(e)}")

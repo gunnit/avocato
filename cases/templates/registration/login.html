@@ -148,7 +148,7 @@
                     <!--begin::Wrapper-->
                     <div class="w-lg-500px p-10">
                         <!--begin::Form-->
-                        <form method="post" class="form w-100" action="{% url 'login' %}">
+                        <form method="post" class="form w-100" novalidate>
                             {% csrf_token %}
                             <!--begin::Heading-->
                             <div class="text-center mb-11">

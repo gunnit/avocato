@@ -121,15 +121,26 @@ def dettaglio_caso(request, caso_id):
 
 @login_required
 def rigenera_analisi(request, caso_id):
+    print(f"[DEBUG] Starting rigenera_analisi for caso_id: {caso_id}")
     caso = get_object_or_404(Caso, id=caso_id)
+    print(f"[DEBUG] Found case: {caso.titolo}")
+    
     try:
+        print("[DEBUG] Calling analizza_caso...")
         analisi = analizza_caso(caso.id)
+        print(f"[DEBUG] Got analysis result length: {len(str(analisi))}")
+        
+        print("[DEBUG] Saving analysis to case...")
         caso.analisi_ai = analisi
         caso.save()
+        print("[DEBUG] Analysis saved successfully")
+        
         messages.success(request, 'Analisi rigenerata con successo.')
     except Exception as e:
+        print(f"[DEBUG] Error occurred: {str(e)}")
         messages.error(request, f'Errore durante la rigenerazione dell\'analisi: {str(e)}')
     
+    print("[DEBUG] Redirecting to dettaglio_caso")
     return redirect('dettaglio_caso', caso_id=caso.id)
 
 @require_http_methods(["POST"])
