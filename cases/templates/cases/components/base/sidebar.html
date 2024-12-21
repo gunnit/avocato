@@ -14,10 +14,11 @@
                     <img alt="Logo" src="{% static 'media/logos/default-small.svg' %}" class="h-20px app-sidebar-logo-minimize">
                 {% endif %}
             </a>
-            {% if studio and studio.name %}
+            {% if studio %}
+                
                 <div class="d-flex flex-column overflow-hidden">
-                    <span class="text-gray-800 fw-bold fs-6 app-sidebar-logo-default d-inline-block text-truncate" style="max-width: 130px;">{{ studio.name }}</span>
-                    <span class="text-gray-800 fw-bold fs-7 app-sidebar-logo-minimize opacity-0">{{ studio.name }}</span>
+                    <span class="text-gray-800 fw-bold fs-6 app-sidebar-logo-default d-inline-block text-truncate" style="max-width: 130px;">{{ studio.nome }}</span>
+                    <span class="text-gray-800 fw-bold fs-7 app-sidebar-logo-minimize opacity-0">{{ studio.nome }}</span>
                 </div>
             {% endif %}
         </div>

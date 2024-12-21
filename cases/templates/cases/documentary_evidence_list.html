@@ -1,4 +1,5 @@
 {% extends 'cases/base.html' %}
+{% load static %}
 
 {% block page_title %}Produzioni Documentali {% endblock %}
 
@@ -102,20 +103,23 @@
                             <span class="text-gray-800 fw-bold">{{ doc.exhibit_number }}</span>
                         </td>
                         <td>
-                            <div class="d-flex align-items-center">
-                                <div class="symbol symbol-45px me-5">
-                                    <span class="symbol-label bg-light-primary">
-                                        <i class="ki-duotone ki-document fs-2 text-primary">
-                                            <span class="path1"></span>
-                                            <span class="path2"></span>
-                                        </i>
-                                    </span>
-                                </div>
-                                <div class="d-flex flex-column">
-                                    <span class="text-gray-800 fw-bold">{{ doc.title }}</span>
-                                    <span class="text-gray-400 fs-7">{{ doc.description|truncatechars:50 }}</span>
-                                </div>
-                            </div>
+<div class="d-flex align-items-center">
+    <div class="symbol symbol-45px me-5">
+        <span class="symbol-label bg-light-primary">
+            {% if doc.document_file.name|slice:"-4:" == ".pdf" %}
+                <i class="fas fa-file-pdf text-danger icon-size"></i>
+            {% elif doc.document_file.name|slice:"-5:" == ".docx" %}
+                <i class="fas fa-file-word text-primary icon-size"></i>
+            {% else %}
+                <i class="fas fa-file-alt text-secondary icon-size"></i>
+            {% endif %}
+        </span>
+    </div>
+    <div class="d-flex flex-column">
+        <span class="text-gray-800 fw-bold">{{ doc.title }}</span>
+        <span class="text-gray-400 fs-7">{{ doc.description|truncatechars:50 }}</span>
+    </div>
+</div>
                         </td>
                         <td>
                             {% if doc.document_type == 'atto_citazione' %}
