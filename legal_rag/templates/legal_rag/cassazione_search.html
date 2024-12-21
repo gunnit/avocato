@@ -68,6 +68,43 @@
         </div>
     </div>
 </div>
+
+<!-- Modal for Saving Search Result -->
+<div class="modal fade" tabindex="-1" id="saveModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Salva Risultato di Ricerca</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="saveSearchForm">
+                    <div class="mb-3">
+                        <label for="caseSelect" class="form-label">Seleziona Caso</label>
+                        <select id="caseSelect" class="form-select" required>
+                            <option value="">Caricamento casi...</option>
+                        </select>
+                        <div id="casesLoadingSpinner" class="d-none mt-2">
+                            <div class="d-flex align-items-center">
+                                <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <div class="text-gray-600">Caricamento casi in corso...</div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="saveTitle">
+                    <input type="hidden" id="saveLink">
+                    <input type="hidden" id="saveSnippet">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="saveButton">Salva</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
@@ -78,6 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const resultsContent = document.getElementById('resultsContent');
     const loadingSpinner = document.getElementById('loadingSpinner');
     const detailsModal = new bootstrap.Modal(document.getElementById('detailsModal'));
+    const saveModal = new bootstrap.Modal(document.getElementById('saveModal'));
 
     // Function to safely encode HTML entities
     function escapeHtml(unsafe) {
@@ -125,6 +163,76 @@ document.addEventListener('DOMContentLoaded', function() {
         
         detailsModal.show();
     };
+
+    // Load cases when save modal is shown
+    document.getElementById('saveModal').addEventListener('show.bs.modal', function() {
+        const caseSelect = document.getElementById('caseSelect');
+        const loadingSpinner = document.getElementById('casesLoadingSpinner');
+        
+        // Show loading state
+        caseSelect.disabled = true;
+        loadingSpinner.classList.remove('d-none');
+        
+        fetch('/api/cases/')
+            .then(response => response.json())
+            .then(data => {
+                caseSelect.innerHTML = data.map(caso => 
+                    `<option value="${caso.id}">${escapeHtml(caso.titolo)}</option>`
+                ).join('');
+            })
+            .catch(error => {
+                caseSelect.innerHTML = '<option value="">Errore nel caricamento dei casi</option>';
+            })
+            .finally(() => {
+                caseSelect.disabled = false;
+                loadingSpinner.classList.add('d-none');
+            });
+    });
+
+    // Function to open save modal
+    window.openSaveModal = function(element) {
+        const title = element.dataset.title;
+        const link = element.dataset.link;
+        const snippet = element.dataset.snippet;
+
+        // Populate hidden fields with search result data
+        document.getElementById('saveTitle').value = title;
+        document.getElementById('saveLink').value = link;
+        document.getElementById('saveSnippet').value = snippet;
+
+        saveModal.show();
+    };
+
+    // Handle save button click
+    document.getElementById('saveButton').addEventListener('click', function() {
+        const casoId = document.getElementById('caseSelect').value;
+        const searchTitle = document.getElementById('saveTitle').value;
+        const searchLink = document.getElementById('saveLink').value;
+        const searchSnippet = document.getElementById('saveSnippet').value;
+
+        fetch('/legal-rag/api/save-search-result/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                caso_id: casoId,
+                search_title: searchTitle,
+                search_link: searchLink,
+                search_snippet: searchSnippet
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Risultato di ricerca salvato con successo!');
+                saveModal.hide();
+            } else {
+                alert('Errore: ' + data.error);
+            }
+        });
+    });
 
     searchForm.addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -176,25 +284,32 @@ document.addEventListener('DOMContentLoaded', function() {
                             </h3>
                         </div>
                         <div class="text-gray-600 fw-semibold fs-7 mb-4">${snippet}</div>
-                        <div class="d-flex flex-stack">
-                            <div class="d-flex align-items-center">
-                                <button class="btn btn-sm btn-light-primary me-2" 
-                                        onclick="showDetails(this)"
-                                        data-title="${title}"
-                                        data-link="${link}"
-                                        data-snippet="${snippet}">
-                                    <i class="fas fa-eye me-2"></i>Visualizza Dettagli
-                                </button>
-                                <a href="${link}" target="_blank" class="btn btn-sm btn-light me-2">
-                                    <i class="fas fa-external-link-alt me-2"></i>Apri Link
-                                </a>
-                                ${pdfLink ? `
-                                <a href="${escapeHtml(pdfLink)}" target="_blank" class="btn btn-sm btn-light-danger">
-                                    <i class="far fa-file-pdf me-2"></i>Scarica PDF
-                                </a>
-                                ` : ''}
-                            </div>
-                        </div>
+<div class="d-flex flex-stack">
+    <div class="d-flex align-items-center">
+        <button class="btn btn-sm btn-light-primary me-2" 
+                onclick="showDetails(this)"
+                data-title="${title}"
+                data-link="${link}"
+                data-snippet="${snippet}">
+            <i class="fas fa-eye me-2"></i>Visualizza Dettagli
+        </button>
+        <a href="${link}" target="_blank" class="btn btn-sm btn-light me-2">
+            <i class="fas fa-external-link-alt me-2"></i>Apri Link
+        </a>
+        ${pdfLink ? `
+        <a href="${escapeHtml(pdfLink)}" target="_blank" class="btn btn-sm btn-light-danger">
+            <i class="far fa-file-pdf me-2"></i>Scarica PDF
+        </a>
+        ` : ''}
+        <button class="btn btn-sm btn-light-success me-2" 
+                onclick="openSaveModal(this)"
+                data-title="${title}"
+                data-link="${link}"
+                data-snippet="${snippet}">
+            <i class="fas fa-save me-2"></i>Salva Risultato
+        </button>
+    </div>
+</div>
                     </div>
                     `;
                 }).join('');

@@ -21,7 +21,8 @@ from .views.case_views import (
     dettaglio_caso,
     edit_caso,
     delete_caso,
-    rigenera_analisi
+    rigenera_analisi,
+    get_cases_api
 )
 from .views.chat_views import chat_caso
 
@@ -30,6 +31,7 @@ urlpatterns = [
     path('', landing_view, name='landing'),
     
     # Cases URLs
+    path('api/cases/', get_cases_api, name='get_cases_api'),  # API endpoint for getting cases
     path('cases/', lista_casi, name='lista_casi'),
     path('cases/nuovo/', nuovo_caso, name='nuovo_caso'),
     path('cases/<int:caso_id>/', dettaglio_caso, name='dettaglio_caso'),

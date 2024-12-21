@@ -1,4 +1,5 @@
 from django.db import models
+from cases.models import Caso  # Importing the Caso model
 
 class PenalCodeBook(models.Model):
     number = models.IntegerField()
@@ -50,3 +51,14 @@ class PenalCodeArticle(models.Model):
     
     def __str__(self):
         return f"Art. {self.number} - {self.heading}"
+
+# New model for saved search results
+class SavedSearchResult(models.Model):
+    caso = models.ForeignKey(Caso, on_delete=models.CASCADE, related_name='saved_search_results')
+    search_title = models.CharField(max_length=255)
+    search_link = models.URLField()
+    search_snippet = models.TextField()
+    date_saved = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Saved Result for {self.caso.titolo}: {self.search_title}"

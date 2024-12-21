@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_http_methods, require_GET
 from django.core.exceptions import PermissionDenied
 from ..models import Caso
 from .ai_utils import analizza_caso
@@ -100,6 +100,14 @@ def edit_caso(request, caso_id):
         return redirect('dettaglio_caso', caso_id=caso.id)
     
     return render(request, 'cases/edit_caso.html', {'caso': caso})
+
+@login_required
+@login_required
+@require_GET
+def get_cases_api(request):
+    """API endpoint to get a list of cases for dropdowns"""
+    cases = Caso.objects.all().order_by('-data_creazione').values('id', 'titolo')
+    return JsonResponse(list(cases), safe=False)
 
 @login_required
 def delete_caso(request, caso_id):

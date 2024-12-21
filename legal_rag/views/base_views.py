@@ -8,7 +8,8 @@ from django.core.paginator import Paginator
 import json
 import requests
 import os
-from ..models import PenalCodeBook, PenalCodeTitle, PenalCodeArticle
+from ..models import PenalCodeBook, PenalCodeTitle, PenalCodeArticle, SavedSearchResult
+from cases.models import Caso
 
 @method_decorator(login_required, name='dispatch')
 @method_decorator(ensure_csrf_cookie, name='dispatch')
@@ -189,6 +190,37 @@ def cassazione_search_api(request):
 
         return JsonResponse({'results': formatted_results})
 
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+@login_required
+@require_http_methods(["POST"])
+def save_search_result(request):
+    """API endpoint for saving search results to a specific case"""
+    try:
+        data = json.loads(request.body)
+        caso_id = data.get('caso_id')
+        search_title = data.get('search_title')
+        search_link = data.get('search_link')
+        search_snippet = data.get('search_snippet')
+
+        if not all([caso_id, search_title, search_link, search_snippet]):
+            return JsonResponse({'error': 'All fields are required'}, status=400)
+
+        caso = Caso.objects.get(id=caso_id)
+        SavedSearchResult.objects.create(
+            caso=caso,
+            search_title=search_title,
+            search_link=search_link,
+            search_snippet=search_snippet
+        )
+
+        return JsonResponse({'success': 'Search result saved successfully'})
+
+    except Caso.DoesNotExist:
+        return JsonResponse({'error': 'Case not found'}, status=404)
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON data'}, status=400)
     except Exception as e:

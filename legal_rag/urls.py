@@ -16,6 +16,7 @@ urlpatterns = [
     path('api/penal-code/articles/', base_views.penal_code_articles, name='penal_code_articles'),
     path('api/penal-code/articles/<int:article_id>/', base_views.penal_code_article_detail, name='penal_code_article_detail'),
     path('api/cassazione-search/', base_views.cassazione_search_api, name='cassazione_search_api'),
+    path('api/save-search-result/', base_views.save_search_result, name='save_search_result'),
 
     # Chat endpoint
     path('chat/', chat_views.chat_view, name='chat'),

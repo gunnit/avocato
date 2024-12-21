@@ -1,6 +1,31 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import PenalCodeBook, PenalCodeTitle, PenalCodeArticle
+from .models import PenalCodeBook, PenalCodeTitle, PenalCodeArticle, SavedSearchResult
+
+@admin.register(SavedSearchResult)
+class SavedSearchResultAdmin(admin.ModelAdmin):
+    list_display = ('search_title', 'caso', 'date_saved', 'snippet_preview')
+    list_filter = ('date_saved', 'caso')
+    search_fields = ('search_title', 'search_snippet', 'caso__titolo')
+    ordering = ('-date_saved',)
+    
+    def snippet_preview(self, obj):
+        return format_html('<span title="{}">{}</span>', 
+                         obj.search_snippet, 
+                         obj.search_snippet[:100] + '...' if len(obj.search_snippet) > 100 else obj.search_snippet)
+    snippet_preview.short_description = 'Snippet Preview'
+
+    readonly_fields = ('date_saved',)
+    
+    fieldsets = (
+        ('Search Result', {
+            'fields': ('caso', 'search_title', 'search_link', 'search_snippet')
+        }),
+        ('Metadata', {
+            'fields': ('date_saved',),
+            'classes': ('collapse',)
+        }),
+    )
 
 class PenalCodeTitleInline(admin.TabularInline):
     model = PenalCodeTitle
