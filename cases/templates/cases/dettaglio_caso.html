@@ -1,6 +1,6 @@
 {% extends 'cases/base.html' %}
 
-{% block page_title %}Informazioni Caso{% endblock %}
+{% block page_title %}Fascicolo{% endblock %}
 
 {% block breadcrumbs %}
 <!--begin::Item-->
@@ -26,15 +26,13 @@
 {% block page_actions %}
 <!--begin::Actions-->
 <div class="d-flex align-items-center gap-2">
-    {% if caso.stato != 'Completato' %}
-    <button type="button" class="btn btn-sm btn-light-success" data-bs-toggle="modal" data-bs-target="#modalCompletaCaso">
-        <i class="ki-duotone ki-check fs-2">
+    <a href="{% url 'edit_caso' caso.id %}" class="btn btn-sm btn-light-primary">
+        <i class="ki-duotone ki-pencil fs-2">
             <span class="path1"></span>
             <span class="path2"></span>
         </i>
-        <span class="ms-1">Completa Caso</span>
-    </button>
-    {% endif %}
+        <span class="ms-1">Modifica</span>
+    </a>
     <a href="{% url 'lista_casi' %}" class="btn btn-sm btn-light">
         <i class="ki-duotone ki-arrow-left fs-2">
             <span class="path1"></span>

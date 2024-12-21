@@ -5,7 +5,8 @@ from .views.documentary_evidence_views import (
     documentary_evidence_add,
     documentary_evidence_detail,
     documentary_evidence_edit,
-    analyze_evidence
+    analyze_evidence,
+    extract_text
 )
 from .views.user_views import profile, configurazione_studio
 from .views.landing_views import landing_view
@@ -48,6 +49,7 @@ urlpatterns = [
     path('cases/<int:caso_id>/documentary-evidence/<int:doc_id>/', documentary_evidence_detail, name='documentary_evidence_detail'),
     path('cases/<int:caso_id>/documentary-evidence/<int:doc_id>/edit/', documentary_evidence_edit, name='documentary_evidence_edit'),
     path('cases/<int:caso_id>/documentary-evidence/<int:doc_id>/analyze/', analyze_evidence, name='analyze_evidence'),
+    path('cases/<int:caso_id>/documentary-evidence/<int:doc_id>/extract-text/', extract_text, name='extract_text'),
 
     # User URLs
     path('profile/', profile, name='profile'),

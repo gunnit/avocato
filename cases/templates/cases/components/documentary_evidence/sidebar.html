@@ -76,19 +76,23 @@
                         </i>
                         <span class="fw-bold text-gray-800">Timeline</span>
                     </div>
-                    <div class="d-flex flex-column gap-2">
+                    <div class="d-flex flex-column gap-3">
                         <div class="d-flex align-items-center">
-                            <div class="w-35px text-gray-500 fs-7 me-3">Aggiunto</div>
+                            <div class="w-75px text-gray-500 fs-7 me-3">Aggiunto</div>
                             <div class="flex-grow-1">
-                                <div class="fw-semibold text-gray-800">{{ document.date_added|date:"d/m/Y" }}</div>
-                                <div class="text-gray-600 fs-7">{{ document.date_added|date:"H:i" }}</div>
+                                <div class="d-flex align-items-center">
+                                    <span class="fw-semibold text-gray-800 me-2">{{ document.date_added|date:"d/m/Y" }}</span>
+                                    <span class="text-gray-600 fs-7">{{ document.date_added|date:"H:i" }}</span>
+                                </div>
                             </div>
                         </div>
                         <div class="d-flex align-items-center">
-                            <div class="w-35px text-gray-500 fs-7 me-3">Modificato</div>
+                            <div class="w-75px text-gray-500 fs-7 me-3">Modificato</div>
                             <div class="flex-grow-1">
-                                <div class="fw-semibold text-gray-800">{{ document.date_updated|date:"d/m/Y" }}</div>
-                                <div class="text-gray-600 fs-7">{{ document.date_updated|date:"H:i" }}</div>
+                                <div class="d-flex align-items-center">
+                                    <span class="fw-semibold text-gray-800 me-2">{{ document.date_updated|date:"d/m/Y" }}</span>
+                                    <span class="text-gray-600 fs-7">{{ document.date_updated|date:"H:i" }}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -134,7 +138,33 @@
                 <div class="separator my-5"></div>
 
                 <div class="d-flex flex-column gap-3">
-                    <a href="{{ document.document_file.url }}" class="btn btn-primary hover-elevate-up" target="_blank">
+                    <button id="extractTextBtn" class="btn btn-info hover-elevate-up" onclick="extractText()">
+                        <span class="indicator-label">
+                            <i class="ki-duotone ki-document-text fs-2 me-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            Estrai Testo
+                        </span>
+                        <span class="indicator-progress">
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                            Estrazione in corso...
+                        </span>
+                    </button>
+                    <button id="analyzeBtn" class="btn btn-primary hover-elevate-up" onclick="analyzeEvidence()">
+                        <span class="indicator-label">
+                            <i class="ki-duotone ki-brain fs-2 me-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            Analizza Con AI
+                        </span>
+                        <span class="indicator-progress">
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                            Analisi in corso...
+                        </span>
+                    </button>
+                    <a href="{{ document.document_file.url }}" class="btn btn-light hover-elevate-up" target="_blank">
                         <i class="ki-duotone ki-eye fs-2 me-2">
                             <span class="path1"></span>
                             <span class="path2"></span>
@@ -148,6 +178,21 @@
                         </i>
                         Scarica File
                     </a>
+                    <a href="{% url 'documentary_evidence_edit' caso.id document.id %}" class="btn btn-light hover-elevate-up">
+                        <i class="ki-duotone ki-pencil fs-2 me-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        Modifica Documento
+                    </a>
+                    <button type="button" class="btn btn-light hover-elevate-up" data-bs-toggle="modal" data-bs-target="#shareDocumentModal">
+                        <i class="ki-duotone ki-share fs-2 me-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                        </i>
+                        Condividi Documento
+                    </button>
                 </div>
             </div>
         </div>
@@ -234,6 +279,23 @@ function formatFileSize(bytes) {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
+
+// Copy to clipboard functionality
+function copyToClipboard(button) {
+    const input = button.parentElement.querySelector('input');
+    input.select();
+    document.execCommand('copy');
+    
+    // Show feedback
+    const originalHtml = button.innerHTML;
+    button.innerHTML = '<i class="ki-duotone ki-check fs-2"><span class="path1"></span><span class="path2"></span></i>';
+    button.classList.add('btn-success');
+    
+    setTimeout(() => {
+        button.innerHTML = originalHtml;
+        button.classList.remove('btn-success');
+    }, 2000);
+}
 </script>
 
 <style>
@@ -263,8 +325,8 @@ function formatFileSize(bytes) {
 }
 
 /* Timeline styling */
-.w-35px {
-    width: 35px !important;
+.w-75px {
+    width: 75px !important;
 }
 
 /* Notice styling */
@@ -297,3 +359,44 @@ function formatFileSize(bytes) {
     }
 }
 </style>
+
+<!--begin::Share Modal-->
+<div class="modal fade" id="shareDocumentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Condividi Documento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-5">
+                    <label class="form-label fw-bold">Link al Documento</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" value="{{ request.scheme }}://{{ request.get_host }}{% url 'documentary_evidence_detail' caso.id document.id %}" readonly>
+                        <button class="btn btn-light-primary" type="button" onclick="copyToClipboard(this)">
+                            <i class="ki-duotone ki-copy fs-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                        </button>
+                    </div>
+                </div>
+                <div class="separator my-5"></div>
+                <div class="mb-5">
+                    <label class="form-label fw-bold">Condividi via Email</label>
+                    <input type="email" class="form-control" placeholder="Inserisci indirizzo email">
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary">
+                        <i class="ki-duotone ki-send fs-2 me-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        Invia
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--end::Share Modal-->

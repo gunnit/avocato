@@ -5,6 +5,7 @@ class Caso(models.Model):
     titolo = models.CharField(max_length=200)
     descrizione = models.TextField()
     data_creazione = models.DateTimeField(auto_now_add=True)
+    data_modifica = models.DateTimeField(auto_now=True)
     analisi_ai = models.TextField(blank=True)
     riferimenti_legali = models.TextField(blank=True)
     stato = models.CharField(max_length=50)
@@ -82,6 +83,7 @@ class DocumentaryEvidence(models.Model):
     date_updated = models.DateTimeField(auto_now=True)
     ai_analysis_json = models.JSONField(blank=True, null=True)
     ai_analysis_text = models.TextField(blank=True)
+    extracted_text = models.TextField(blank=True, verbose_name='Testo Estratto')
 
     class Meta:
         ordering = ['exhibit_number']

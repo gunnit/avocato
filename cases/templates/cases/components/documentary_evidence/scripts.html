@@ -1,5 +1,7 @@
 <!--begin::Custom scripts-->
-<script>
+<script type="text/javascript">
+// Wait for document and KTUtil to be ready
+document.addEventListener('DOMContentLoaded', function() {
     // Function to get CSRF token from cookies
     function getCookie(name) {
         let cookieValue = null;
@@ -18,6 +20,7 @@
 
     // Function to create list items with icons
     function createListItems(items, iconClass, iconColor) {
+        if (!Array.isArray(items)) return '';
         return items.map(item => `
             <div class="d-flex align-items-center">
                 <i class="ki-duotone ${iconClass} fs-2 ${iconColor} me-2">
@@ -31,134 +34,288 @@
 
     // Function to populate the analysis data
     function populateAnalysis(data) {
-        // Informazioni Chiave
-        document.getElementById('tipo_documento').textContent = data.informazioni_chiave.tipo_documento;
-        
-        document.getElementById('riferimenti_temporali').innerHTML = data.informazioni_chiave.riferimenti_temporali
-            .map(data => `<span class="badge badge-light-primary">${data}</span>`).join('');
-        
-        document.getElementById('parti_coinvolte').innerHTML = createListItems(
-            data.informazioni_chiave.parti_coinvolte,
-            'ki-profile-circle',
-            'text-primary'
-        );
-        
-        document.getElementById('fatti_principali').innerHTML = createListItems(
-            data.informazioni_chiave.fatti_principali,
-            'ki-check-circle',
-            'text-success'
-        );
+        try {
+            // Informazioni Chiave
+            if (data.informazioni_chiave) {
+                const info = data.informazioni_chiave;
+                document.getElementById('tipo_documento').textContent = info.tipo_documento || '';
+                
+                const riferimentiEl = document.getElementById('riferimenti_temporali');
+                if (riferimentiEl && Array.isArray(info.riferimenti_temporali)) {
+                    riferimentiEl.innerHTML = info.riferimenti_temporali
+                        .map(data => `<span class="badge badge-light-primary">${data}</span>`).join('');
+                }
+                
+                const partiEl = document.getElementById('parti_coinvolte');
+                if (partiEl && Array.isArray(info.parti_coinvolte)) {
+                    partiEl.innerHTML = createListItems(
+                        info.parti_coinvolte,
+                        'ki-profile-circle',
+                        'text-primary'
+                    );
+                }
+                
+                const fattiEl = document.getElementById('fatti_principali');
+                if (fattiEl && Array.isArray(info.fatti_principali)) {
+                    fattiEl.innerHTML = createListItems(
+                        info.fatti_principali,
+                        'ki-check-circle',
+                        'text-success'
+                    );
+                }
+            }
 
-        // Analisi Legale
-        document.getElementById('valutazione_affidabilita').textContent = data.analisi_legale.valutazione_affidabilita;
-        
-        document.getElementById('potenziali_eccezioni').innerHTML = createListItems(
-            data.analisi_legale.potenziali_eccezioni,
-            'ki-warning-circle',
-            'text-warning'
-        );
-        
-        document.getElementById('valore_probatorio').textContent = data.analisi_legale.valore_probatorio;
+            // Analisi Legale
+            if (data.analisi_legale) {
+                const analisi = data.analisi_legale;
+                document.getElementById('valutazione_affidabilita').textContent = analisi.valutazione_affidabilita || '';
+                
+                const eccezioniEl = document.getElementById('potenziali_eccezioni');
+                if (eccezioniEl && Array.isArray(analisi.potenziali_eccezioni)) {
+                    eccezioniEl.innerHTML = createListItems(
+                        analisi.potenziali_eccezioni,
+                        'ki-warning-circle',
+                        'text-warning'
+                    );
+                }
+                
+                document.getElementById('valore_probatorio').textContent = analisi.valore_probatorio || '';
+            }
 
-        // Considerazioni Strategiche
-        document.getElementById('punti_forza').innerHTML = createListItems(
-            data.considerazioni_strategiche.punti_forza,
-            'ki-check',
-            'text-success'
-        );
-        
-        document.getElementById('punti_deboli').innerHTML = createListItems(
-            data.considerazioni_strategiche.punti_deboli,
-            'ki-cross',
-            'text-danger'
-        );
+            // Update other sections similarly with null checks
+            if (data.considerazioni_strategiche) {
+                const strategiche = data.considerazioni_strategiche;
+                const fortiEl = document.getElementById('punti_forza');
+                if (fortiEl && Array.isArray(strategiche.punti_forza)) {
+                    fortiEl.innerHTML = createListItems(
+                        strategiche.punti_forza,
+                        'ki-check',
+                        'text-success'
+                    );
+                }
+                
+                const deboliEl = document.getElementById('punti_deboli');
+                if (deboliEl && Array.isArray(strategiche.punti_deboli)) {
+                    deboliEl.innerHTML = createListItems(
+                        strategiche.punti_deboli,
+                        'ki-cross',
+                        'text-danger'
+                    );
+                }
+            }
 
-        // Valutazione Rischi
-        document.getElementById('rischi_legali').innerHTML = createListItems(
-            data.valutazione_rischi.rischi_legali,
-            'ki-shield-cross',
-            'text-danger'
-        );
-        
-        document.getElementById('rischi_strategici').innerHTML = createListItems(
-            data.valutazione_rischi.rischi_strategici,
-            'ki-shield-tick',
-            'text-warning'
-        );
+            // Valutazione Rischi
+            if (data.valutazione_rischi) {
+                const rischi = data.valutazione_rischi;
+                const legaliEl = document.getElementById('rischi_legali');
+                if (legaliEl && Array.isArray(rischi.rischi_legali)) {
+                    legaliEl.innerHTML = createListItems(
+                        rischi.rischi_legali,
+                        'ki-shield-cross',
+                        'text-danger'
+                    );
+                }
+                
+                const strategiciEl = document.getElementById('rischi_strategici');
+                if (strategiciEl && Array.isArray(rischi.rischi_strategici)) {
+                    strategiciEl.innerHTML = createListItems(
+                        rischi.rischi_strategici,
+                        'ki-shield-tick',
+                        'text-warning'
+                    );
+                }
+            }
 
-        // Raccomandazioni
-        document.getElementById('azioni_immediate').innerHTML = createListItems(
-            data.raccomandazioni.azioni_immediate,
-            'ki-rocket',
-            'text-primary'
-        );
-        
-        document.getElementById('strategia_lungo_termine').textContent = data.raccomandazioni.strategia_lungo_termine;
-        
-        document.getElementById('consultazioni_specialistiche').innerHTML = createListItems(
-            data.raccomandazioni.consultazioni_specialistiche,
-            'ki-profile-user',
-            'text-info'
-        );
+            // Raccomandazioni
+            if (data.raccomandazioni) {
+                const raccomandazioni = data.raccomandazioni;
+                const immediateEl = document.getElementById('azioni_immediate');
+                if (immediateEl && Array.isArray(raccomandazioni.azioni_immediate)) {
+                    immediateEl.innerHTML = createListItems(
+                        raccomandazioni.azioni_immediate,
+                        'ki-rocket',
+                        'text-primary'
+                    );
+                }
+                
+                document.getElementById('strategia_lungo_termine').textContent = raccomandazioni.strategia_lungo_termine || '';
+                
+                const consultazioniEl = document.getElementById('consultazioni_specialistiche');
+                if (consultazioniEl && Array.isArray(raccomandazioni.consultazioni_specialistiche)) {
+                    consultazioniEl.innerHTML = createListItems(
+                        raccomandazioni.consultazioni_specialistiche,
+                        'ki-profile-user',
+                        'text-info'
+                    );
+                }
+            }
 
-        // Considerazioni Processuali
-        document.getElementById('fase_processuale_ottimale').textContent = data.considerazioni_processuali.fase_processuale_ottimale;
-        document.getElementById('tempistica_presentazione').textContent = data.considerazioni_processuali.tempistica_presentazione;
-        
-        document.getElementById('potenziali_nullita').innerHTML = createListItems(
-            data.considerazioni_processuali.potenziali_nullita,
-            'ki-shield-cross',
-            'text-danger'
-        );
+            // Considerazioni Processuali
+            if (data.considerazioni_processuali) {
+                const processuali = data.considerazioni_processuali;
+                document.getElementById('fase_processuale_ottimale').textContent = processuali.fase_processuale_ottimale || '';
+                document.getElementById('tempistica_presentazione').textContent = processuali.tempistica_presentazione || '';
+                
+                const nullitaEl = document.getElementById('potenziali_nullita');
+                if (nullitaEl && Array.isArray(processuali.potenziali_nullita)) {
+                    nullitaEl.innerHTML = createListItems(
+                        processuali.potenziali_nullita,
+                        'ki-shield-cross',
+                        'text-danger'
+                    );
+                }
+            }
+        } catch (error) {
+            console.error('Error populating analysis:', error);
+        }
     }
 
     // Function to display analysis
     function displayAnalysis(data) {
-        const analysisContainer = document.getElementById('ai_analysis_container');
-        const template = document.getElementById('ai_analysis_template');
-        
-        if (!template) {
-            throw new Error('Template not found!');
+        try {
+            const analysisContainer = document.getElementById('ai_analysis_container');
+            const template = document.getElementById('ai_analysis_template');
+            
+            if (!template) {
+                throw new Error('Template not found!');
+            }
+            
+            // Insert the template into the container
+            analysisContainer.innerHTML = template.innerHTML;
+            
+            // Populate the template with data
+            populateAnalysis(data);
+        } catch (error) {
+            console.error('Error displaying analysis:', error);
+            throw error;
         }
-        
-        // Insert the template into the container
-        analysisContainer.innerHTML = template.innerHTML;
-        
-        // Populate the template with data
-        populateAnalysis(data);
     }
 
-    // Function to analyze evidence
-    function analyzeEvidence() {
-        const casoId = '{{ caso.id }}';
-        const docId = '{{ document.id }}';
-        const initialAnalysis = JSON.parse('{{ initial_analysis|escapejs }}');
-        
-        console.log('Checking analysis for case:', casoId, 'document:', docId);
-        
-        // If we have initial analysis data, display it immediately
-        if (initialAnalysis) {
-            console.log('Using stored analysis');
-            displayAnalysis(initialAnalysis);
-            return;
+// Make extractText function globally available
+window.extractText = (function() {
+    const caso_id = "{{ caso.id }}";
+    const document_id = "{{ document.id }}";
+    
+    return function() {
+        try {
+            const button = document.getElementById('extractTextBtn');
+            
+            // Validate button exists
+            if (!button) {
+                throw new Error('Extract text button not found');
+            }
+
+            // Show loading state
+            button.classList.add('loading');
+
+            const csrftoken = getCookie('csrftoken');
+            if (!csrftoken) {
+                throw new Error('CSRF token not found');
+            }
+
+            const extractUrl = `/cases/${caso_id}/documentary-evidence/${document_id}/extract-text/`;
+
+            // Call extract text endpoint
+            fetch(extractUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Show success message and reload page
+                    Swal.fire({
+                        title: 'Successo!',
+                        text: 'Il testo è stato estratto con successo.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.reload();
+                        }
+                    });
+                } else {
+                    throw new Error(data.error || 'Unknown error occurred');
+                }
+            })
+            .catch(error => {
+                console.error('Error extracting text:', error);
+                Swal.fire({
+                    title: 'Errore',
+                    text: `Si è verificato un errore durante l'estrazione del testo: ${error.message}`,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            })
+            .finally(() => {
+                button.classList.remove('loading');
+            });
+        } catch (error) {
+            console.error('Setup error:', error);
+            Swal.fire({
+                title: 'Errore',
+                text: `Errore di inizializzazione: ${error.message}`,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            const button = document.getElementById('extractTextBtn');
+            if (button) {
+                button.classList.remove('loading');
+            }
         }
-        
-        // Show loading state for new analysis
-        const analysisContainer = document.getElementById('ai_analysis_container');
-        analysisContainer.innerHTML = `
-            <div class="d-flex flex-column align-items-center p-10">
-                <div class="spinner-border text-primary mb-5" role="status">
-                    <span class="visually-hidden">Loading...</span>
+    };
+})();
+
+// Make analyzeEvidence function globally available with proper variable scope
+window.analyzeEvidence = (function() {
+    // Variables scoped to this closure
+    const caso_id = "{{ caso.id }}";
+    const document_id = "{{ document.id }}";
+    
+    return function() {
+        try {
+            const button = document.getElementById('analyzeBtn');
+            const analysisContainer = document.getElementById('ai_analysis_container');
+            
+            // Validate required elements exist
+            if (!button || !analysisContainer) {
+                throw new Error('Required elements not found');
+            }
+
+            // Safely add loading class
+            if (button.classList) {
+                button.classList.add('loading');
+            }
+
+            // Show loading state
+            analysisContainer.innerHTML = `
+                <div class="d-flex flex-column align-items-center p-10">
+                    <div class="spinner-border text-primary mb-5" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <span class="text-gray-600">Analisi in corso...</span>
                 </div>
-                <span class="text-gray-600">Analisi in corso...</span>
-            </div>
-        `;
+            `;
 
-        const csrftoken = getCookie('csrftoken');
-        const analyzeUrl = '{% url "analyze_evidence" caso.id document.id %}';
+            const csrftoken = getCookie('csrftoken');
+            if (!csrftoken) {
+                throw new Error('CSRF token not found');
+            }
 
-        // Call analyze endpoint
-        fetch(analyzeUrl, {
+            const analyzeUrl = `/cases/${caso_id}/documentary-evidence/${document_id}/analyze/`;
+
+            // Call analyze endpoint
+            fetch(analyzeUrl, {
             method: 'POST',
             headers: {
                 'X-CSRFToken': csrftoken,
@@ -168,38 +325,65 @@
             credentials: 'same-origin'
         })
         .then(response => {
-            console.log('Response status:', response.status);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
         })
         .then(data => {
-            console.log('Analysis data received:', data);
             displayAnalysis(data);
         })
-        .catch(error => {
-            console.error('Error loading analysis:', error);
-            analysisContainer.innerHTML = `
-                <div class="alert alert-danger d-flex align-items-center p-5 mb-10">
-                    <i class="ki-duotone ki-shield-cross fs-2hx text-danger me-4">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                    </i>
-                    <div class="d-flex flex-column">
-                        <h4 class="mb-1 text-danger">Errore durante l'analisi</h4>
-                        <span>Si è verificato un errore durante l'analisi del documento. Dettaglio: ${error.message}</span>
-                        <span class="text-muted mt-2">URL: ${analyzeUrl}</span>
+            .catch(error => {
+                console.error('Error loading analysis:', error);
+                if (analysisContainer) {
+                    analysisContainer.innerHTML = `
+                        <div class="alert alert-danger d-flex align-items-center p-5 mb-10">
+                            <i class="ki-duotone ki-shield-cross fs-2hx text-danger me-4">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            <div class="d-flex flex-column">
+                                <h4 class="mb-1 text-danger">Errore durante l'analisi</h4>
+                                <span>Si è verificato un errore durante l'analisi del documento. ${error.status === 404 ? 'Endpoint non trovato. Contattare l\'amministratore.' : `Dettaglio: ${error.message}`}</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            })
+            .finally(() => {
+                // Safely remove loading class
+                if (button && button.classList) {
+                    button.classList.remove('loading');
+                }
+            });
+        } catch (error) {
+            console.error('Setup error:', error);
+            const analysisContainer = document.getElementById('ai_analysis_container');
+            if (analysisContainer) {
+                analysisContainer.innerHTML = `
+                    <div class="alert alert-danger d-flex align-items-center p-5 mb-10">
+                        <i class="ki-duotone ki-shield-cross fs-2hx text-danger me-4">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        <div class="d-flex flex-column">
+                            <h4 class="mb-1 text-danger">Errore di inizializzazione</h4>
+                            <span>Si è verificato un errore durante l'inizializzazione dell'analisi. Dettaglio: ${error.message}</span>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+            }
+        }
+    };
+})();
+
+    // Initialize tooltips if Bootstrap is available
+    if (typeof bootstrap !== 'undefined') {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function(tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
         });
     }
-
-    // Load analysis when page loads
-    document.addEventListener('DOMContentLoaded', () => {
-        console.log('Document loaded, initializing analysis...');
-        analyzeEvidence();
-    });
+});
 </script>
 <!--end::Custom scripts-->

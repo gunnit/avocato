@@ -3,46 +3,7 @@
 <div class="d-flex flex-column gap-7 gap-lg-10">
     <!--begin::Document Details-->
     <div class="card card-flush">
-        <!--begin::Card header-->
-        <div class="card-header pt-7">
-            <div class="card-title">
-                <h2 class="fw-bold">{{ document.title }}</h2>
-            </div>
-            <div class="card-toolbar">
-                <button type="button" class="btn btn-sm btn-light" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
-                    <i class="ki-duotone ki-setting-3 fs-2">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                        <span class="path3"></span>
-                    </i>
-                </button>
-                <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-semibold w-200px" data-kt-menu="true">
-                    <div class="menu-item px-3">
-                        <div class="menu-content fs-6 text-dark fw-bold px-3 py-4">Azioni Rapide</div>
-                    </div>
-                    <div class="separator mb-3 opacity-75"></div>
-                    <div class="menu-item px-3">
-                        <a href="#" class="menu-link px-3" onclick="printDocument()">
-                            <i class="ki-duotone ki-printer fs-5 me-2">
-                                <span class="path1"></span>
-                                <span class="path2"></span>
-                            </i>
-                            Stampa
-                        </a>
-                    </div>
-                    <div class="menu-item px-3">
-                        <a href="#" class="menu-link px-3" onclick="exportPDF()">
-                            <i class="ki-duotone ki-document fs-5 me-2">
-                                <span class="path1"></span>
-                                <span class="path2"></span>
-                            </i>
-                            Esporta PDF
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--end::Card header-->
+
 
         <!--begin::Card body-->
         <div class="card-body pt-5">
@@ -51,7 +12,10 @@
                 <div class="d-flex flex-stack mb-5">
                     <h3 class="text-dark fw-bold fs-3">Descrizione</h3>
                     <button type="button" class="btn btn-icon btn-sm btn-light-primary" data-bs-toggle="collapse" data-bs-target="#descriptionContent">
-                        <i class="ki-duotone ki-arrow-down fs-2"></i>
+                        <i class="ki-duotone ki-arrow-down fs-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
                     </button>
                 </div>
                 <div class="collapse show" id="descriptionContent">
@@ -68,14 +32,39 @@
                 <div class="d-flex flex-stack mb-5">
                     <h3 class="text-dark fw-bold fs-3">Anteprima Documento</h3>
                     <button type="button" class="btn btn-icon btn-sm btn-light-primary" data-bs-toggle="collapse" data-bs-target="#previewContent">
-                        <i class="ki-duotone ki-arrow-down fs-2"></i>
+                        <i class="ki-duotone ki-arrow-down fs-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
                     </button>
                 </div>
                 <div class="collapse show" id="previewContent">
                     <div class="card card-bordered shadow-none">
                         <div class="card-body p-0">
-                            <div class="ratio ratio-16x9">
-                                <iframe src="{{ document.document_file.url }}" allowfullscreen></iframe>
+                            <div class="ratio ratio-16x9" id="document-viewer-container">
+                                <iframe 
+                                    src="{{ document.document_file.url }}" 
+                                    sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+                                    allowfullscreen
+                                    onload="handleIframeLoad(this)"
+                                    onerror="handleIframeError()"
+                                ></iframe>
+                            </div>
+                            <div id="fallback-viewer" class="d-none p-6 text-center">
+                                <div class="mb-5">
+                                    <i class="ki-duotone ki-document fs-3x text-primary">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                    </i>
+                                </div>
+                                <p class="text-gray-600 mb-5">Il documento non può essere visualizzato direttamente. Utilizzare il pulsante qui sotto per aprirlo in una nuova finestra.</p>
+                                <a href="{{ document.document_file.url }}" target="_blank" class="btn btn-primary">
+                                    <i class="ki-duotone ki-eye fs-2 me-2">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                    </i>
+                                    Apri Documento
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -84,12 +73,52 @@
             {% endif %}
             <!--end::Document preview-->
 
+            <!--begin::Extracted Text-->
+            <div class="mb-10">
+                <div class="d-flex flex-stack mb-5">
+                    <h3 class="text-dark fw-bold fs-3">Testo Estratto</h3>
+                    <button type="button" class="btn btn-icon btn-sm btn-light-primary" data-bs-toggle="collapse" data-bs-target="#extractedTextContent">
+                        <i class="ki-duotone ki-arrow-down fs-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                    </button>
+                </div>
+                <div class="collapse show" id="extractedTextContent">
+                    {% if document.extracted_text %}
+                    <div class="rounded border border-dashed border-gray-300 p-6">
+                        <div class="fs-6 text-gray-700" style="max-height: 400px; overflow-y: auto;">
+                            {{ document.extracted_text|linebreaks }}
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="notice d-flex bg-light-primary rounded border-primary border border-dashed p-6">
+                        <i class="ki-duotone ki-information fs-2tx text-primary me-4">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                        </i>
+                        <div class="d-flex flex-stack flex-grow-1">
+                            <div class="fw-semibold">
+                                <h4 class="text-gray-900 fw-bold">Nessun Testo Estratto</h4>
+                                <div class="fs-6 text-gray-700">Clicca sul pulsante "Estrai Testo" per estrarre il testo dal documento</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <!--end::Extracted Text-->
+
             <!--begin::Authentication section-->
             <div class="mb-10">
                 <div class="d-flex flex-stack mb-5">
                     <h3 class="text-dark fw-bold fs-3">Dettagli Autenticazione</h3>
                     <button type="button" class="btn btn-icon btn-sm btn-light-primary" data-bs-toggle="collapse" data-bs-target="#authenticationContent">
-                        <i class="ki-duotone ki-arrow-down fs-2"></i>
+                        <i class="ki-duotone ki-arrow-down fs-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
                     </button>
                 </div>
                 <div class="collapse show" id="authenticationContent">
@@ -162,6 +191,22 @@
 <!--end::Content-->
 
 <script>
+function handleIframeLoad(iframe) {
+    try {
+        // Check if we can access the iframe content
+        iframe.contentWindow.location.href;
+    } catch (e) {
+        // If we can't access the iframe content, show the fallback viewer
+        document.getElementById('document-viewer-container').classList.add('d-none');
+        document.getElementById('fallback-viewer').classList.remove('d-none');
+    }
+}
+
+function handleIframeError() {
+    document.getElementById('document-viewer-container').classList.add('d-none');
+    document.getElementById('fallback-viewer').classList.remove('d-none');
+}
+
 // Print functionality
 function printDocument() {
     window.print();

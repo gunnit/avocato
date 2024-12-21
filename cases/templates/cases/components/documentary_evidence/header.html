@@ -1,10 +1,11 @@
 {% load static %}
+{% csrf_token %}
 <!--begin::Card header-->
 <div class="card-header pt-7">
     <!--begin::Title and metadata-->
     <div class="card-title d-flex flex-column">
         <div class="d-flex align-items-center mb-2">
-            <h2 class="fw-bold me-3 mb-0">Documento N° {{ document.exhibit_number }}</h2>
+            <h2 class="fw-bold me-2">{{ document.title }}</h2>
             {% if document.document_type == 'atto_citazione' %}
             <span class="badge badge-light-danger fs-7">Atto di Citazione</span>
             {% elif document.document_type == 'comparsa_costituzione' %}
@@ -56,103 +57,35 @@
 
     <!--begin::Toolbar-->
     <div class="card-toolbar">
-        <div class="d-flex flex-stack flex-wrap gap-4">
-            <button id="analyzeBtn" class="btn btn-primary hover-elevate-up" onclick="analyzeEvidence()">
-                <span class="indicator-label">
-                    <i class="ki-duotone ki-brain fs-2 me-2">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                    </i>
-                    Analizza Documento
-                </span>
-                <span class="indicator-progress">
-                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
-                    Analisi in corso...
-                </span>
-            </button>
-            
-            <div class="d-flex gap-2">
-                <a href="{% url 'documentary_evidence_edit' caso.id document.id %}" 
-                   class="btn btn-icon btn-light-warning hover-elevate-up"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="top"
-                   title="Modifica Documento">
-                    <i class="ki-duotone ki-pencil fs-2">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                    </i>
-                </a>
-                {% if document.document_file %}
-                <a href="{{ document.document_file.url }}" 
-                   class="btn btn-icon btn-light-info hover-elevate-up"
-                   target="_blank"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="top"
-                   title="Scarica Documento">
-                    <i class="ki-duotone ki-document fs-2">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                    </i>
-                </a>
-                {% endif %}
-                <button type="button" 
-                        class="btn btn-icon btn-light-primary hover-elevate-up" 
-                        data-bs-toggle="modal" 
-                        data-bs-target="#shareDocumentModal"
-                        title="Condividi Documento">
-                    <i class="ki-duotone ki-share fs-2">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                        <span class="path3"></span>
-                    </i>
-                </button>
+        <div class="d-flex gap-2">
+            <a href="{% url 'documentary_evidence_list' caso.id %}" 
+               class="btn btn-light hover-elevate-up"
+               data-bs-toggle="tooltip"
+               data-bs-placement="top"
+               title="Torna alla Lista">
+                <i class="ki-duotone ki-arrow-left fs-2 me-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                </i>
+                Torna alla Lista
+            </a>
+            <a href="{% url 'dettaglio_caso' caso.id %}" 
+               class="btn btn-primary hover-elevate-up"
+               data-bs-toggle="tooltip"
+               data-bs-placement="top"
+               title="Vai al Caso">
+                <i class="ki-duotone ki-folder fs-2 me-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                </i>
+                Vai al Caso
+            </a>
             </div>
         </div>
     </div>
     <!--end::Toolbar-->
 </div>
 <!--end::Card header-->
-
-<!--begin::Share Modal-->
-<div class="modal fade" id="shareDocumentModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Condividi Documento</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="mb-5">
-                    <label class="form-label fw-bold">Link al Documento</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" value="{{ request.scheme }}://{{ request.get_host }}{% url 'documentary_evidence_detail' caso.id document.id %}" readonly>
-                        <button class="btn btn-light-primary" type="button" onclick="copyToClipboard(this)">
-                            <i class="ki-duotone ki-copy fs-2">
-                                <span class="path1"></span>
-                                <span class="path2"></span>
-                            </i>
-                        </button>
-                    </div>
-                </div>
-                <div class="separator my-5"></div>
-                <div class="mb-5">
-                    <label class="form-label fw-bold">Condividi via Email</label>
-                    <input type="email" class="form-control" placeholder="Inserisci indirizzo email">
-                </div>
-                <div class="d-flex justify-content-end">
-                    <button type="button" class="btn btn-primary">
-                        <i class="ki-duotone ki-send fs-2 me-2">
-                            <span class="path1"></span>
-                            <span class="path2"></span>
-                        </i>
-                        Invia
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!--end::Share Modal-->
 
 <style>
 /* Enhanced button animations */
@@ -196,38 +129,16 @@
 </style>
 
 <script>
-// Initialize tooltips
 document.addEventListener('DOMContentLoaded', function() {
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    tooltipTriggerList.map(function(tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
+    try {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        if (tooltipTriggerList.length > 0) {
+            tooltipTriggerList.map(function(tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        }
+    } catch (error) {
+        console.warn('Error initializing tooltips:', error);
+    }
 });
-
-// Copy to clipboard functionality
-function copyToClipboard(button) {
-    const input = button.parentElement.querySelector('input');
-    input.select();
-    document.execCommand('copy');
-    
-    // Show feedback
-    const originalHtml = button.innerHTML;
-    button.innerHTML = '<i class="ki-duotone ki-check fs-2"><span class="path1"></span><span class="path2"></span></i>';
-    button.classList.add('btn-success');
-    
-    setTimeout(() => {
-        button.innerHTML = originalHtml;
-        button.classList.remove('btn-success');
-    }, 2000);
-}
-
-// Analyze button loading state
-function analyzeEvidence() {
-    const button = document.getElementById('analyzeBtn');
-    button.classList.add('loading');
-    
-    // Your analysis logic here
-    // When complete, remove loading state:
-    // button.classList.remove('loading');
-}
 </script>

@@ -5,20 +5,9 @@
 
     <!--begin::Card body-->
     <div class="card-body pt-5">
-        <!--begin::Progress-->
-        <div class="d-flex flex-column mb-8">
-            <div class="d-flex align-items-center w-100 mb-3">
-                <span class="fs-6 fw-semibold text-gray-800 me-3">Progresso del Caso:</span>
-                <span class="fs-6 fw-bold text-gray-800 ms-auto">{{ caso.progress }}%</span>
-            </div>
-            <div class="h-8px w-100 bg-light-primary rounded">
-                <div class="bg-primary rounded h-8px" role="progressbar" style="width: {{ caso.progress }}%"></div>
-            </div>
-        </div>
-        <!--end::Progress-->
 
-        <!--begin::Info grid-->
-        <div class="d-flex flex-wrap mb-8 gap-5">
+          <!--begin::Info grid-->
+          <div class="d-flex flex-wrap mb-8 gap-5">
             <!--begin::Info item-->
             <div class="border border-gray-300 border-dashed rounded py-3 px-4 me-2">
                 <div class="d-flex align-items-center">
@@ -58,101 +47,105 @@
                     </i>
                     <div class="d-flex flex-column">
                         <span class="text-gray-400 fs-7">Tipo di Caso</span>
-                        <span class="text-gray-800 fs-6 fw-bold">{{ caso.get_tipo_display }}</span>
+                        <span class="text-gray-800 fs-6 fw-bold">Diritto Penale</span>
                     </div>
                 </div>
             </div>
             <!--end::Info item-->
         </div>
         <!--end::Info grid-->
-
-        <!--begin::Accordion-->
-        <div class="accordion accordion-icon-toggle" id="detailsAccordion">
-            <!--begin::Item-->
-            <div class="mb-5">
-                <!--begin::Header-->
-                <div class="accordion-header py-3 d-flex rounded hover-bg-light-primary" data-bs-toggle="collapse" data-bs-target="#descrizioneCollapse">
-                    <span class="accordion-icon">
-                        <i class="ki-duotone ki-arrow-right fs-4">
-                            <span class="path1"></span>
-                            <span class="path2"></span>
-                        </i>
-                    </span>
-                    <h3 class="fs-4 fw-bold mb-0 ms-4">Descrizione del Caso</h3>
-                </div>
-                <!--end::Header-->
-
-                <!--begin::Body-->
-                <div id="descrizioneCollapse" class="fs-6 collapse show ps-10" data-bs-parent="#detailsAccordion">
-                    <div class="py-5">
-                        <div class="text-gray-700 rounded bg-light-primary p-6">
-                            {{ caso.descrizione|linebreaks }}
+ 
+                <!--begin::Accordion-->
+                <div class="accordion accordion-icon-toggle" id="detailsAccordion">
+                    <!--begin::Item-->
+                    <div class="mb-5">
+                        <!--begin::Header-->
+                        <div class="accordion-header py-3 d-flex rounded hover-bg-light-primary" data-bs-toggle="collapse" data-bs-target="#descrizioneCollapse">
+                            <span class="accordion-icon">
+                                <i class="ki-duotone ki-arrow-right fs-4">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                            </span>
+                            <h3 class="fs-4 fw-bold mb-0 ms-4">Descrizione del Caso</h3>
                         </div>
-                    </div>
-                </div>
-                <!--end::Body-->
-            </div>
-            <!--end::Item-->
-
-            {% if caso.riferimenti_legali %}
-            <!--begin::Item-->
-            <div class="mb-5">
-                <!--begin::Header-->
-                <div class="accordion-header py-3 d-flex rounded hover-bg-light-primary collapsed" data-bs-toggle="collapse" data-bs-target="#riferimentiCollapse">
-                    <span class="accordion-icon">
-                        <i class="ki-duotone ki-arrow-right fs-4">
-                            <span class="path1"></span>
-                            <span class="path2"></span>
-                        </i>
-                    </span>
-                    <h3 class="fs-4 fw-bold mb-0 ms-4">Riferimenti Legali</h3>
-                </div>
-                <!--end::Header-->
-
-                <!--begin::Body-->
-                <div id="riferimentiCollapse" class="fs-6 collapse ps-10" data-bs-parent="#detailsAccordion">
-                    <div class="py-5">
-                        <div class="text-gray-700 rounded bg-light-primary p-6">
-                            {{ caso.riferimenti_legali|linebreaks }}
+                        <!--end::Header-->
+        
+                        <!--begin::Body-->
+                        <div id="descrizioneCollapse" class="fs-6 collapse show ps-10" data-bs-parent="#detailsAccordion">
+                            <div class="py-5">
+                                <div class="text-gray-700 rounded bg-light-primary p-6">
+                                    {{ caso.descrizione|linebreaks }}
+                                </div>
+                            </div>
                         </div>
+                        <!--end::Body-->
                     </div>
-                </div>
-                <!--end::Body-->
-            </div>
-            <!--end::Item-->
-            {% endif %}
-
-            <!--begin::Item-->
-            <div class="mb-5">
-                <!--begin::Header-->
-                <div class="accordion-header py-3 d-flex rounded hover-bg-light-primary collapsed" data-bs-toggle="collapse" data-bs-target="#noteCollapse">
-                    <span class="accordion-icon">
-                        <i class="ki-duotone ki-arrow-right fs-4">
-                            <span class="path1"></span>
-                            <span class="path2"></span>
-                        </i>
-                    </span>
-                    <h3 class="fs-4 fw-bold mb-0 ms-4">Note Aggiuntive</h3>
-                </div>
-                <!--end::Header-->
-
-                <!--begin::Body-->
-                <div id="noteCollapse" class="fs-6 collapse ps-10" data-bs-parent="#detailsAccordion">
-                    <div class="py-5">
-                        <div class="text-gray-700 rounded bg-light-primary p-6">
-                            {% if caso.note %}
-                                {{ caso.note|linebreaks }}
-                            {% else %}
-                                <span class="text-muted">Nessuna nota aggiuntiva</span>
-                            {% endif %}
+                    <!--end::Item-->
+        
+                    {% if caso.riferimenti_legali %}
+                    <!--begin::Item-->
+                    <div class="mb-5">
+                        <!--begin::Header-->
+                        <div class="accordion-header py-3 d-flex rounded hover-bg-light-primary collapsed" data-bs-toggle="collapse" data-bs-target="#riferimentiCollapse">
+                            <span class="accordion-icon">
+                                <i class="ki-duotone ki-arrow-right fs-4">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                            </span>
+                            <h3 class="fs-4 fw-bold mb-0 ms-4">Riferimenti Legali</h3>
                         </div>
+                        <!--end::Header-->
+        
+                        <!--begin::Body-->
+                        <div id="riferimentiCollapse" class="fs-6 collapse ps-10" data-bs-parent="#detailsAccordion">
+                            <div class="py-5">
+                                <div class="text-gray-700 rounded bg-light-primary p-6">
+                                    {{ caso.riferimenti_legali|linebreaks }}
+                                </div>
+                            </div>
+                        </div>
+                        <!--end::Body-->
                     </div>
+                    <!--end::Item-->
+                    {% endif %}
+        
+                    <!--begin::Item-->
+                    <div class="mb-5">
+                        <!--begin::Header-->
+                        <div class="accordion-header py-3 d-flex rounded hover-bg-light-primary collapsed" data-bs-toggle="collapse" data-bs-target="#noteCollapse">
+                            <span class="accordion-icon">
+                                <i class="ki-duotone ki-arrow-right fs-4">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                            </span>
+                            <h3 class="fs-4 fw-bold mb-0 ms-4">Note Aggiuntive</h3>
+                        </div>
+                        <!--end::Header-->
+        
+                        <!--begin::Body-->
+                        <div id="noteCollapse" class="fs-6 collapse ps-10" data-bs-parent="#detailsAccordion">
+                            <div class="py-5">
+                                <div class="text-gray-700 rounded bg-light-primary p-6">
+                                    {% if caso.note %}
+                                        {{ caso.note|linebreaks }}
+                                    {% else %}
+                                        <span class="text-muted">Nessuna nota aggiuntiva</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <!--end::Body-->
+                    </div>
+                    <!--end::Item-->
                 </div>
-                <!--end::Body-->
-            </div>
-            <!--end::Item-->
-        </div>
-        <!--end::Accordion-->
+                <!--end::Accordion-->
+
+      
+
+
     </div>
     <!--end::Card body-->
 </div>

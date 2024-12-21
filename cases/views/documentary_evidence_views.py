@@ -7,6 +7,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_protect
 import json
 import anthropic
+from .ai_utils import analyze_document, extract_text_from_pdf
 from django.conf import settings
 from ..models import Caso, DocumentaryEvidence
 
@@ -90,6 +91,8 @@ def documentary_evidence_detail(request, caso_id, doc_id):
 @require_http_methods(["POST"])
 @csrf_protect
 def analyze_evidence(request, caso_id, doc_id):
+    from .ai_utils import analyze_document
+    
     caso = get_object_or_404(Caso, id=caso_id)
     document = get_object_or_404(DocumentaryEvidence, id=doc_id, caso=caso)
     
@@ -97,111 +100,46 @@ def analyze_evidence(request, caso_id, doc_id):
     if document.ai_analysis_json is not None:
         return JsonResponse(document.ai_analysis_json)
     
-    # Prepare the prompt for Claude analysis
-    prompt = f"""Analizza la seguente prova legale dal punto di vista dell'avvocato del imputtato, considerando il contesto del sistema giuridico italiano. Esamina l'affidabilità, le implicazioni legali e il valore strategico:
-
-Titolo: {document.title}
-Tipo Documento: {document.get_document_type_display()}
-Descrizione: {document.description}
-Stato di Autenticazione: {document.authentication_status}
-Note di Autenticazione: {document.authentication_notes}
-
-Fornisci un'analisi dettagliata in formato JSON con la seguente struttura:
-{{
-    "informazioni_chiave": {{
-        "tipo_documento": "",
-        "riferimenti_temporali": [],
-        "parti_coinvolte": [],
-        "fatti_principali": [],
-        "rilevanza_processuale": ""
-    }},
-    "analisi_legale": {{
-        "valutazione_affidabilita": "",
-        "potenziali_eccezioni": [],
-        "questioni_autenticazione": "",
-        "valore_probatorio": "",
-        "compatibilita_costituzionale": "",
-        "conformita_procedura_penale": ""
-    }},
-    "considerazioni_strategiche": {{
-        "punti_forza": [],
-        "punti_deboli": [],
-        "azioni_raccomandate": [],
-        "controargomentazioni": [],
-        "strategie_dibattimentali": []
-    }},
-    "valutazione_rischi": {{
-        "rischi_credibilita": [],
-        "rischi_legali": [],
-        "rischi_strategici": [],
-        "impatto_sulla_posizione_processuale": []
-    }},
-    "raccomandazioni": {{
-        "azioni_immediate": [],
-        "strategia_lungo_termine": "",
-        "prove_supplementari_necessarie": [],
-        "consultazioni_specialistiche": [],
-        "opzioni_negoziali": []
-    }},
-    "considerazioni_processuali": {{
-        "fase_processuale_ottimale": "",
-        "tempistica_presentazione": "",
-        "modalita_acquisizione": "",
-        "potenziali_nullita": []
-    }}
-}}
-
-Restituisci SOLO l'oggetto JSON, senza testo o spiegazioni aggiuntive."""
-
     try:
-        # Initialize Anthropic client
-        client = anthropic.Client(api_key=settings.ANTHROPIC_API_KEY)
+        # Get analysis from AI utils
+        analysis = analyze_document(document)
         
-        # Call Claude API
-        response = client.messages.create(
-            model="claude-3-sonnet-20240229",
-            max_tokens=2000,
-            temperature=0.7,
-            system="You are an experienced legal analyst. Analyze the evidence and return ONLY a JSON object without any additional text.",
-            messages=[{
-                "role": "user",
-                "content": prompt
-            }]
-        )
+        # Save both JSON and text versions
+        document.ai_analysis_json = analysis
+        document.ai_analysis_text = json.dumps(analysis)
+        document.save()
         
-        # Get the response content
-        content = response.content[0].text
-        
-        # Try to parse the JSON response
-        try:
-            analysis = json.loads(content)
-            
-            # Save both JSON and text versions
-            document.ai_analysis_json = analysis
-            document.ai_analysis_text = content
-            document.save()
-            
-            return JsonResponse(analysis)
-        except json.JSONDecodeError:
-            # If direct parsing fails, try to extract JSON from the response
-            # Look for the first { and last } to extract just the JSON part
-            start = content.find('{')
-            end = content.rfind('}') + 1
-            if start != -1 and end != 0:
-                json_str = content[start:end]
-                analysis = json.loads(json_str)
-                
-                # Save both JSON and text versions
-                document.ai_analysis_json = analysis
-                document.ai_analysis_text = json_str
-                document.save()
-                
-                return JsonResponse(analysis)
-            else:
-                raise Exception("Could not extract valid JSON from response")
+        return JsonResponse(analysis)
         
     except Exception as e:
         return JsonResponse({
             "error": "Failed to analyze document",
+            "details": str(e)
+        }, status=500)
+
+@login_required
+@require_http_methods(["POST"])
+@csrf_protect
+def extract_text(request, caso_id, doc_id):
+    caso = get_object_or_404(Caso, id=caso_id)
+    document = get_object_or_404(DocumentaryEvidence, id=doc_id, caso=caso)
+    
+    try:
+        # Extract text using AI utils
+        extracted_text = extract_text_from_pdf(document)
+        
+        # Save the extracted text
+        document.extracted_text = extracted_text
+        document.save()
+        
+        return JsonResponse({
+            "success": True,
+            "message": "Text extracted successfully",
+            "text": extracted_text[:200] + "..." if len(extracted_text) > 200 else extracted_text  # Preview only
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            "error": "Failed to extract text from document",
             "details": str(e)
         }, status=500)
