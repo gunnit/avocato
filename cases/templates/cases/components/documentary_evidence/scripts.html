@@ -2,6 +2,19 @@
 <script type="text/javascript">
 // Wait for document and KTUtil to be ready
 document.addEventListener('DOMContentLoaded', function() {
+    // Get initial analysis data from template
+    try {
+        const initialAnalysisStr = '{{ initial_analysis|escapejs }}';
+        const initialAnalysis = initialAnalysisStr === 'null' ? null : JSON.parse(initialAnalysisStr);
+        
+        // Check for initial analysis data and display if available
+        if (initialAnalysis) {
+            displayAnalysis(initialAnalysis);
+        }
+    } catch (error) {
+        console.error('Error parsing initial analysis:', error);
+    }
+
     // Function to get CSRF token from cookies
     function getCookie(name) {
         let cookieValue = null;

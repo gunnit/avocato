@@ -17,6 +17,9 @@ urlpatterns = [
     path('api/penal-code/articles/<int:article_id>/', base_views.penal_code_article_detail, name='penal_code_article_detail'),
     path('api/cassazione-search/', base_views.cassazione_search_api, name='cassazione_search_api'),
 
+    # Chat endpoint
+    path('chat/', chat_views.chat_view, name='chat'),
+
     # Transcription views
     path('transcription/', transcription_views.TranscriptionView.as_view(), name='transcription'),
     path('transcription/transcribe/', transcription_views.transcribe_media, name='transcribe_media'),

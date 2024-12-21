@@ -94,6 +94,7 @@ def analyze_document(document: DocumentaryEvidence) -> dict:
 Titolo: {document.title}
 Tipo Documento: {document.get_document_type_display()}
 Descrizione: {document.description}
+Extracted Text From Document: {document.extracted_text}
 Stato di Autenticazione: {document.authentication_status}
 Note di Autenticazione: {document.authentication_notes}
 

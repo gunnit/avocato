@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
         resultsContent.innerHTML = '';
 
         try {
-            const response = await fetch('/legal-rag/cassazione-search/', {
+            const response = await fetch('/legal-rag/api/cassazione-search/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

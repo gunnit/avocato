@@ -1,157 +1,90 @@
 import json
-import requests
-import tempfile
-import os
-from typing import List
+import time
 from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.vectorstores import Chroma
-from langchain_anthropic import ChatAnthropic
-from langchain.chains import ConversationalRetrievalChain
-from langchain_openai import OpenAIEmbeddings
-from PyPDF2 import PdfReader
+from openai import OpenAI
 
 class RagSystem:
-    """RAG system implementation"""
+    """RAG system implementation using OpenAI Assistant"""
     def __init__(self):
-        self.qa_chain = None
-        self.chat_history = []
-        self.vectorstore = None
-        self.pdf_urls = [
-            "https://www.studiocataldi.it/codicepenale/codicepenale.pdf",
-        ]
+        self.client = OpenAI(api_key=settings.OPENAI_API_KEY)
+        self.assistant_id = "asst_xT2TnzkEZcvDDMRKnEcSshvX"
 
-    def initialize_system(self):
-        """Initialize the RAG system with PDF content"""
+    def initialize_system(self, request):
+        """Initialize the system by creating a new thread"""
         try:
-            # Extract text from PDFs
-            all_text = ""
-            for url in self.pdf_urls:
-                all_text += self._get_pdf_text(url)
-
-            # Split text into smaller chunks for more precise matching
-            text_splitter = RecursiveCharacterTextSplitter(
-                chunk_size=500,  # Smaller chunks for more precise matching
-                chunk_overlap=100,
-                separators=["\n\n", "\n", ".", "!", "?", ",", " ", ""]
-            )
-            chunks = text_splitter.split_text(all_text)
-
-            # Create embeddings and vector store
-            embeddings = OpenAIEmbeddings(
-                openai_api_key=settings.OPENAI_API_KEY
-            )
-            self.vectorstore = Chroma.from_texts(chunks, embeddings)
-
-            # Initialize Anthropic model with latest configuration
-            llm = ChatAnthropic(
-                model="claude-3-sonnet-20240229",
-                temperature=0,
-                max_tokens=1024,
-                anthropic_api_key=settings.ANTHROPIC_API_KEY
-            )
-
-            # Create conversational chain
-            self.qa_chain = ConversationalRetrievalChain.from_llm(
-                llm=llm,
-                retriever=self.vectorstore.as_retriever(
-                    search_type="similarity",
-                    search_kwargs={"k": 5}  # Retrieve more chunks for better context
-                ),
-                return_source_documents=True,
-                verbose=True
-            )
-
+            # Create a new thread for this session if not exists
+            if 'thread_id' not in request.session:
+                thread = self.client.beta.threads.create()
+                request.session['thread_id'] = thread.id
+            return True
         except Exception as e:
             print(f"Error initializing system: {str(e)}")
-            raise
+            return False
 
-    def _get_pdf_text(self, pdf_url: str) -> str:
-        """Download and extract text from PDF"""
-        try:
-            response = requests.get(pdf_url)
-            response.raise_for_status()
-            
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
-                temp_file.write(response.content)
-                temp_file_path = temp_file.name
-
-            text = ""
-            with open(temp_file_path, "rb") as file:
-                pdf_reader = PdfReader(file)
-                for page in pdf_reader.pages:
-                    text += page.extract_text()
-
-            os.unlink(temp_file_path)
-            return text
-        except Exception as e:
-            print(f"Error processing PDF {pdf_url}: {str(e)}")
-            return ""
-
-    def _check_relevance(self, query: str) -> bool:
-        """Check if the query is relevant to the document content"""
-        try:
-            # Get relevant documents and their scores
-            docs_and_scores = self.vectorstore.similarity_search_with_score(query, k=3)
-            
-            # More lenient threshold for relevance
-            return any(score > 0.3 for _, score in docs_and_scores)
-        except Exception as e:
-            print(f"Error checking relevance: {str(e)}")
-            return True  # Default to allowing the query if check fails
-
-    def process_message(self, message: str) -> str:
+    def process_message(self, request, message: str) -> str:
         """Process a user message and return the response"""
         try:
             # Initialize system if needed
-            if self.qa_chain is None:
-                self.initialize_system()
+            if 'thread_id' not in request.session:
+                success = self.initialize_system(request)
+                if not success:
+                    return "Si è verificato un errore durante l'inizializzazione del sistema."
 
-            # First check if the question is relevant to our document
-            if not self._check_relevance(message):
-                return ("Mi dispiace, ma la tua domanda non sembra essere correlata al contenuto del Codice Penale Italiano. "
-                       "Posso rispondere solo a domande su argomenti specificamente trattati in questo documento legale. "
-                       "Per favore, fai una domanda sul contenuto del Codice Penale Italiano.")
+            thread_id = request.session['thread_id']
 
-            # Format message for Claude with very strict instructions
-            system_message = """ISTRUZIONI IMPORTANTI:
-            1. Sei un assistente legale specializzato che risponde ESCLUSIVAMENTE a domande basate sul documento del Codice Penale Italiano fornito.
-            2. NON devi MAI fornire informazioni al di fuori di questo specifico documento.
-            3. NON devi MAI fare supposizioni o interpretazioni oltre a quanto esplicitamente dichiarato nel documento.
-            4. Se la risposta esatta non si trova nel documento, rispondi con: "Questa informazione specifica non è presente nel documento del Codice Penale Italiano."
-            5. Cita sempre gli articoli, le sezioni o i paragrafi specifici del documento nelle tue risposte.
-            6. Non intraprendere discussioni legali generali o fornire informazioni da altre fonti.
-            7. Se ti viene chiesto qualcosa al di fuori del Codice Penale Italiano, rispondi che puoi rispondere solo a domande su questo specifico documento.
-            8. TUTTE LE RISPOSTE DEVONO ESSERE IN ITALIANO."""
+            # Add the user's message to the thread
+            self.client.beta.threads.messages.create(
+                thread_id=thread_id,
+                role="user",
+                content=message
+            )
 
-            # Get response from RAG system using invoke()
-            response = self.qa_chain.invoke({
-                "question": message,
-                "chat_history": self.chat_history,
-                "system_message": system_message
-            })
+            # Run the assistant on the thread
+            run = self.client.beta.threads.runs.create(
+                thread_id=thread_id,
+                assistant_id=self.assistant_id
+            )
 
-            # Verify the response contains relevant source documents
-            if not response.get('source_documents'):
-                return ("Non riesco a trovare informazioni specifiche su questo nel documento del Codice Penale Italiano. "
-                       "Per favore, fai una domanda sul contenuto che è esplicitamente trattato nel documento.")
+            # Wait for the run to complete with timeout
+            timeout = 30  # 30 seconds timeout
+            start_time = time.time()
+            
+            while True:
+                if time.time() - start_time > timeout:
+                    return "Timeout durante l'elaborazione della richiesta."
+                
+                run_status = self.client.beta.threads.runs.retrieve(
+                    thread_id=thread_id,
+                    run_id=run.id
+                )
+                
+                if run_status.status == 'completed':
+                    break
+                elif run_status.status in ['failed', 'cancelled', 'expired']:
+                    return "Si è verificato un errore durante l'elaborazione della richiesta."
+                
+                time.sleep(1)  # Wait 1 second between checks
 
-            # Add a reminder about the source of information
-            answer = response['answer']
-            answer += "\n\nNota: Questa risposta è basata esclusivamente sul contenuto del Codice Penale Italiano."
+            # Get the assistant's response
+            messages = self.client.beta.threads.messages.list(
+                thread_id=thread_id
+            )
+            
+            # Get the latest assistant message
+            for msg in messages.data:
+                if msg.role == "assistant":
+                    response = msg.content[0].text.value
+                    return response
 
-            # Update chat history
-            self.chat_history.append((message, answer))
-
-            return answer
+            return "Non è stato possibile ottenere una risposta."
 
         except Exception as e:
             print(f"Error processing message: {str(e)}")
-            raise
+            return "Si è verificato un errore durante l'elaborazione della richiesta."
 
 # Create a single instance of the RAG system
 rag_system = RagSystem()
@@ -170,7 +103,7 @@ def chat_view(request):
                 'error': 'È necessario inserire un messaggio'
             }, status=400)
 
-        response = rag_system.process_message(message)
+        response = rag_system.process_message(request, message)
         return JsonResponse({'response': response})
 
     except json.JSONDecodeError:

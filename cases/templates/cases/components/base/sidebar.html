@@ -4,15 +4,23 @@
     <!--begin::Logo-->
     <div class="app-sidebar-logo px-6" id="kt_app_sidebar_logo">
         <!--begin::Logo image-->
-        <a href="{% url 'lista_casi' %}">
-            {% if studio and studio.logo %}
-                <img alt="Logo" src="{{ studio.logo.url }}" class="h-25px app-sidebar-logo-default">
-                <img alt="Logo" src="{{ studio.logo.url }}" class="h-20px app-sidebar-logo-minimize">
-            {% else %}
-                <img alt="Logo" src="{% static 'media/logos/default-small.svg' %}" class="h-25px app-sidebar-logo-default">
-                <img alt="Logo" src="{% static 'media/logos/default-small.svg' %}" class="h-20px app-sidebar-logo-minimize">
+        <div class="d-flex align-items-center flex-grow-1">
+            <a href="{% url 'lista_casi' %}" class="me-3">
+                {% if studio and studio.logo %}
+                    <img alt="Logo" src="{{ studio.logo.url }}" class="h-25px app-sidebar-logo-default">
+                    <img alt="Logo" src="{{ studio.logo.url }}" class="h-20px app-sidebar-logo-minimize">
+                {% else %}
+                    <img alt="Logo" src="{% static 'media/logos/default-small.svg' %}" class="h-25px app-sidebar-logo-default">
+                    <img alt="Logo" src="{% static 'media/logos/default-small.svg' %}" class="h-20px app-sidebar-logo-minimize">
+                {% endif %}
+            </a>
+            {% if studio and studio.name %}
+                <div class="d-flex flex-column overflow-hidden">
+                    <span class="text-gray-800 fw-bold fs-6 app-sidebar-logo-default d-inline-block text-truncate" style="max-width: 130px;">{{ studio.name }}</span>
+                    <span class="text-gray-800 fw-bold fs-7 app-sidebar-logo-minimize opacity-0">{{ studio.name }}</span>
+                </div>
             {% endif %}
-        </a>
+        </div>
         <!--end::Logo image-->
         <!--begin::Sidebar toggle-->
         <div id="kt_app_sidebar_toggle" class="app-sidebar-toggle btn btn-icon btn-shadow btn-sm btn-color-muted btn-active-color-primary h-30px w-30px position-absolute top-50 start-100 translate-middle rotate" data-kt-toggle="true" data-kt-toggle-state="active" data-kt-toggle-target="body" data-kt-toggle-name="app-sidebar-minimize">
