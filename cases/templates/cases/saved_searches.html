@@ -1,0 +1,110 @@
+{% extends 'cases/base.html' %}
+
+{% block page_title %}Ricerche Salvate{% endblock %}
+
+{% block breadcrumbs %}
+<!--begin::Item-->
+<li class="breadcrumb-item">
+    <span class="bullet bg-gray-500 w-5px h-2px"></span>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item text-muted">
+    <a href="{% url 'lista_casi' %}" class="text-muted text-hover-primary">Lista Fascicoli</a>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item">
+    <span class="bullet bg-gray-500 w-5px h-2px"></span>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item text-muted">
+    <a href="{% url 'dettaglio_caso' caso.id %}" class="text-muted text-hover-primary">{{ caso.titolo }}</a>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item">
+    <span class="bullet bg-gray-500 w-5px h-2px"></span>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item text-muted">Ricerche Salvate</li>
+<!--end::Item-->
+{% endblock %}
+
+{% block page_actions %}
+<!--begin::Actions-->
+<div class="d-flex align-items-center gap-2">
+    <a href="{% url 'dettaglio_caso' caso.id %}" class="btn btn-sm btn-light">
+        <i class="ki-duotone ki-arrow-left fs-2">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        <span class="ms-1">Torna al Fascicolo</span>
+    </a>
+</div>
+<!--end::Actions-->
+{% endblock %}
+
+{% block content %}
+<!--begin::Content container-->
+<div class="card">
+    <!--begin::Card header-->
+    <div class="card-header border-0 pt-6">
+        <!--begin::Card title-->
+        <div class="card-title">
+            <h2>Ricerche Cassazione Salvate</h2>
+        </div>
+        <!--end::Card title-->
+    </div>
+    <!--end::Card header-->
+
+    <!--begin::Card body-->
+    <div class="card-body py-4">
+        {% if saved_searches %}
+            <!--begin::Table-->
+            <div class="table-responsive">
+                <table class="table align-middle table-row-bordered table-row-gray-100 fs-6 gy-3">
+                    <thead>
+                        <tr class="text-start text-gray-600 fw-bold fs-7 text-uppercase">
+                            <th class="min-w-150px">Titolo</th>
+                            <th class="min-w-300px">Snippet</th>
+                            <th class="min-w-125px">Data Salvataggio</th>
+                            <th class="text-center min-w-100px">Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-700">
+                        {% for search in saved_searches %}
+                        <tr class="hover-bg-light-primary">
+                            <td class="fw-bold">{{ search.search_title }}</td>
+                            <td class="text-wrap">{{ search.search_snippet }}</td>
+                            <td>{{ search.date_saved|date:"d/m/Y H:i" }}</td>
+                            <td class="text-center">
+                                <a href="{{ search.search_link }}" target="_blank" class="btn btn-icon btn-sm btn-primary" data-bs-toggle="tooltip" title="Apri ricerca">
+                                    <i class="ki-duotone ki-check-circle fs-5 lh-0">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                    </i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <!--end::Table-->
+        {% else %}
+            <div class="text-center py-10">
+                <i class="ki-duotone ki-search fs-3x text-muted mb-5">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                </i>
+                <p class="text-muted fw-semibold fs-6">Nessuna ricerca salvata per questo fascicolo</p>
+            </div>
+        {% endif %}
+    </div>
+    <!--end::Card body-->
+</div>
+<!--end::Content container-->
+{% endblock %}

@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods, require_GET
 from django.core.exceptions import PermissionDenied
 from ..models import Caso
+from legal_rag.models import SavedSearchResult
 from .ai_utils import analizza_caso
 import json
 import anthropic
@@ -208,3 +209,13 @@ Se disponibile, considera anche la seguente analisi del caso:
         
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+@login_required
+def saved_searches(request, caso_id):
+    """Display saved Cassazione searches for a case."""
+    caso = get_object_or_404(Caso, id=caso_id)
+    saved_searches = SavedSearchResult.objects.filter(caso=caso).order_by('-date_saved')
+    return render(request, 'cases/saved_searches.html', {
+        'caso': caso,
+        'saved_searches': saved_searches
+    })

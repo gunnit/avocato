@@ -18,6 +18,10 @@ urlpatterns = [
     path('api/cassazione-search/', base_views.cassazione_search_api, name='cassazione_search_api'),
     path('api/save-search-result/', base_views.save_search_result, name='save_search_result'),
 
+    # PDF processing endpoints
+    path('process-image-pdf/', pdf_views.process_image_pdf, name='process_image_pdf'),
+    path('analyze-extracted-text/', pdf_views.analyze_extracted_text, name='analyze_extracted_text'),
+
     # Chat endpoint
     path('chat/', chat_views.chat_view, name='chat'),
 

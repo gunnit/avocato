@@ -124,6 +124,21 @@
                 <!--end::Action-->
 
                 <!--begin::Action-->
+                <a href="{% url 'saved_searches' caso.id %}" class="btn btn-flex btn-light-danger px-6 py-5 hover-elevate-up">
+                    <span class="symbol symbol-25px me-3">
+                        <i class="ki-duotone ki-timer fs-1">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                    </span>
+                    <span class="d-flex flex-column align-items-start">
+                        <span class="fs-5 fw-bolder">Ricerche Salvate</span>
+                        <span class="fs-7">Visualizza ricerche Cassazione</span>
+                    </span>
+                </a>
+                <!--end::Action-->
+
+                <!--begin::Action-->
                 <button type="button" 
                     onclick="handleRegenerate('{% url 'rigenera_analisi' caso.id %}');" 
                     class="btn btn-flex btn-light-info px-6 py-5 hover-elevate-up regenerate-btn">

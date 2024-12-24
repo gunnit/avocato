@@ -22,7 +22,8 @@ from .views.case_views import (
     edit_caso,
     delete_caso,
     rigenera_analisi,
-    get_cases_api
+    get_cases_api,
+    saved_searches
 )
 from .views.chat_views import chat_caso
 
@@ -42,6 +43,7 @@ urlpatterns = [
     path('cases/<int:caso_id>/memoria-difensiva/detail/', memoria_difensiva_detail, name='memoria_difensiva_detail'),
     path('cases/<int:caso_id>/generate-content/', generate_content, name='generate_content'),
     path('cases/<int:caso_id>/rigenera-analisi/', rigenera_analisi, name='rigenera_analisi'),
+    path('cases/<int:caso_id>/saved-searches/', saved_searches, name='saved_searches'),
     
     # Documentary Evidence URLs
     path('cases/<int:caso_id>/documentary-evidence/', documentary_evidence_list, name='documentary_evidence_list'),

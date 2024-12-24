@@ -213,6 +213,10 @@ document.getElementById('pdfUploadForm').addEventListener('submit', async functi
             throw new Error(data.error);
         }
 
+        // Store data for analysis
+        window.lastStructuredContent = data.structured_content;
+        window.lastChunks = data.chunks;
+        
         // Display results using structured content
         renderStructuredContent(data.structured_content);
         resultsSection.style.display = 'block';
@@ -243,14 +247,16 @@ document.getElementById('analyzeButton').addEventListener('click', async functio
         label.style.display = 'none';
         progress.style.display = 'inline-flex';
 
-        const response = await fetch('/legal-rag/analyze-text/', {
+        const response = await fetch('/legal-rag/analyze-extracted-text/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
             },
             body: JSON.stringify({
-                text: structuredContent.textContent
+                text: structuredContent.textContent,
+                structured_content: window.lastStructuredContent || [],
+                chunks: window.lastChunks || []
             })
         });
 
