@@ -1,268 +1,20 @@
 import os
 import json
-import base64
-import fitz  # PyMuPDF
 import tempfile
-import io
-import requests
 import time
-from concurrent.futures import ThreadPoolExecutor
-from typing import List, Dict, Optional
-from pydantic import BaseModel, Field
-from requests.exceptions import Timeout, RequestException
+import logging
+from datetime import datetime
+import fitz  # PyMuPDF
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
-from django.conf import settings
-import openparse
-import logging
-from .prompts import PDF_TEXT_EXTRACTION_PROMPT, LEGAL_ANALYSIS_PROMPT
+from .pdf_processing import process_text_pdf, process_image_pdf_with_vision
+from .pdf_analysis import analyze_page_content, merge_page_analyses
+from ..models import PDFAnalysisResult
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-class PDFPage(BaseModel):
-    """Model for storing page content and metadata"""
-    page_num: int
-    text: str
-    metadata: Dict = Field(default_factory=dict)
-    confidence: float = 1.0
-    source: str = "text"  # 'text' or 'vision'
-
-class PDFProcessingResult(BaseModel):
-    """Model for storing PDF processing results"""
-    text: str
-    structured_content: List[Dict]
-    chunks: List[Dict]
-    processing_type: str
-    trace_id: str = Field(default_factory=lambda: f"trace_{time.time()}")
-
-def process_page_with_vision(page_data: tuple) -> Optional[PDFPage]:
-    """Process a single page with GPT-4 Vision"""
-    page, page_num = page_data
-    try:
-        pix = page.get_pixmap()
-        img_data = pix.tobytes("png")
-        base64_image = base64.b64encode(img_data).decode('utf-8')
-        
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {settings.OPENAI_API_KEY}"
-        }
-        
-        payload = {
-            "model": "gpt-4o",
-            "messages": [
-                {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "text",
-                            "text": PDF_TEXT_EXTRACTION_PROMPT
-                        },
-                        {
-                            "type": "image_url",
-                            "image_url": {
-                                "url": f"data:image/png;base64,{base64_image}",
-                                "detail": "high"
-                            }
-                        }
-                    ]
-                }
-            ],
-            "max_tokens": 4096
-        }
-
-        # Process page with retry mechanism
-        for attempt in range(3):
-            try:
-                response = requests.post(
-                    "https://api.openai.com/v1/chat/completions",
-                    headers=headers,
-                    json=payload,
-                    timeout=60
-                )
-                response.raise_for_status()
-                
-                response_data = response.json()
-                if 'error' in response_data:
-                    logger.error(f"OpenAI API error: {response_data['error']}")
-                    raise RequestException(f"OpenAI API error: {response_data['error']}")
-                    
-                page_text = response_data['choices'][0]['message']['content']
-                if not page_text.strip():
-                    logger.warning(f"Empty text extracted from page {page_num + 1}")
-                    return None
-                return PDFPage(
-                    page_num=page_num + 1,
-                    text=page_text,
-                    source='vision',
-                    metadata={'page_num': page_num + 1}
-                )
-                
-            except (Timeout, RequestException) as e:
-                if attempt == 2:
-                    logger.error(f"Failed to process page {page_num + 1} after 3 attempts: {str(e)}")
-                    raise
-                logger.warning(f"Attempt {attempt + 1} failed for page {page_num + 1}: {str(e)}")
-                time.sleep(1)  # Wait before retry
-                
-    except Exception as e:
-        logger.error(f"Error processing page {page_num + 1}: {str(e)}")
-        return None
-
-def process_text_pdf(pdf_path: str) -> Optional[PDFProcessingResult]:
-    """Process a text-based PDF using openparse"""
-    try:
-        parser = openparse.DocumentParser()
-        parsed_content = parser.parse(pdf_path)
-        
-        extracted_text = ""
-        structured_content = []
-        chunks = []
-        current_section = None
-        
-        for node in parsed_content.nodes:
-            node_dict = node.dict()
-            node_metadata = {
-                'type': node_dict.get('type'),
-                'bbox': node_dict.get('bbox', {}),
-                'page_num': node_dict.get('page_num', 1),
-                'confidence': node_dict.get('confidence', 1.0)
-            }
-            
-            if node_dict.get('type') == 'heading':
-                current_section = {
-                    'type': 'section',
-                    'heading': node_dict.get('text'),
-                    'content': [],
-                    'metadata': node_metadata
-                }
-                structured_content.append(current_section)
-                extracted_text += f"\n## {node_dict.get('text')}\n"
-                chunks.append({
-                    'text': node_dict.get('text'),
-                    'type': 'heading',
-                    'metadata': node_metadata
-                })
-            elif node_dict.get('type') == 'table':
-                table_content = {
-                    'type': 'table',
-                    'markdown': node_dict.get('markdown'),
-                    'cells': node_dict.get('cells', []),
-                    'metadata': node_metadata
-                }
-                if current_section:
-                    current_section['content'].append(table_content)
-                else:
-                    structured_content.append(table_content)
-                extracted_text += f"\n{node_dict.get('markdown')}\n"
-                chunks.append({
-                    'text': node_dict.get('markdown'),
-                    'type': 'table',
-                    'metadata': node_metadata
-                })
-            else:
-                text = node_dict.get('text', '')
-                if text:
-                    text_content = {
-                        'type': 'text',
-                        'text': text,
-                        'metadata': node_metadata
-                    }
-                    if current_section:
-                        current_section['content'].append(text_content)
-                    else:
-                        structured_content.append(text_content)
-                    extracted_text += f"{text}\n"
-                    chunks.append({
-                        'text': text,
-                        'type': 'text',
-                        'metadata': node_metadata
-                    })
-        
-        return PDFProcessingResult(
-            text=extracted_text,
-            structured_content=structured_content,
-            chunks=chunks,
-            processing_type='text'
-        )
-        
-    except Exception as e:
-        logger.error(f"Error processing text PDF: {str(e)}")
-        return None
-
-def process_image_pdf_with_vision(pdf_path: str) -> Optional[PDFProcessingResult]:
-    """Process an image-based PDF using GPT-4 Vision with parallel processing"""
-    try:
-        pdf_document = fitz.open(pdf_path)
-        pages = [(pdf_document[i], i) for i in range(pdf_document.page_count)]
-        
-        # Process pages in parallel with smaller batch size
-        extracted_text = ""
-        structured_content = []
-        chunks = []
-        
-        # Process in smaller batches to avoid rate limits
-        batch_size = 1  # Process one page at a time to avoid rate limits
-        for i in range(0, len(pages), batch_size):
-            batch = pages[i:i + batch_size]
-            with ThreadPoolExecutor(max_workers=batch_size) as executor:
-                processed_pages = list(executor.map(process_page_with_vision, batch))
-                
-                # Process successful pages from this batch
-                successful_pages = [page for page in processed_pages if page is not None]
-                successful_pages.sort(key=lambda x: x.page_num)
-                
-                for page in successful_pages:
-                    extracted_text += f"[Page {page.page_num}]\n{page.text}\n\n"
-                    
-                    # Create content and chunk entries
-                    content = {
-                        'type': 'text',
-                        'text': page.text,
-                        'metadata': {
-                            'type': 'text',
-                            'page_num': page.page_num,
-                            'source': page.source
-                        }
-                    }
-                    structured_content.append(content)
-                    chunks.append({
-                        'text': page.text,
-                        'type': 'text',
-                        'metadata': {
-                            'page_num': page.page_num,
-                            'source': page.source
-                        }
-                    })
-            
-            # Add longer delay between batches to avoid rate limits
-            if i + batch_size < len(pages):
-                time.sleep(5)  # 5 second delay between pages
-        
-        pdf_document.close()
-        
-        if not chunks:
-            logger.warning("No pages were successfully processed")
-            return PDFProcessingResult(
-                text="",
-                structured_content=[],
-                chunks=[],
-                processing_type='image'
-            )
-            
-        return PDFProcessingResult(
-            text=extracted_text,
-            structured_content=structured_content,
-            chunks=chunks,
-            processing_type='image'
-        )
-        
-    except Exception as e:
-        logger.error(f"Error processing image PDF: {str(e)}")
-        return None
 
 @csrf_protect
 @require_http_methods(["POST"])
@@ -298,6 +50,13 @@ def process_image_pdf(request):
             
             pdf_document.close()
             
+            # Create PDFAnalysisResult instance first
+            analysis_result = PDFAnalysisResult.objects.create(
+                filename=pdf_file.name,
+                pdf_file=pdf_file,
+                caso_id=request.POST.get('caso_id')  # Optional caso_id
+            )
+
             # Process based on PDF type
             if is_image_pdf:
                 result = process_image_pdf_with_vision(temp_file_path)
@@ -305,17 +64,30 @@ def process_image_pdf(request):
                 result = process_text_pdf(temp_file_path)
                 
             if result is None:
+                analysis_result.delete()  # Clean up if processing failed
                 return JsonResponse({
                     'error': 'Si è verificato un errore durante l\'elaborazione del PDF. Nessuna pagina è stata elaborata con successo.'
                 }, status=500)
                 
             # Ensure we have some content before returning
             if not result.chunks:
+                analysis_result.delete()  # Clean up if no content extracted
                 return JsonResponse({
                     'error': 'Nessun contenuto è stato estratto dal PDF.'
                 }, status=400)
+            
+            # Update analysis result with processed data
+            analysis_result.extracted_text = result.text
+            analysis_result.structured_content = result.structured_content
+            analysis_result.content_chunks = result.chunks
+            analysis_result.processing_type = result.processing_type
+            analysis_result.processing_completed = True
+            analysis_result.save()
                 
-            return JsonResponse(result.dict())
+            # Ensure datetime objects are serialized in the response
+            response_data = result.dict()
+            response_data['analysis_id'] = analysis_result.id
+            return JsonResponse(response_data, json_dumps_params={'default': str})
 
         finally:
             # Clean up temporary file
@@ -335,82 +107,28 @@ def process_image_pdf(request):
             'error': 'Si è verificato un errore durante l\'elaborazione del PDF'
         }, status=500)
 
-class PageAnalysis(BaseModel):
-    """Model for storing page analysis results"""
-    page_num: int
-    analysis: str
-    metadata: Dict = Field(default_factory=dict)
-
-def analyze_page_content(page_data: tuple) -> Optional[PageAnalysis]:
-    """Analyze a single page's content using GPT-4"""
-    page_num, page_text = page_data
-    try:
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {settings.OPENAI_API_KEY}"
-        }
-        
-        payload = {
-            "model": "gpt-4o",
-            "messages": [
-                {
-                    "role": "system",
-                    "content": LEGAL_ANALYSIS_PROMPT
-                },
-                {
-                    "role": "user",
-                    "content": f"[PAGINA {page_num}]\n\n{page_text}"
-                }
-            ],
-            "max_tokens": 2000
-        }
-        
-        # Process with retry mechanism
-        for attempt in range(3):
-            try:
-                response = requests.post(
-                    "https://api.openai.com/v1/chat/completions",
-                    headers=headers,
-                    json=payload,
-                    timeout=60
-                )
-                response.raise_for_status()
-                
-                response_data = response.json()
-                if 'error' in response_data:
-                    logger.error(f"OpenAI API error: {response_data['error']}")
-                    raise RequestException(f"OpenAI API error: {response_data['error']}")
-                    
-                analysis = response_data['choices'][0]['message']['content']
-                if not analysis.strip():
-                    logger.warning(f"Empty analysis for page {page_num}")
-                    return None
-                return PageAnalysis(
-                    page_num=page_num,
-                    analysis=analysis,
-                    metadata={'page_num': page_num}
-                )
-                
-            except (Timeout, RequestException) as e:
-                if attempt == 2:
-                    logger.error(f"Failed to analyze page {page_num} after 3 attempts: {str(e)}")
-                    raise
-                logger.warning(f"Attempt {attempt + 1} failed for page {page_num}: {str(e)}")
-                time.sleep(1)  # Wait before retry
-                
-    except Exception as e:
-        logger.error(f"Error analyzing page {page_num}: {str(e)}")
-        return None
-
 @csrf_protect
 @require_http_methods(["POST"])
 def analyze_extracted_text(request):
-    """Analyze extracted text using OpenAI with parallel processing"""
+    """Analyze extracted text using OpenAI with parallel processing and save results"""
     try:
         data = json.loads(request.body)
         text = data.get('text')
         structured_content = data.get('structured_content', [])
         chunks = data.get('chunks', [])
+        analysis_id = data.get('analysis_id')
+        
+        if not analysis_id:
+            return JsonResponse({
+                'error': 'analysis_id is required'
+            }, status=400)
+            
+        try:
+            analysis_result = PDFAnalysisResult.objects.get(id=analysis_id)
+        except PDFAnalysisResult.DoesNotExist:
+            return JsonResponse({
+                'error': 'Analysis result not found'
+            }, status=404)
         
         if not text and not structured_content and not chunks:
             return JsonResponse({
@@ -457,26 +175,50 @@ def analyze_extracted_text(request):
         successful_pages = [page for page in analyzed_pages if page is not None]
         successful_pages.sort(key=lambda x: x.page_num)
         
-        # Combine analyses
-        combined_analysis = []
-        for page in successful_pages:
-            combined_analysis.append(f"\n# Analisi Pagina {page.page_num}\n\n{page.analysis}\n")
-        
-        final_analysis = "\n".join(combined_analysis)
-        
-        # Return empty analysis if no pages were processed
+        # Combine analyses into a single DocumentSchema
         if not successful_pages:
             return JsonResponse({
-                'analysis': 'Nessuna pagina è stata analizzata con successo.',
+                'error': 'Nessuna pagina è stata analizzata con successo.',
                 'pages_analyzed': 0,
                 'total_pages': len(pages_to_analyze)
             })
 
+        # Merge all page analyses
+        combined_schema = merge_page_analyses(successful_pages)
+
+        # Convert the combined schema to dict for saving with datetime handling
+        analysis_dict = combined_schema.dict(exclude_none=True)
+        
+        # Helper function to serialize datetime objects
+        def serialize_dates(obj):
+            if isinstance(obj, datetime):
+                return obj.isoformat()
+            elif isinstance(obj, dict):
+                return {k: serialize_dates(v) for k, v in obj.items()}
+            elif isinstance(obj, list):
+                return [serialize_dates(item) for item in obj]
+            return obj
+            
+        # Ensure all datetime objects are serialized
+        analysis_dict = serialize_dates(analysis_dict)
+        
+        # Update existing PDFAnalysisResult with analysis data
+        analysis_result.dati_generali = analysis_dict.get('dati_generali', {})
+        analysis_result.informazioni_legali_specifiche = analysis_dict.get('informazioni_legali_specifiche', {})
+        analysis_result.dati_processuali = analysis_dict.get('dati_processuali', {})
+        analysis_result.analisi_linguistica = analysis_dict.get('analisi_linguistica', {})
+        analysis_result.analysis_completed = True
+        analysis_result.save()
+
+        # Format analysis for display
+        analysis_text = json.dumps(analysis_dict, indent=2, ensure_ascii=False, default=str)
+
         return JsonResponse({
-            'analysis': final_analysis,
+            'analysis': analysis_text,
             'pages_analyzed': len(successful_pages),
-            'total_pages': len(pages_to_analyze)
-        })
+            'total_pages': len(pages_to_analyze),
+            'analysis_id': analysis_result.id
+        }, json_dumps_params={'default': str})
             
     except Exception as e:
         logger.error(f"Error analyzing text: {str(e)}")

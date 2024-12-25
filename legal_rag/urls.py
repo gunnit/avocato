@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import base_views, chat_views, pdf_views, transcription_views
+from .views import base_views, chat_views, pdf_views, transcription_views, pdf_results_views
 
 app_name = 'legal_rag'  # Added app_name for namespace support
 
@@ -28,4 +28,8 @@ urlpatterns = [
     # Transcription views
     path('transcription/', transcription_views.TranscriptionView.as_view(), name='transcription'),
     path('transcription/transcribe/', transcription_views.transcribe_media, name='transcribe_media'),
+    
+    # PDF Analysis Results
+    path('pdf-analysis/', pdf_results_views.PDFAnalysisListView.as_view(), name='pdf_analysis_list'),
+    path('pdf-analysis/<int:pk>/', pdf_results_views.PDFAnalysisDetailView.as_view(), name='pdf_analysis_detail'),
 ]

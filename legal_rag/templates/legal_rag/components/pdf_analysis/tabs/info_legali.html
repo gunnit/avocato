@@ -1,0 +1,59 @@
+{% with info=analysis.informazioni_legali_specifiche %}
+{% if info.riferimenti_normativi %}
+<div class="mb-5">
+    <h4 class="mb-4">Riferimenti Normativi</h4>
+    {% if info.riferimenti_normativi.articoli_cp_cpp %}
+    <div class="mb-3">
+        <div class="fw-bold mb-1">Articoli CP/CPP:</div>
+        <div class="list-items">
+            {% for articolo in info.riferimenti_normativi.articoli_cp_cpp %}
+            <div class="list-item">{{ articolo }}</div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    {% if info.riferimenti_normativi.leggi_speciali %}
+    <div class="mb-3">
+        <div class="fw-bold mb-1">Leggi Speciali:</div>
+        <div class="list-items">
+            {% for legge in info.riferimenti_normativi.leggi_speciali %}
+            <div class="list-item">{{ legge }}</div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+{% if info.precedenti_giurisprudenziali %}
+<div class="mb-5">
+    <h4 class="mb-4">Precedenti Giurisprudenziali</h4>
+    {% if info.precedenti_giurisprudenziali.citazioni %}
+    <div class="mb-3">
+        <div class="fw-bold mb-1">Citazioni:</div>
+        <div class="list-items">
+            {% for citazione in info.precedenti_giurisprudenziali.citazioni %}
+            <div class="list-item">{{ citazione }}</div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+{% if info.termini_clausole_critiche %}
+<div class="mb-5">
+    <h4 class="mb-4">Termini e Clausole Critiche</h4>
+    {% if info.termini_clausole_critiche.clausole %}
+    <div class="mb-3">
+        <div class="fw-bold mb-1">Clausole:</div>
+        <div class="list-items">
+            {% for clausola in info.termini_clausole_critiche.clausole %}
+            <div class="list-item">{{ clausola }}</div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+{% endwith %}

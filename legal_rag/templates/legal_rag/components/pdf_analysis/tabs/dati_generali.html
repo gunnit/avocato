@@ -1,0 +1,81 @@
+{% with dg=analysis.dati_generali %}
+{% if dg.titoli_e_intestazioni %}
+<div class="mb-5">
+    <h4 class="mb-4">Titoli e Intestazioni</h4>
+    {% if dg.titoli_e_intestazioni.oggetto_documento %}
+    <div class="mb-3">
+        <div class="fw-bold mb-1">Oggetto Documento:</div>
+        <div class="text-gray-800">{{ dg.titoli_e_intestazioni.oggetto_documento }}</div>
+    </div>
+    {% endif %}
+    {% if dg.titoli_e_intestazioni.paragrafi_chiave %}
+    <div class="mb-3">
+        <div class="fw-bold mb-1">Paragrafi Chiave:</div>
+        <div class="list-items">
+            {% for paragrafo in dg.titoli_e_intestazioni.paragrafi_chiave %}
+            <div class="list-item">{{ paragrafo }}</div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+{% if dg.meta_dati_documento %}
+<div class="mb-5">
+    <h4 class="mb-4">Meta Dati Documento</h4>
+    <div class="row">
+        {% if dg.meta_dati_documento.autore %}
+        <div class="col-md-6 mb-3">
+            <div class="fw-bold">Autore:</div>
+            <div class="text-gray-800">{{ dg.meta_dati_documento.autore }}</div>
+        </div>
+        {% endif %}
+        {% if dg.meta_dati_documento.data_creazione %}
+        <div class="col-md-6 mb-3">
+            <div class="fw-bold">Data Creazione:</div>
+            <div class="text-gray-800">{{ dg.meta_dati_documento.data_creazione|date:"d/m/Y H:i" }}</div>
+        </div>
+        {% endif %}
+        {% if dg.meta_dati_documento.numero_pagine %}
+        <div class="col-md-6 mb-3">
+            <div class="fw-bold">Numero Pagine:</div>
+            <div class="text-gray-800">{{ dg.meta_dati_documento.numero_pagine }}</div>
+        </div>
+        {% endif %}
+        {% if dg.meta_dati_documento.numero_sezioni %}
+        <div class="col-md-6 mb-3">
+            <div class="fw-bold">Numero Sezioni:</div>
+            <div class="text-gray-800">{{ dg.meta_dati_documento.numero_sezioni }}</div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+{% if dg.struttura_documento %}
+<div class="mb-5">
+    <h4 class="mb-4">Struttura Documento</h4>
+    {% if dg.struttura_documento.indice %}
+    <div class="mb-3">
+        <div class="fw-bold mb-1">Indice:</div>
+        <div class="list-items">
+            {% for item in dg.struttura_documento.indice %}
+            <div class="list-item">{{ item }}</div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    {% if dg.struttura_documento.capitoli %}
+    <div class="mb-3">
+        <div class="fw-bold mb-1">Capitoli:</div>
+        <div class="list-items">
+            {% for capitolo in dg.struttura_documento.capitoli %}
+            <div class="list-item">{{ capitolo }}</div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+{% endwith %}

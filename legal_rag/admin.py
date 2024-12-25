@@ -1,6 +1,49 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import PenalCodeBook, PenalCodeTitle, PenalCodeArticle, SavedSearchResult
+from .models import (
+    PenalCodeBook, PenalCodeTitle, PenalCodeArticle, 
+    SavedSearchResult, PDFAnalysisResult
+)
+
+@admin.register(PDFAnalysisResult)
+class PDFAnalysisResultAdmin(admin.ModelAdmin):
+    list_display = ('filename', 'caso', 'processing_type', 'status_display', 'created_at')
+    list_filter = ('processing_type', 'processing_completed', 'analysis_completed', 'created_at')
+    search_fields = ('filename', 'caso__titolo', 'extracted_text')
+    ordering = ('-created_at',)
+    
+    def status_display(self, obj):
+        if obj.processing_completed and obj.analysis_completed:
+            return format_html('<span style="color: green;">✓ Completed</span>')
+        elif obj.processing_completed:
+            return format_html('<span style="color: orange;">⚡ Analysis Pending</span>')
+        else:
+            return format_html('<span style="color: blue;">⟳ Processing</span>')
+    status_display.short_description = 'Status'
+
+    readonly_fields = ('created_at', 'updated_at', 'trace_id')
+    
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('caso', 'filename', 'pdf_file', 'processing_type')
+        }),
+        ('Processing Status', {
+            'fields': ('processing_completed', 'analysis_completed')
+        }),
+        ('Processing Results', {
+            'fields': ('extracted_text', 'structured_content', 'content_chunks'),
+            'classes': ('collapse',)
+        }),
+        ('Analysis Results', {
+            'fields': ('dati_generali', 'informazioni_legali_specifiche', 
+                      'dati_processuali', 'analisi_linguistica'),
+            'classes': ('collapse',)
+        }),
+        ('Metadata', {
+            'fields': ('created_at', 'updated_at', 'trace_id'),
+            'classes': ('collapse',)
+        }),
+    )
 
 @admin.register(SavedSearchResult)
 class SavedSearchResultAdmin(admin.ModelAdmin):

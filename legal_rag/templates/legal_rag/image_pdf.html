@@ -8,24 +8,25 @@
 {% block content %}
 <div class="flex-lg-row-fluid">
     <div class="card">
-        <div class="card-header">
-            <div class="card-title">
-                <h3 class="card-title">Estrazione Testo da PDF Immagini</h3>
-            </div>
-        </div>
+       
         <div class="card-body">
-            <!-- Info Box -->
-            <div class="alert alert-info mb-5">
-                <div class="d-flex flex-column">
-                    <h4 class="mb-1 text-dark">Come Funziona</h4>
-                    <p>Questo strumento utilizza l'intelligenza artificiale di Occhi di Medusa per estrarre testo da PDF contenenti immagini o documenti scansionati.</p>
-                    <ul class="list-unstyled">
-                        <li>• Carica un PDF contenente immagini o scansioni</li>
-                        <li>• Il sistema analizzerà ogni pagina</li>
-                        <li>• Il testo estratto verrà mostrato sotto</li>
-                    </ul>
-                </div>
-            </div>
+           <!-- Info Box -->
+<div class="alert alert-info mb-5">
+    <div class="d-flex flex-column">
+        <h4 class="mb-1 text-dark">Come Funziona</h4>
+        <p>
+            Questo strumento sfrutta l’Intelligenza Artificiale per analizzare PDF di grandi dimensioni 
+            (incluse immagini o documenti scansionati), estrarre automaticamente il testo e individuare informazioni chiave 
+            come date, nomi e riferimenti legali.
+        </p>
+        <ul class="list-unstyled">
+            <li>• Carica il tuo PDF (comprese scansioni e immagini)</li>
+            <li>• Il sistema esaminerà ogni pagina ed estrarrà il testo</li>
+            <li>• Il testo estratto verrà mostrato qui sotto</li>
+        </ul>
+    </div>
+</div>
+
 
             {% include 'legal_rag/components/pdf_viewer/upload_form.html' %}
             {% include 'legal_rag/components/pdf_viewer/results.html' %}

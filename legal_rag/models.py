@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from cases.models import Caso  # Importing the Caso model
 
 class PenalCodeBook(models.Model):
@@ -62,3 +63,35 @@ class SavedSearchResult(models.Model):
 
     def __str__(self):
         return f"Saved Result for {self.caso.titolo}: {self.search_title}"
+
+class PDFAnalysisResult(models.Model):
+    """Model for storing PDF processing and analysis results"""
+    # File and basic info
+    pdf_file = models.FileField(upload_to='pdf_analysis/')
+    filename = models.CharField(max_length=255)
+    caso = models.ForeignKey(Caso, on_delete=models.CASCADE, related_name='pdf_analyses', null=True, blank=True)
+    
+    # Processing results
+    extracted_text = models.TextField(blank=True)
+    structured_content = models.JSONField(default=dict)
+    content_chunks = models.JSONField(default=dict)
+    processing_type = models.CharField(max_length=50)  # 'text' or 'image'
+    
+    # Analysis results
+    dati_generali = models.JSONField(default=dict)
+    informazioni_legali_specifiche = models.JSONField(default=dict)
+    dati_processuali = models.JSONField(default=dict)
+    analisi_linguistica = models.JSONField(default=dict)
+    
+    # Metadata
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+    processing_completed = models.BooleanField(default=False)
+    analysis_completed = models.BooleanField(default=False)
+    trace_id = models.CharField(max_length=100, blank=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+        
+    def __str__(self):
+        return f"PDF Analysis: {self.filename} ({self.created_at.strftime('%Y-%m-%d %H:%M')})"

@@ -216,6 +216,7 @@ document.getElementById('pdfUploadForm').addEventListener('submit', async functi
         // Store data for analysis
         window.lastStructuredContent = data.structured_content;
         window.lastChunks = data.chunks;
+        window.lastAnalysisId = data.analysis_id;
         
         // Display results using structured content
         renderStructuredContent(data.structured_content);
@@ -256,7 +257,8 @@ document.getElementById('analyzeButton').addEventListener('click', async functio
             body: JSON.stringify({
                 text: structuredContent.textContent,
                 structured_content: window.lastStructuredContent || [],
-                chunks: window.lastChunks || []
+                chunks: window.lastChunks || [],
+                analysis_id: window.lastAnalysisId
             })
         });
 
@@ -267,8 +269,17 @@ document.getElementById('analyzeButton').addEventListener('click', async functio
         }
 
         // Display analysis results
-        analysisText.innerHTML = data.analysis.replace(/\n/g, '<br>');
+        analysisText.innerHTML = data.analysis.split('\n').map(line => {
+            // Add proper indentation for JSON formatting
+            const indentMatch = line.match(/^(\s*)/);
+            const indent = indentMatch ? indentMatch[1].length : 0;
+            const indentClass = `ps-${Math.min(5, Math.floor(indent/2))}`;
+            return `<div class="${indentClass}">${line}</div>`;
+        }).join('');
         analysisSection.style.display = 'block';
+
+        // Log analysis to console for debugging
+        console.log('Analysis:', data.analysis);
 
     } catch (error) {
         alert('Errore durante l\'analisi: ' + error.message);

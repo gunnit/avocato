@@ -1,0 +1,96 @@
+{% with dp=analysis.dati_processuali %}
+{% if dp.date_rilevanti %}
+<div class="mb-5">
+    <h4 class="mb-4">Date Rilevanti</h4>
+    {% if dp.date_rilevanti.scadenze_deposito %}
+    <div class="mb-3">
+        <div class="fw-bold mb-1">Scadenze Deposito:</div>
+        <div class="list-items">
+            {% for data in dp.date_rilevanti.scadenze_deposito %}
+            <div class="list-item">
+                <i class="ki-duotone ki-calendar-tick fs-2 text-primary me-2"></i>
+                {{ data|date:"d/m/Y" }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    {% if dp.date_rilevanti.date_udienze %}
+    <div class="mb-3">
+        <div class="fw-bold mb-1">Date Udienze:</div>
+        <div class="list-items">
+            {% for data in dp.date_rilevanti.date_udienze %}
+            <div class="list-item">
+                <i class="ki-duotone ki-calendar-add fs-2 text-primary me-2"></i>
+                {{ data|date:"d/m/Y" }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+{% if dp.parti_coinvolte %}
+<div class="mb-5">
+    <h4 class="mb-4">Parti Coinvolte</h4>
+    <div class="table-responsive">
+        <table class="table table-row-bordered table-row-gray-100 align-middle gs-0 gy-3">
+            <thead>
+                <tr class="fw-bold text-muted bg-light">
+                    <th class="min-w-150px">Nome</th>
+                    <th class="min-w-150px">Ruolo</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for parte in dp.parti_coinvolte %}
+                <tr>
+                    <td>{{ parte.nome }}</td>
+                    <td>
+                        <span class="badge badge-light-primary">{{ parte.ruolo }}</span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% if dp.eventi_processuali %}
+<div class="mb-5">
+    <h4 class="mb-4">Eventi Processuali</h4>
+    <div class="timeline">
+        {% for evento in dp.eventi_processuali %}
+        <div class="timeline-item">
+            <div class="timeline-line w-40px"></div>
+            <div class="timeline-icon symbol symbol-circle symbol-40px">
+                <div class="symbol-label bg-light">
+                    <i class="ki-duotone ki-document fs-2 text-gray-500">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                </div>
+            </div>
+            <div class="timeline-content mb-10 mt-n2">
+                <div class="overflow-auto pe-3">
+                    <div class="fs-5 fw-bold mb-2">
+                        {{ evento.tipo_atto }}
+                        {% if evento.data_deposito %}
+                        <span class="fs-6 text-muted fw-semibold ms-2">{{ evento.data_deposito|date:"d/m/Y" }}</span>
+                        {% endif %}
+                    </div>
+                    {% if evento.descrizione_fatti %}
+                    <div class="d-flex align-items-center mt-1 fs-6">
+                        <div class="text-muted me-2 fs-7">Descrizione:</div>
+                        <div class="text-muted fw-semibold fs-7">{{ evento.descrizione_fatti }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endwith %}

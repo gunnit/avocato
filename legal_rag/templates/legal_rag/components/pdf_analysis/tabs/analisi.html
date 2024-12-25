@@ -1,0 +1,101 @@
+{% with al=analysis.analisi_linguistica %}
+{% if al %}
+    {% if al.frasi_ambigue %}
+    <div class="mb-5">
+        <h4 class="mb-4">
+            <i class="ki-duotone ki-warning-2 fs-2 text-warning me-2">
+                <span class="path1"></span>
+                <span class="path2"></span>
+            </i>
+            Frasi Ambigue
+        </h4>
+        <div class="list-items">
+            {% for frase in al.frasi_ambigue %}
+            <div class="list-item alert alert-warning">
+                <div class="d-flex align-items-center">
+                    <span class="svg-icon svg-icon-2hx svg-icon-warning me-4">
+                        <i class="ki-duotone ki-information-5 fs-1">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                        </i>
+                    </span>
+                    <div class="d-flex flex-column">
+                        <span class="fw-bold">{{ frase }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if al.punti_debolezza_difesa %}
+    <div class="mb-5">
+        <h4 class="mb-4">
+            <i class="ki-duotone ki-shield-cross fs-2 text-danger me-2">
+                <span class="path1"></span>
+                <span class="path2"></span>
+            </i>
+            Punti di Debolezza della Difesa
+        </h4>
+        <div class="list-items">
+            {% for punto in al.punti_debolezza_difesa %}
+            <div class="list-item alert alert-danger">
+                <div class="d-flex align-items-center">
+                    <span class="svg-icon svg-icon-2hx svg-icon-danger me-4">
+                        <i class="ki-duotone ki-shield-tick fs-1">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                    </span>
+                    <div class="d-flex flex-column">
+                        <span class="fw-bold">{{ punto }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if al.sentiment_memorie_atti %}
+    <div class="mb-5">
+        <h4 class="mb-4">
+            <i class="ki-duotone ki-message-text-2 fs-2 text-info me-2">
+                <span class="path1"></span>
+                <span class="path2"></span>
+            </i>
+            Tono Generale
+        </h4>
+        <div class="alert alert-info d-flex align-items-center p-5">
+            <span class="svg-icon svg-icon-2hx svg-icon-info me-4">
+                <i class="ki-duotone ki-chart-simple-3 fs-1">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                    <span class="path4"></span>
+                </i>
+            </span>
+            <div class="d-flex flex-column">
+                <span class="fw-bold fs-5">{{ al.sentiment_memorie_atti }}</span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% else %}
+    <div class="alert alert-primary d-flex align-items-center p-5">
+        <span class="svg-icon svg-icon-2hx svg-icon-primary me-4">
+            <i class="ki-duotone ki-information-5 fs-1">
+                <span class="path1"></span>
+                <span class="path2"></span>
+                <span class="path3"></span>
+            </i>
+        </span>
+        <div class="d-flex flex-column">
+            <span class="fw-bold fs-5">Nessuna analisi linguistica disponibile</span>
+            <span class="text-muted">Clicca sul pulsante "Analyze Document" per generare l'analisi.</span>
+        </div>
+    </div>
+{% endif %}
+{% endwith %}

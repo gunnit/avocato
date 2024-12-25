@@ -1,0 +1,45 @@
+{% load static %}
+
+<div class="analysis-controls">
+    {% csrf_token %}
+    <button id="analyzeButton" class="btn btn-primary me-3" onclick="startAnalysis()" 
+            {% if not analysis.processing_completed or not analysis.extracted_text or analysis.analysis_completed %}disabled{% endif %}
+            title="{% if not analysis.processing_completed %}Processing not completed{% elif not analysis.extracted_text %}No text to analyze{% elif analysis.analysis_completed %}Analysis already completed{% endif %}">
+        <i class="ki-duotone ki-abstract-26 fs-2">
+            <span class="path1"></span>
+            <span class="path2"></span>
+        </i>
+        Analyze Document
+    </button>
+</div>
+
+<!-- Load analysis script -->
+<script src="{% static 'legal_rag/js/pdf_analysis.js' %}"></script>
+
+<!-- Analysis data -->
+{{ analysis.id|json_script:"analysis-id" }}
+{{ analysis.extracted_text|default_if_none:""|json_script:"analysis-text" }}
+{{ analysis.structured_content|default_if_none:"{}"|json_script:"analysis-content" }}
+{{ analysis.content_chunks|default_if_none:"[]"|json_script:"analysis-chunks" }}
+
+<!-- Initialize analysis data -->
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        const parseJson = (id, defaultValue) => {
+            try {
+                const el = document.getElementById(id);
+                return el ? JSON.parse(el.textContent) : defaultValue;
+            } catch (error) {
+                console.warn(`Error parsing ${id}:`, error);
+                return defaultValue;
+            }
+        };
+
+        window.ANALYSIS_DATA = {
+            id: parseInt(document.getElementById('analysis-id').textContent),
+            extractedText: parseJson('analysis-text', null),
+            structuredContent: parseJson('analysis-content', {}),
+            contentChunks: parseJson('analysis-chunks', [])
+        };
+    });
+</script>

@@ -1,0 +1,95 @@
+{% load static %}
+<script>
+const analyzeDocument = (function() {
+    const showLoading = (button) => {
+        button.disabled = true;
+        button.innerHTML = `
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Analyzing...
+        `;
+    };
+
+    const showError = (button, originalHtml) => {
+        button.classList.remove('btn-primary');
+        button.classList.add('btn-danger');
+        button.innerHTML = `
+            <i class="ki-duotone ki-cross-circle fs-2">
+                <span class="path1"></span>
+                <span class="path2"></span>
+            </i>
+            Analysis Failed
+        `;
+
+        setTimeout(() => {
+            button.classList.remove('btn-danger');
+            button.classList.add('btn-primary');
+            button.disabled = false;
+            button.innerHTML = originalHtml;
+        }, 3000);
+    };
+
+    const sendAnalysisRequest = async (data) => {
+        const response = await fetch('/legal_rag/analyze-text/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        if (result.error) {
+            throw new Error(result.error);
+        }
+
+        return result;
+    };
+
+    return async function(analysisId, extractedText, structuredContent, chunks) {
+        const button = document.getElementById('analyzeButton');
+        const originalHtml = button.innerHTML;
+
+        try {
+            showLoading(button);
+
+            const data = {
+                analysis_id: analysisId,
+                text: extractedText || null,
+                structured_content: structuredContent || null,
+                chunks: chunks || null
+            };
+
+            await sendAnalysisRequest(data);
+            window.location.reload();
+        } catch (error) {
+            console.error('Analysis error:', error);
+            showError(button, originalHtml);
+        }
+    };
+})();
+
+{% load json_tags %}
+
+// Analysis data from Django template
+const ANALYSIS_DATA = {
+    id: {{ analysis.id }},
+    extractedText: {{ analysis.extracted_text|to_json }},
+    structuredContent: {{ analysis.structured_content|to_json }},
+    contentChunks: {{ analysis.content_chunks|to_json }}
+};
+
+// Function to start analysis
+function startAnalysis() {
+    analyzeDocument(
+        ANALYSIS_DATA.id,
+        ANALYSIS_DATA.extractedText,
+        ANALYSIS_DATA.structuredContent,
+        ANALYSIS_DATA.contentChunks
+    );
+}
+</script>

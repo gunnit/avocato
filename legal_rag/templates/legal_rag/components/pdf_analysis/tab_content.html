@@ -1,0 +1,51 @@
+<div class="tab-content" id="myTabContent">
+    <!--begin::Extracted Text-->
+    <div class="tab-pane fade show active" id="tab_extracted_text">
+        <div class="card card-bordered">
+            <div class="card-body">
+                <pre class="text-gray-600">{{ analysis.extracted_text }}</pre>
+            </div>
+        </div>
+    </div>
+    <!--end::Extracted Text-->
+
+    <!--begin::Dati Generali-->
+    <div class="tab-pane fade" id="tab_dati_generali">
+        <div class="card card-bordered">
+            <div class="card-body">
+                {% include "legal_rag/components/pdf_analysis/tabs/dati_generali.html" %}
+            </div>
+        </div>
+    </div>
+    <!--end::Dati Generali-->
+
+    <!--begin::Info Legali-->
+    <div class="tab-pane fade" id="tab_info_legali">
+        <div class="card card-bordered">
+            <div class="card-body">
+                {% include "legal_rag/components/pdf_analysis/tabs/info_legali.html" %}
+            </div>
+        </div>
+    </div>
+    <!--end::Info Legali-->
+
+    <!--begin::Dati Processuali-->
+    <div class="tab-pane fade" id="tab_dati_processuali">
+        <div class="card card-bordered">
+            <div class="card-body">
+                {% include "legal_rag/components/pdf_analysis/tabs/dati_processuali.html" %}
+            </div>
+        </div>
+    </div>
+    <!--end::Dati Processuali-->
+
+    <!--begin::Analisi-->
+    <div class="tab-pane fade" id="tab_analisi">
+        <div class="card card-bordered">
+            <div class="card-body">
+                {% include "legal_rag/components/pdf_analysis/tabs/analisi.html" %}
+            </div>
+        </div>
+    </div>
+    <!--end::Analisi-->
+</div>

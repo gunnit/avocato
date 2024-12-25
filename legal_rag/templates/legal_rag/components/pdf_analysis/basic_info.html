@@ -1,0 +1,23 @@
+<div class="mb-8">
+    <h3 class="mb-4">Basic Information</h3>
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <p><strong>Filename:</strong> {{ analysis.filename }}</p>
+            <p><strong>Case:</strong> {{ analysis.caso.titolo }}</p>
+            <p><strong>Processing Type:</strong> {{ analysis.processing_type }}</p>
+        </div>
+        <div class="col-md-6">
+            <p><strong>Created:</strong> {{ analysis.created_at|date:"Y-m-d H:i" }}</p>
+            <p><strong>Updated:</strong> {{ analysis.updated_at|date:"Y-m-d H:i" }}</p>
+            <p><strong>Status:</strong> 
+                {% if analysis.processing_completed and analysis.analysis_completed %}
+                    <span class="badge badge-success">Completed</span>
+                {% elif analysis.processing_completed %}
+                    <span class="badge badge-warning">Analysis Pending</span>
+                {% else %}
+                    <span class="badge badge-info">Processing</span>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+</div>
