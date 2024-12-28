@@ -35,6 +35,12 @@ class PenalCodeSearchView(TemplateView):
     """View for rendering the Penal Code search interface"""
     template_name = 'legal_rag/penal_code_search.html'
 
+@method_decorator(login_required, name='dispatch')
+@method_decorator(ensure_csrf_cookie, name='dispatch')
+class FederatedSearchView(TemplateView):
+    """View for rendering the Federated Search interface"""
+    template_name = 'legal_rag/federated_search.html'
+
 @login_required
 @require_http_methods(["GET"])
 def penal_code_books(request):

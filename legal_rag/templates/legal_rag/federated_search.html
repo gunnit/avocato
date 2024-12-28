@@ -1,0 +1,415 @@
+{% extends "cases/base.html" %}
+
+{% block content %}
+<!--begin::Card-->
+<div class="card">
+    <!--begin::Card header-->
+    <div class="card-header border-0 pt-6">
+        <div class="card-title">
+            <h2>Ricerca Federata</h2>
+        </div>
+    </div>
+    <!--end::Card header-->
+
+    <!--begin::Card body-->
+    <div class="card-body py-4">
+        <!--begin::Search form-->
+        <form id="federatedSearchForm" class="mb-8">
+            <div class="d-flex align-items-center position-relative my-1">
+                <span class="svg-icon svg-icon-1 position-absolute ms-4">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1" transform="rotate(45 17.0365 15.1223)" fill="currentColor"></rect>
+                        <path d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z" fill="currentColor"></path>
+                    </svg>
+                </span>
+                <input type="text" id="searchQuery" class="form-control form-control-solid w-250px ps-14" placeholder="Inserisci il termine di ricerca">
+                <button type="submit" class="btn btn-primary ms-5">Cerca</button>
+            </div>
+
+            <!--begin::Source filters-->
+            <div class="d-flex flex-wrap gap-5 mt-5">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="source-eurlex" checked>
+                    <label class="form-check-label" for="source-eurlex">EUR-Lex</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="source-normattiva" checked>
+                    <label class="form-check-label" for="source-normattiva">Normattiva</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="source-giurisprudenza" checked>
+                    <label class="form-check-label" for="source-giurisprudenza">Giurisprudenza Penale</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="source-penale" checked>
+                    <label class="form-check-label" for="source-penale">Penale.it</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="source-giustizia" checked>
+                    <label class="form-check-label" for="source-giustizia">Giustizia.it</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="source-osservatorio" checked>
+                    <label class="form-check-label" for="source-osservatorio">Osservatorio Penale</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="source-milano" checked>
+                    <label class="form-check-label" for="source-milano">Giustizia Milano</label>
+                </div>
+            </div>
+            <!--end::Source filters-->
+        </form>
+        <!--end::Search form-->
+
+        <!--begin::Results-->
+        <div id="searchResults" class="d-none">
+            <div class="separator separator-dashed my-5"></div>
+            
+            <div id="resultsContent">
+                <!-- Results will be populated here -->
+            </div>
+
+            <div id="loadingSpinner" class="d-none">
+                <div class="d-flex align-items-center">
+                    <div class="spinner-border text-primary me-3" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <div>Ricerca in corso...</div>
+                </div>
+            </div>
+        </div>
+        <!--end::Results-->
+    </div>
+    <!--end::Card body-->
+</div>
+<!--end::Card-->
+
+<!-- Modal for Details -->
+<div class="modal fade" tabindex="-1" id="detailsModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Dettagli Risultato</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modalContent">
+                <!-- Details will be populated here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Saving Search Result -->
+<div class="modal fade" tabindex="-1" id="saveModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Salva Risultato di Ricerca</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="saveSearchForm">
+                    <div class="mb-3">
+                        <label for="caseSelect" class="form-label">Seleziona Caso</label>
+                        <select id="caseSelect" class="form-select" required>
+                            <option value="">Caricamento casi...</option>
+                        </select>
+                        <div id="casesLoadingSpinner" class="d-none mt-2">
+                            <div class="d-flex align-items-center">
+                                <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <div class="text-gray-600">Caricamento casi in corso...</div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="saveTitle">
+                    <input type="hidden" id="saveLink">
+                    <input type="hidden" id="saveSnippet">
+                    <input type="hidden" id="saveSource">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="saveButton">Salva</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchForm = document.getElementById('federatedSearchForm');
+    const searchResults = document.getElementById('searchResults');
+    const resultsContent = document.getElementById('resultsContent');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const detailsModal = new bootstrap.Modal(document.getElementById('detailsModal'));
+    const saveModal = new bootstrap.Modal(document.getElementById('saveModal'));
+
+    // Function to safely encode HTML entities
+    function escapeHtml(unsafe) {
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    // Function to show details in modal
+    window.showDetails = function(element) {
+        const modalContent = document.getElementById('modalContent');
+        const title = element.dataset.title;
+        const link = element.dataset.link;
+        const snippet = element.dataset.snippet;
+        const source = element.dataset.source;
+        
+        // Check if there's a PDF link
+        const pdfLink = link.toLowerCase().endsWith('.pdf') ? link :
+                       link.includes('/PDF/') ? link : null;
+        
+        modalContent.innerHTML = `
+            <div class="mb-5">
+                <div class="badge badge-light-primary mb-3">${escapeHtml(source)}</div>
+                <h3 class="text-dark fw-bold mb-3">${escapeHtml(title)}</h3>
+                <div class="text-gray-600 fw-semibold mb-5">${escapeHtml(snippet)}</div>
+                <div class="d-flex flex-column">
+                    <div class="mb-3">
+                        <strong>Link Originale:</strong>
+                        <a href="${escapeHtml(link)}" target="_blank" class="ms-2 text-primary">
+                            ${escapeHtml(link)}
+                        </a>
+                    </div>
+                    ${pdfLink ? `
+                    <div class="mb-3">
+                        <strong>PDF:</strong>
+                        <a href="${escapeHtml(pdfLink)}" target="_blank" class="ms-2 text-danger">
+                            <i class="far fa-file-pdf me-2"></i>Scarica PDF
+                        </a>
+                    </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+        
+        detailsModal.show();
+    };
+
+    // Load cases when save modal is shown
+    document.getElementById('saveModal').addEventListener('show.bs.modal', function() {
+        const caseSelect = document.getElementById('caseSelect');
+        const loadingSpinner = document.getElementById('casesLoadingSpinner');
+        
+        // Show loading state
+        caseSelect.disabled = true;
+        loadingSpinner.classList.remove('d-none');
+        
+        fetch('/api/cases/')
+            .then(response => response.json())
+            .then(data => {
+                caseSelect.innerHTML = data.map(caso => 
+                    `<option value="${caso.id}">${escapeHtml(caso.titolo)}</option>`
+                ).join('');
+            })
+            .catch(error => {
+                caseSelect.innerHTML = '<option value="">Errore nel caricamento dei casi</option>';
+            })
+            .finally(() => {
+                caseSelect.disabled = false;
+                loadingSpinner.classList.add('d-none');
+            });
+    });
+
+    // Function to open save modal
+    window.openSaveModal = function(element) {
+        const title = element.dataset.title;
+        const link = element.dataset.link;
+        const snippet = element.dataset.snippet;
+        const source = element.dataset.source;
+
+        // Populate hidden fields with search result data
+        document.getElementById('saveTitle').value = title;
+        document.getElementById('saveLink').value = link;
+        document.getElementById('saveSnippet').value = snippet;
+        document.getElementById('saveSource').value = source;
+
+        saveModal.show();
+    };
+
+    // Handle save button click
+    document.getElementById('saveButton').addEventListener('click', function() {
+        const casoId = document.getElementById('caseSelect').value;
+        const searchTitle = document.getElementById('saveTitle').value;
+        const searchLink = document.getElementById('saveLink').value;
+        const searchSnippet = document.getElementById('saveSnippet').value;
+        const searchSource = document.getElementById('saveSource').value;
+
+        fetch('/legal-rag/api/save-search-result/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                caso_id: casoId,
+                search_title: searchTitle,
+                search_link: searchLink,
+                search_snippet: searchSnippet,
+                search_source: searchSource
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Risultato di ricerca salvato con successo!');
+                saveModal.hide();
+            } else {
+                alert('Errore: ' + data.error);
+            }
+        });
+    });
+
+    // Get selected sources
+    function getSelectedSources() {
+        const sources = [];
+        if (document.getElementById('source-eurlex').checked) sources.push('eurlex');
+        if (document.getElementById('source-normattiva').checked) sources.push('normattiva');
+        if (document.getElementById('source-giurisprudenza').checked) sources.push('giurisprudenza');
+        if (document.getElementById('source-penale').checked) sources.push('penale');
+        if (document.getElementById('source-giustizia').checked) sources.push('giustizia');
+        if (document.getElementById('source-osservatorio').checked) sources.push('osservatorio');
+        if (document.getElementById('source-milano').checked) sources.push('milano');
+        return sources;
+    }
+
+    searchForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const query = document.getElementById('searchQuery').value;
+        if (!query) return;
+
+        const selectedSources = getSelectedSources();
+        if (selectedSources.length === 0) {
+            alert('Seleziona almeno una fonte per la ricerca.');
+            return;
+        }
+
+        // Show loading state
+        searchResults.classList.remove('d-none');
+        loadingSpinner.classList.remove('d-none');
+        resultsContent.innerHTML = '';
+
+        try {
+            const response = await fetch('/legal-rag/api/federated-search/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ 
+                    query,
+                    sources: selectedSources
+                })
+            });
+
+            const data = await response.json();
+            
+            // Hide loading spinner
+            loadingSpinner.classList.add('d-none');
+
+            if (data.error) {
+                resultsContent.innerHTML = `<div class="alert alert-danger">${escapeHtml(data.error)}</div>`;
+                return;
+            }
+
+            // Display results
+            if (data.results && Object.keys(data.results).length > 0) {
+                const resultsHtml = Object.entries(data.results).map(([source, results]) => {
+                    if (!results || results.length === 0) return '';
+                    
+                    return `
+                    <div class="mb-8">
+                        <h3 class="mb-5">Risultati da ${escapeHtml(source)}</h3>
+                        ${results.map(result => {
+                            const title = escapeHtml(result.title || 'Risultato');
+                            const link = escapeHtml(result.link);
+                            const snippet = escapeHtml(result.snippet);
+                            const pdfLink = result.link.toLowerCase().endsWith('.pdf') ? result.link :
+                                          result.link.includes('/PDF/') ? result.link : null;
+                            
+                            return `
+                            <div class="border rounded p-5 mb-5">
+                                <div class="mb-3">
+                                    <h3 class="text-dark fw-bold text-hover-primary mb-1 fs-5">
+                                        ${title}
+                                    </h3>
+                                </div>
+                                <div class="text-gray-600 fw-semibold fs-7 mb-4">${snippet}</div>
+                                <div class="d-flex flex-stack">
+                                    <div class="d-flex align-items-center">
+                                        <button class="btn btn-sm btn-light-primary me-2" 
+                                                onclick="showDetails(this)"
+                                                data-title="${title}"
+                                                data-link="${link}"
+                                                data-snippet="${snippet}"
+                                                data-source="${source}">
+                                            <i class="fas fa-eye me-2"></i>Visualizza Dettagli
+                                        </button>
+                                        <a href="${link}" target="_blank" class="btn btn-sm btn-light me-2">
+                                            <i class="fas fa-external-link-alt me-2"></i>Apri Link
+                                        </a>
+                                        ${pdfLink ? `
+                                        <a href="${escapeHtml(pdfLink)}" target="_blank" class="btn btn-sm btn-light-danger me-2">
+                                            <i class="far fa-file-pdf me-2"></i>Scarica PDF
+                                        </a>
+                                        ` : ''}
+                                        <button class="btn btn-sm btn-light-success me-2" 
+                                                onclick="openSaveModal(this)"
+                                                data-title="${title}"
+                                                data-link="${link}"
+                                                data-snippet="${snippet}"
+                                                data-source="${source}">
+                                            <i class="fas fa-save me-2"></i>Salva Risultato
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    `;
+                }).join('');
+                
+                resultsContent.innerHTML = resultsHtml;
+            } else {
+                resultsContent.innerHTML = '<div class="alert alert-info">Nessun risultato trovato.</div>';
+            }
+        } catch (error) {
+            loadingSpinner.classList.add('d-none');
+            resultsContent.innerHTML = '<div class="alert alert-danger">Si è verificato un errore durante la ricerca.</div>';
+        }
+    });
+
+    // Helper function to get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+});
+</script>
+{% endblock %}

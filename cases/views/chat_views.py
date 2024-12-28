@@ -72,7 +72,16 @@ def chat_caso(request, caso_id):
             except Exception as e:
                 messages.error(request, f'Errore durante la generazione della risposta: {str(e)}')
 
+    # Get chat messages without using __str__ representation
+    chat_messages = []
+    for msg in caso.chat_messages.all():
+        chat_messages.append({
+            'content': msg.content,
+            'is_ai': msg.is_ai,
+            'timestamp': msg.timestamp
+        })
+    
     return render(request, 'cases/chat.html', {
         'caso': caso,
-        'messages': caso.chat_messages.all()
+        'chat_messages': chat_messages
     })

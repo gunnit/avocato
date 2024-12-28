@@ -56,6 +56,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'legal_assistant.wsgi.application'
+ASGI_APPLICATION = 'legal_assistant.asgi.application'
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
