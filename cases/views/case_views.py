@@ -4,9 +4,11 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods, require_GET
 from django.core.exceptions import PermissionDenied
-from ..models import Caso
+from ..models import Caso, DocumentaryEvidence
 from legal_rag.models import SavedSearchResult
+from legal_rag.models.legal_search import LegalSearchResult
 from .ai_utils import analizza_caso
+from legal_rag.crews.legal_search_crew import LegalSearchCrew
 import json
 import anthropic
 import os
@@ -102,7 +104,6 @@ def edit_caso(request, caso_id):
     
     return render(request, 'cases/edit_caso.html', {'caso': caso})
 
-@login_required
 @login_required
 @require_GET
 def get_cases_api(request):
@@ -209,6 +210,107 @@ Se disponibile, considera anche la seguente analisi del caso:
         
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+
+@login_required
+@require_http_methods(["POST"])
+def perform_legal_search(request, caso_id):
+    """Perform comprehensive legal search based on case details"""
+    try:
+        caso = get_object_or_404(Caso, id=caso_id)
+        
+        # Gather all case information
+        try:
+            ai_analysis = json.loads(caso.analisi_ai) if caso.analisi_ai else {}
+        except json.JSONDecodeError:
+            ai_analysis = {}
+            messages.warning(request, 'Errore nel parsing dell\'analisi AI. Procedendo con analisi vuota.')
+        
+        case_details = {
+            "title": caso.titolo,
+            "description": caso.descrizione,
+            "ai_analysis": ai_analysis,
+            "legal_references": caso.riferimenti_legali,
+            "documents": []
+        }
+        
+        # Add extracted text from documents
+        for doc in caso.documentary_evidences.all():
+            if doc.extracted_text:
+                case_details["documents"].append({
+                    "title": doc.title,
+                    "type": doc.document_type,
+                    "content": doc.extracted_text
+                })
+        
+        # Initialize and run the legal search crew
+        crew = LegalSearchCrew()
+        result = crew.kickoff(case_details)
+        
+        # Convert result to dictionary if it's not already
+        if hasattr(result, 'json_dict'):
+            results_dict = result.json_dict
+        elif hasattr(result, 'raw'):
+            # Try to parse raw output as JSON
+            try:
+                results_dict = json.loads(result.raw)
+            except json.JSONDecodeError:
+                results_dict = {"raw_output": result.raw}
+        else:
+            results_dict = {"error": "Unexpected result format"}
+        
+        # Save the search results - using JSONField so no need to manually serialize
+        legal_search = LegalSearchResult.objects.create(
+            caso=caso,
+            search_query=case_details,
+            search_results=results_dict,
+            search_strategy={}  # Empty strategy since we're using simplified version
+        )
+        
+        messages.success(request, 'Ricerca legale completata con successo.')
+        return JsonResponse({
+            'status': 'success',
+            'results': results_dict,
+            'search_id': legal_search.id
+        })
+        
+    except Caso.DoesNotExist:
+        messages.error(request, 'Caso non trovato.')
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Caso non trovato'
+        }, status=404)
+    except json.JSONDecodeError as e:
+        messages.error(request, 'Errore nel parsing dei dati JSON.')
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Errore nel parsing JSON: {str(e)}'
+        }, status=400)
+    except ValueError as e:
+        if "SERPER_API_KEY" in str(e):
+            messages.error(request, 'Chiave API Serper non configurata. Contattare l\'amministratore.')
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Configurazione API mancante',
+                'details': str(e)
+            }, status=500)
+        else:
+            messages.error(request, f'Errore di validazione: {str(e)}')
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            }, status=400)
+    except Exception as e:
+        import traceback
+        error_traceback = traceback.format_exc()
+        print(f"[DEBUG] Error traceback:\n{error_traceback}")
+        messages.error(request, f'Errore durante la ricerca: {str(e)}')
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e),
+            'type': type(e).__name__,
+            'traceback': error_traceback
+        }, status=500)
 
 @login_required
 def saved_searches(request, caso_id):

@@ -1,0 +1,169 @@
+{% extends "cases/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Ricerche Legali per {{ caso.titolo }}</h3>
+        <div class="card-toolbar">
+            <form id="searchForm">
+                {% csrf_token %}
+                <button type="button" class="btn btn-primary" id="startSearchBtn">
+                    Nuova Ricerca
+                </button>
+            </form>
+        </div>
+    </div>
+    <div class="card-body">
+        {% if search_results %}
+            <div class="table-responsive">
+                <table class="table table-row-bordered table-row-gray-100 align-middle gs-0 gy-3">
+                    <thead>
+                        <tr class="fw-bold text-muted">
+                            <th>Data</th>
+                            <th>Fonti Consultate</th>
+                            <th>Risultati Trovati</th>
+                            <th>Termini di Ricerca</th>
+                            <th>Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for result in search_results %}
+                        <tr>
+                            <td>{{ result.date_saved|date:"d/m/Y H:i" }}</td>
+                            <td>{{ result.sources_searched|join:", " }}</td>
+                            <td>{{ result.total_results }}</td>
+                            <td>{{ result.search_terms|join:", " }}</td>
+                            <td>
+                                <a href="{% url 'legal_rag:legal_search_detail' result.id %}" class="btn btn-sm btn-light btn-active-light-primary">
+                                    Dettagli
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                Nessuna ricerca effettuata per questo caso.
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Modal for search progress -->
+<div class="modal fade" tabindex="-1" id="searchProgressModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ricerca in Corso</h5>
+            </div>
+            <div class="modal-body">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                </div>
+                <p class="mt-3 text-center">Analisi del caso e ricerca nelle fonti legali in corso...</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const startSearchBtn = document.getElementById('startSearchBtn');
+    const modalElement = document.getElementById('searchProgressModal');
+    
+    if (!startSearchBtn) {
+        console.error('Start search button not found');
+        return;
+    }
+
+    if (!modalElement) {
+        console.error('Search progress modal not found');
+        return;
+    }
+
+    // Ensure bootstrap is available
+    if (typeof bootstrap === 'undefined') {
+        console.error('Bootstrap is not loaded');
+        return;
+    }
+
+    const searchProgressModal = new bootstrap.Modal(modalElement);
+    
+    startSearchBtn.addEventListener('click', function() {
+        const form = document.getElementById('searchForm');
+        if (!form) {
+            console.error('Search form not found');
+            alert('Errore: form non trovato');
+            return;
+        }
+
+        // Try to get CSRF token from form first
+        const csrfElement = form.querySelector('[name=csrfmiddlewaretoken]');
+        let csrfToken;
+        
+        if (csrfElement && csrfElement.value) {
+            csrfToken = csrfElement.value;
+            console.log('CSRF Token found in form');
+        } else {
+            // Fallback to meta tag
+            const metaToken = document.querySelector('meta[name="csrf-token"]');
+            if (metaToken && metaToken.content) {
+                csrfToken = metaToken.content;
+                console.log('CSRF Token found in meta tag');
+            } else {
+                console.error('CSRF token not found in form or meta tag');
+                alert('Errore: token CSRF non trovato');
+                return;
+            }
+        }
+
+        searchProgressModal.show();
+        
+        try {
+            const searchUrl = '{% url "legal_rag:perform_legal_search" caso.id %}';
+            console.log('Performing search at:', searchUrl);
+            
+            fetch(searchUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({}) // Empty object since we don't need to send data
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Search response:', data);
+                if (data.status === 'success') {
+                    location.reload();
+                } else {
+                    const errorMsg = data.message || 'Errore sconosciuto durante la ricerca';
+                    console.error('Search error:', errorMsg);
+                    alert('Errore durante la ricerca: ' + errorMsg);
+                    searchProgressModal.hide();
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                alert('Errore durante la ricerca: ' + error.message);
+                searchProgressModal.hide();
+            });
+        } catch (error) {
+            console.error('URL generation error:', error);
+            alert('Errore nella configurazione della ricerca');
+            searchProgressModal.hide();
+        }
+    });
+});
+</script>
+{% endblock %}

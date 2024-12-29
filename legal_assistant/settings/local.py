@@ -19,4 +19,3 @@ DATABASES = {
 # API Keys for RAG system - Use environment variables in production!
 ANTHROPIC_API_KEY = env('ANTHROPIC_API_KEY', default='')
 OPENAI_API_KEY = env('OPENAI_API_KEY', default='')
-SERPER_API_KEY = env('SERPER_API_KEY', default='')

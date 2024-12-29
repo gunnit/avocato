@@ -1,0 +1,144 @@
+{% extends "cases/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    #searchErrorAlert {
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'legal_rag/js/legal_search.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<!--begin::Search Actions-->
+<div class="card mb-5">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+            <h3 class="card-title">Ricerca Legale</h3>
+            <button type="button" 
+                    class="btn btn-primary legal-search-btn"
+                    data-case-id="{{ search_result.caso.id|default:caso.id }}"
+                    onclick="performLegalSearch(this.dataset.caseId)">
+                <i class="ki-duotone ki-search fs-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                </i>
+                Avvia Ricerca
+            </button>
+        </div>
+    </div>
+</div>
+<!--end::Search Actions-->
+
+<div id="searchResults">
+    {% if search_results %}
+    <div class="card mb-5">
+        <div class="card-header">
+            <h3 class="card-title">Dettagli Ricerca - {{ search_result.caso.titolo|default:caso.titolo }}</h3>
+            <div class="card-toolbar">
+                <a href="{% url 'legal_rag:legal_search_results' search_result.caso.id|default:caso.id %}" class="btn btn-sm btn-light">
+                    Torna alla Lista
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <!-- Search Strategy Section -->
+            <div class="mb-5">
+                <h4 class="mb-3">Strategia di Ricerca</h4>
+                <div class="table-responsive">
+                    <table class="table table-row-bordered">
+                        <tbody>
+                            <tr>
+                                <th style="width: 200px;">Termini di Ricerca</th>
+                                <td>{{ search_strategy.terms|join:", " }}</td>
+                            </tr>
+                            <tr>
+                                <th>Filtri Applicati</th>
+                                <td>
+                                    {% for key, value in search_strategy.filters.items %}
+                                        <div><strong>{{ key }}:</strong> {{ value }}</div>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Motivazione</th>
+                                <td>{{ search_strategy.rationale }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Results by Source Section -->
+            <div class="mb-5">
+                <h4 class="mb-3">Risultati per Fonte</h4>
+                {% for source, results in search_results.results_by_source.items %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title">{{ source }}</h5>
+                        <span class="badge badge-light-primary">{{ results|length }} risultati</span>
+                    </div>
+                    <div class="card-body">
+                        {% for result in results %}
+                        <div class="border-bottom mb-4 pb-4">
+                            <h6 class="mb-2">
+                                <a href="{{ result.url }}" target="_blank" class="text-primary">
+                                    {{ result.title }}
+                                </a>
+                            </h6>
+                            <p class="text-gray-600 mb-2">{{ result.snippet }}</p>
+                            <div class="d-flex align-items-center">
+                                <a href="{{ result.url }}" target="_blank" class="btn btn-sm btn-light-primary">
+                                    Apri Link
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="alert alert-info">
+                    Nessun risultato trovato.
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Case Details Used Section -->
+            <div class="mb-5">
+                <h4 class="mb-3">Dettagli del Caso Utilizzati</h4>
+                <div class="table-responsive">
+                    <table class="table table-row-bordered">
+                        <tbody>
+                            <tr>
+                                <th style="width: 200px;">Titolo</th>
+                                <td>{{ search_query.title }}</td>
+                            </tr>
+                            <tr>
+                                <th>Descrizione</th>
+                                <td>{{ search_query.description }}</td>
+                            </tr>
+                            {% if search_query.documents %}
+                            <tr>
+                                <th>Documenti Analizzati</th>
+                                <td>
+                                    {% for doc in search_query.documents %}
+                                    <div class="mb-2">
+                                        <strong>{{ doc.title }}</strong> ({{ doc.type }})
+                                    </div>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

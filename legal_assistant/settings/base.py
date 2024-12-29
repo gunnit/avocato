@@ -8,8 +8,12 @@ environ.Env.read_env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-# OpenAI API Key
+# API Keys
 OPENAI_API_KEY = env('OPENAI_API_KEY')
+SERPER_API_KEY = env('SERPER_API_KEY')
+
+# Make API keys available to os.environ
+os.environ['SERPER_API_KEY'] = SERPER_API_KEY
 
 # Application definition
 INSTALLED_APPS = [

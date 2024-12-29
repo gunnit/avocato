@@ -5,6 +5,7 @@
 
 <!-- Load JavaScript -->
 <script src="{% static 'js/loader.js' %}"></script>
+<script src="{% static 'js/regenerate.js' %}"></script>
 
 <!--begin::Case actions-->
 <div class="card card-flush h-100">
@@ -139,8 +140,23 @@
                 <!--end::Action-->
 
                 <!--begin::Action-->
+                <a href="{% url 'legal_rag:legal_search_new' caso.id %}" class="btn btn-flex btn-light-info px-6 py-5 hover-elevate-up">
+                    <span class="symbol symbol-25px me-3">
+                        <i class="ki-duotone ki-search fs-1">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                    </span>
+                    <span class="d-flex flex-column align-items-start">
+                        <span class="fs-5 fw-bolder">Ricerca Legale</span>
+                        <span class="fs-7">Ricerca automatica nelle fonti legali</span>
+                    </span>
+                </a>
+                <!--end::Action-->
+
+                <!--begin::Action-->
                 <button type="button" 
-                    onclick="handleRegenerate('{% url 'rigenera_analisi' caso.id %}');" 
+                    data-url="{% url 'rigenera_analisi' caso.id %}"
                     class="btn btn-flex btn-light-info px-6 py-5 hover-elevate-up regenerate-btn">
                     <span class="symbol symbol-25px me-3">
                         <i class="ki-duotone ki-arrows-circle fs-1">

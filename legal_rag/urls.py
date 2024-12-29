@@ -1,5 +1,9 @@
 from django.urls import path
-from .views import base_views, chat_views, pdf_views, transcription_views, pdf_results_views
+from .views import (
+    base_views, chat_views, pdf_views, transcription_views,
+    pdf_results_views, legal_search_views
+)
+from cases.views import case_views
 from .views.federated_search import federated_search
 
 app_name = 'legal_rag'  # Added app_name for namespace support
@@ -20,6 +24,12 @@ urlpatterns = [
     path('api/penal-code/articles/<int:article_id>/', base_views.penal_code_article_detail, name='penal_code_article_detail'),
     path('api/cassazione-search/', base_views.cassazione_search_api, name='cassazione_search_api'),
     path('api/save-search-result/', base_views.save_search_result, name='save_search_result'),
+    
+    # Legal Search views
+    path('case/<int:caso_id>/legal-search/', legal_search_views.LegalSearchResultsView.as_view(), name='legal_search_results'),
+    path('case/<int:caso_id>/legal-search/new/', legal_search_views.LegalSearchDetailView.as_view(), name='legal_search_new'),
+    path('case/<int:caso_id>/legal-search/<int:pk>/', legal_search_views.LegalSearchDetailView.as_view(), name='legal_search_detail'),
+    path('api/case/<int:caso_id>/perform-legal-search/', case_views.perform_legal_search, name='perform_legal_search'),
 
     # PDF processing endpoints
     path('process-image-pdf/', pdf_views.process_image_pdf, name='process_image_pdf'),

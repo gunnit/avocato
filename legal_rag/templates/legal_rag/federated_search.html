@@ -33,28 +33,8 @@
                     <label class="form-check-label" for="source-eurlex">EUR-Lex</label>
                 </div>
                 <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="source-normattiva" checked>
-                    <label class="form-check-label" for="source-normattiva">Normattiva</label>
-                </div>
-                <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="source-giurisprudenza" checked>
                     <label class="form-check-label" for="source-giurisprudenza">Giurisprudenza Penale</label>
-                </div>
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="source-penale" checked>
-                    <label class="form-check-label" for="source-penale">Penale.it</label>
-                </div>
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="source-giustizia" checked>
-                    <label class="form-check-label" for="source-giustizia">Giustizia.it</label>
-                </div>
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="source-osservatorio" checked>
-                    <label class="form-check-label" for="source-osservatorio">Osservatorio Penale</label>
-                </div>
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="source-milano" checked>
-                    <label class="form-check-label" for="source-milano">Giustizia Milano</label>
                 </div>
             </div>
             <!--end::Source filters-->
@@ -278,12 +258,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function getSelectedSources() {
         const sources = [];
         if (document.getElementById('source-eurlex').checked) sources.push('eurlex');
-        if (document.getElementById('source-normattiva').checked) sources.push('normattiva');
         if (document.getElementById('source-giurisprudenza').checked) sources.push('giurisprudenza');
-        if (document.getElementById('source-penale').checked) sources.push('penale');
-        if (document.getElementById('source-giustizia').checked) sources.push('giustizia');
-        if (document.getElementById('source-osservatorio').checked) sources.push('osservatorio');
-        if (document.getElementById('source-milano').checked) sources.push('milano');
         return sources;
     }
 

@@ -25,3 +25,6 @@ uvicorn[standard]~=0.27.0
 azure-storage-blob==12.23.1
 azure-core~=1.32.0
 django-storages~=1.14.4
+crewai~=0.11.0
+crewai-tools~=0.0.10
+serpapi~=0.1.5
