@@ -35,7 +35,7 @@
                             <td>{{ result.total_results }}</td>
                             <td>{{ result.search_terms|join:", " }}</td>
                             <td>
-                                <a href="{% url 'legal_rag:legal_search_detail' result.id %}" class="btn btn-sm btn-light btn-active-light-primary">
+                                <a href="{% url 'legal_rag:legal_search_detail' caso.id result.id %}" class="btn btn-sm btn-light btn-active-light-primary">
                                     Dettagli
                                 </a>
                             </td>

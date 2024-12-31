@@ -211,7 +211,6 @@ Se disponibile, considera anche la seguente analisi del caso:
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
-
 @login_required
 @require_http_methods(["POST"])
 def perform_legal_search(request, caso_id):
@@ -247,25 +246,66 @@ def perform_legal_search(request, caso_id):
         crew = LegalSearchCrew()
         result = crew.kickoff(case_details)
         
-        # Convert result to dictionary if it's not already
+        # Convert result to dictionary
         if hasattr(result, 'json_dict'):
-            results_dict = result.json_dict
+            raw_results = result.json_dict
         elif hasattr(result, 'raw'):
-            # Try to parse raw output as JSON
             try:
-                results_dict = json.loads(result.raw)
+                raw_results = json.loads(result.raw)
             except json.JSONDecodeError:
-                results_dict = {"raw_output": result.raw}
+                raw_results = {"error": "Failed to parse JSON", "raw_output": result.raw}
         else:
-            results_dict = {"error": "Unexpected result format"}
+            raw_results = {"error": "Unexpected result format"}
+
+        print(f"Raw results from crew: {json.dumps(raw_results, indent=2)}")
+
+        # Transform results into expected format
+        if isinstance(raw_results, dict) and 'results' in raw_results and isinstance(raw_results['results'], list):
+            results = raw_results['results']
+            valid_results = [
+                {
+                    'title': result['title'],
+                    'url': result['url'],
+                    'snippet': result['snippet']
+                }
+                for result in results
+                if isinstance(result, dict) and all(result.get(k) for k in ['title', 'url', 'snippet'])
+            ]
+            
+            results_dict = {
+                'results_by_source': {
+                    'Giurisprudenza Penale': valid_results
+                } if valid_results else {}
+            }
+            print(f"Found {len(valid_results)} valid results")
+        else:
+            results_dict = {'results_by_source': {}}
+            print("No valid results structure found")
+
+        print(f"Transformed results: {json.dumps(results_dict, indent=2)}")
+
+        # Create search strategy from query
+        query = raw_results.get('query', '')
+        search_strategy = {
+            "terms": [term.strip() for term in query.split() if term.strip() and not term.startswith('site:')],
+            "filters": {
+                "source": raw_results.get('source', 'giurisprudenzapenale.com')
+            },
+            "rationale": "Automated legal search based on case details"
+        }
+        print(f"Search strategy: {json.dumps(search_strategy, indent=2)}")
         
-        # Save the search results - using JSONField so no need to manually serialize
+        # Save the search results
         legal_search = LegalSearchResult.objects.create(
             caso=caso,
             search_query=case_details,
             search_results=results_dict,
-            search_strategy={}  # Empty strategy since we're using simplified version
+            search_strategy=search_strategy
         )
+        
+        # Debug logging after saving
+        print(f"Saved search results ID: {legal_search.id}")
+        print(f"Saved results from database: {json.dumps(json.loads(legal_search.search_results) if isinstance(legal_search.search_results, str) else legal_search.search_results, indent=2)}")
         
         messages.success(request, 'Ricerca legale completata con successo.')
         return JsonResponse({

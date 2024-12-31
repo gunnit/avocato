@@ -39,15 +39,21 @@ class LegalSearchDetailView(LoginRequiredMixin, DetailView):
         try:
             search_result = self.get_object()
             if search_result:
-                # Parse JSON fields for template display
-                context['search_query'] = json.loads(search_result.search_query) if isinstance(search_result.search_query, str) else search_result.search_query
-                context['search_results'] = json.loads(search_result.search_results) if isinstance(search_result.search_results, str) else search_result.search_results
-                context['search_strategy'] = json.loads(search_result.search_strategy) if isinstance(search_result.search_strategy, str) else search_result.search_strategy
-            else:
-                context['search_results'] = None
+                # Parse JSON fields for model instance
+                if isinstance(search_result.search_query, str):
+                    search_result.search_query = json.loads(search_result.search_query)
+                if isinstance(search_result.search_results, str):
+                    search_result.search_results = json.loads(search_result.search_results)
+                if isinstance(search_result.search_strategy, str):
+                    search_result.search_strategy = json.loads(search_result.search_strategy)
                 
-        except (LegalSearchResult.DoesNotExist, AttributeError):
-            context['search_results'] = None
+                # Debug logging
+                print(f"Search results: {json.dumps(search_result.search_results, indent=2)}")
+                print(f"Search strategy: {json.dumps(search_result.search_strategy, indent=2)}")
+                print(f"Search query: {json.dumps(search_result.search_query, indent=2)}")
+                
+        except (LegalSearchResult.DoesNotExist, AttributeError, json.JSONDecodeError) as e:
+            print(f"Error processing search result: {str(e)}")
             
         return context
 

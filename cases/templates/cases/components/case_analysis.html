@@ -2,9 +2,7 @@
 {% if analisi_json %}
 <!--begin::Content container-->
 <div id="kt_app_content_container" class="app-container container-xxl animate__animated animate__fadeIn">
-    <!--begin::Stats-->
-    {% include "cases/components/case_analysis_stats.html" %}
-    <!--end::Stats-->
+   
 
     <!--begin::Card-->
     <div class="card shadow-sm hover-elevate-up">
@@ -195,6 +193,11 @@
         <!--end::Card body-->
     </div>
     <!--end::Card-->
+ <!--begin::Stats-->
+ {% include "cases/components/case_analysis_stats.html" %}
+ <!--end::Stats-->
+
+
 </div>
 <!--end::Content container-->
 

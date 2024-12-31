@@ -2,8 +2,85 @@ from django.contrib import admin
 from django.utils.html import format_html
 from .models import (
     PenalCodeBook, PenalCodeTitle, PenalCodeArticle, 
-    SavedSearchResult, PDFAnalysisResult
+    SavedSearchResult, PDFAnalysisResult, LegalSearchResult
 )
+
+@admin.register(LegalSearchResult)
+class LegalSearchResultAdmin(admin.ModelAdmin):
+    list_display = ('caso', 'search_query_preview', 'results_count', 'date_saved')
+    list_filter = ('date_saved', 'caso')
+    search_fields = ('caso__titolo', 'search_query')
+    ordering = ('-date_saved',)
+
+    def search_query_preview(self, obj):
+        query_data = obj.search_query
+        if isinstance(query_data, str):
+            import json
+            try:
+                query_data = json.loads(query_data)
+            except json.JSONDecodeError:
+                return query_data[:100]
+        return query_data.get('query', '')[:100] if isinstance(query_data, dict) else str(query_data)[:100]
+    search_query_preview.short_description = 'Search Query'
+
+    def results_count(self, obj):
+        results_data = obj.search_results
+        if isinstance(results_data, str):
+            import json
+            try:
+                results_data = json.loads(results_data)
+            except json.JSONDecodeError:
+                return 0
+        
+        if isinstance(results_data, dict) and 'results_by_source' in results_data:
+            total = sum(len(results) for results in results_data['results_by_source'].values())
+            return total
+        return 0
+    results_count.short_description = 'Results Count'
+
+    readonly_fields = ('date_saved', 'formatted_results')
+    
+    def formatted_results(self, obj):
+        results_data = obj.search_results
+        if isinstance(results_data, str):
+            import json
+            try:
+                results_data = json.loads(results_data)
+            except json.JSONDecodeError:
+                return "Invalid JSON data"
+        
+        if not isinstance(results_data, dict) or 'results_by_source' not in results_data:
+            return "No results found"
+            
+        html = []
+        for source, results in results_data['results_by_source'].items():
+            html.append(f"<h3>{source} ({len(results)} results)</h3>")
+            for result in results:
+                html.append("<div style='margin-bottom: 15px;'>")
+                html.append(f"<strong><a href='{result.get('url', '#')}' target='_blank'>{result.get('title', 'No title')}</a></strong>")
+                html.append(f"<p style='margin: 5px 0;'>{result.get('snippet', 'No snippet')}</p>")
+                html.append("</div>")
+        
+        return format_html("".join(html))
+    formatted_results.short_description = 'Formatted Results'
+
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('caso', 'search_query')
+        }),
+        ('Search Results', {
+            'fields': ('formatted_results', 'search_results'),
+            'classes': ('wide',)
+        }),
+        ('Search Strategy', {
+            'fields': ('search_strategy',),
+            'classes': ('collapse',)
+        }),
+        ('Metadata', {
+            'fields': ('date_saved',),
+            'classes': ('collapse',)
+        }),
+    )
 
 @admin.register(PDFAnalysisResult)
 class PDFAnalysisResultAdmin(admin.ModelAdmin):

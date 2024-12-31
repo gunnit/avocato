@@ -24,11 +24,15 @@ function performLegalSearch(caseId) {
     })
     .then(response => response.json())
     .then(data => {
+        console.log('Search response:', data);
         if (data.status === 'error') {
             // Handle error response
+            console.error('Search error:', data.message, data.details);
             showSearchError(data.message, data.details);
         } else {
             // Handle success
+            console.log('Search successful, redirecting to:', `/legal-rag/case/${caseId}/legal-search/${data.search_id}/`);
+            console.log('Search results:', data.results);
             window.location.href = `/legal-rag/case/${caseId}/legal-search/${data.search_id}/`;
         }
     })

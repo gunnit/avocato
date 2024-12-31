@@ -1,3 +1,4 @@
+
 {% extends "cases/base.html" %}
 {% load static %}
 
@@ -35,7 +36,7 @@
 <!--end::Search Actions-->
 
 <div id="searchResults">
-    {% if search_results %}
+    {% if search_result %}
     <div class="card mb-5">
         <div class="card-header">
             <h3 class="card-title">Dettagli Ricerca - {{ search_result.caso.titolo|default:caso.titolo }}</h3>
@@ -54,19 +55,36 @@
                         <tbody>
                             <tr>
                                 <th style="width: 200px;">Termini di Ricerca</th>
-                                <td>{{ search_strategy.terms|join:", " }}</td>
+                                <td>
+                                    {% if search_result.search_strategy.terms %}
+                                        {% for term in search_result.search_strategy.terms %}
+                                            {% if term %}
+                                                <span class="badge badge-light-primary me-2">{{ term }}</span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        <span class="text-muted">Nessun termine di ricerca specificato</span>
+                                    {% endif %}
+                                </td>
                             </tr>
                             <tr>
                                 <th>Filtri Applicati</th>
                                 <td>
-                                    {% for key, value in search_strategy.filters.items %}
-                                        <div><strong>{{ key }}:</strong> {{ value }}</div>
-                                    {% endfor %}
+                                    {% if search_result.search_strategy.filters %}
+                                        {% for key, value in search_result.search_strategy.filters.items %}
+                                            <div class="mb-1">
+                                                <span class="badge badge-light-info me-2">{{ key }}</span>
+                                                <span class="text-gray-600">{{ value }}</span>
+                                            </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <span class="text-muted">Nessun filtro applicato</span>
+                                    {% endif %}
                                 </td>
                             </tr>
                             <tr>
                                 <th>Motivazione</th>
-                                <td>{{ search_strategy.rationale }}</td>
+                                <td>{{ search_result.search_strategy.rationale }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -76,35 +94,50 @@
             <!-- Results by Source Section -->
             <div class="mb-5">
                 <h4 class="mb-3">Risultati per Fonte</h4>
-                {% for source, results in search_results.results_by_source.items %}
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="card-title">{{ source }}</h5>
-                        <span class="badge badge-light-primary">{{ results|length }} risultati</span>
-                    </div>
-                    <div class="card-body">
-                        {% for result in results %}
-                        <div class="border-bottom mb-4 pb-4">
-                            <h6 class="mb-2">
-                                <a href="{{ result.url }}" target="_blank" class="text-primary">
-                                    {{ result.title }}
-                                </a>
-                            </h6>
-                            <p class="text-gray-600 mb-2">{{ result.snippet }}</p>
-                            <div class="d-flex align-items-center">
-                                <a href="{{ result.url }}" target="_blank" class="btn btn-sm btn-light-primary">
-                                    Apri Link
-                                </a>
+                {% if search_result.search_results.results_by_source %}
+                    {% for source, results in search_result.search_results.results_by_source.items %}
+                        {% if results %}
+                            <div class="card mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">{{ source }}</h5>
+                                    <span class="badge badge-light-primary">{{ results|length }} risultati</span>
+                                </div>
+                                <div class="card-body">
+                                    {% for result in results %}
+                                        <div class="border-bottom mb-4 pb-4 {% if forloop.last %}border-bottom-0 mb-0 pb-0{% endif %}">
+                                            <h6 class="mb-2">
+                                                <a href="{{ result.url }}" target="_blank" class="text-primary text-hover-primary">
+                                                    {{ result.title }}
+                                                </a>
+                                            </h6>
+                                            <p class="text-gray-600 mb-2">{{ result.snippet }}</p>
+                                            <div class="d-flex align-items-center">
+                                                <a href="{{ result.url }}" target="_blank" class="btn btn-sm btn-light-primary">
+                                                    <i class="ki-duotone ki-external-link fs-7 me-1">
+                                                        <span class="path1"></span>
+                                                        <span class="path2"></span>
+                                                    </i>
+                                                    Apri Link
+                                                </a>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
                             </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-info">
+                        <div class="d-flex align-items-center">
+                            <i class="ki-duotone ki-information-5 fs-2 me-2">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                            </i>
+                            <div>Nessun risultato trovato per i termini di ricerca specificati.</div>
                         </div>
-                        {% endfor %}
                     </div>
-                </div>
-                {% empty %}
-                <div class="alert alert-info">
-                    Nessun risultato trovato.
-                </div>
-                {% endfor %}
+                {% endif %}
             </div>
 
             <!-- Case Details Used Section -->
@@ -115,17 +148,17 @@
                         <tbody>
                             <tr>
                                 <th style="width: 200px;">Titolo</th>
-                                <td>{{ search_query.title }}</td>
+                                <td>{{ search_result.search_query.title }}</td>
                             </tr>
                             <tr>
                                 <th>Descrizione</th>
-                                <td>{{ search_query.description }}</td>
+                                <td>{{ search_result.search_query.description }}</td>
                             </tr>
-                            {% if search_query.documents %}
+                            {% if search_result.search_query.documents %}
                             <tr>
                                 <th>Documenti Analizzati</th>
                                 <td>
-                                    {% for doc in search_query.documents %}
+                                    {% for doc in search_result.search_query.documents %}
                                     <div class="mb-2">
                                         <strong>{{ doc.title }}</strong> ({{ doc.type }})
                                     </div>
