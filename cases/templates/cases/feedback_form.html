@@ -1,0 +1,109 @@
+{% extends "cases/base.html" %}
+{% load static %}
+
+{% block content %}
+<!--begin::Content-->
+<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+    <!--begin::Container-->
+    <div class="container-xxl" id="kt_content_container">
+        <!--begin::Card-->
+        <div class="card">
+            <!--begin::Card header-->
+            <div class="card-header border-0 pt-6">
+                <h3 class="card-title align-items-start flex-column">
+                    <span class="card-label fw-bold fs-3 mb-1">
+                        <i class="ki-duotone ki-message-text-2 fs-2 me-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                        </i>
+                        Invia Feedback
+                    </span>
+                    <span class="text-muted mt-1 fw-semibold fs-7">Condividi la tua opinione con noi</span>
+                </h3>
+            </div>
+            <!--end::Card header-->
+
+            <!--begin::Card body-->
+            <div class="card-body">
+                <!--begin::Messages-->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-success d-flex align-items-center p-5 mb-10">
+                            <i class="ki-duotone ki-shield-tick fs-2hx text-success me-4">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                            </i>
+                            <div class="d-flex flex-column">
+                                <h4 class="mb-1 text-success">Successo</h4>
+                                <span>{{ message }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <!--end::Messages-->
+
+                <!--begin::Form-->
+                <form method="post" class="form">
+                    {% csrf_token %}
+                    
+                    <!--begin::Input group-->
+                    <div class="fv-row mb-8">
+                        <label class="required fw-semibold fs-6 mb-2">Oggetto</label>
+                        <div class="position-relative">
+                            <input type="text" name="oggetto" class="form-control form-control-solid" placeholder="Inserisci l'oggetto del feedback" required>
+                            <span class="position-absolute top-50 end-0 translate-middle-y lh-0 me-2">
+                                <i class="ki-duotone ki-message-text fs-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                            </span>
+                        </div>
+                    </div>
+                    <!--end::Input group-->
+
+                    <!--begin::Input group-->
+                    <div class="fv-row mb-8">
+                        <label class="required fw-semibold fs-6 mb-2">Messaggio</label>
+                        <textarea name="messaggio" class="form-control form-control-solid" rows="6" placeholder="Scrivi il tuo messaggio qui..." required></textarea>
+                    </div>
+                    <!--end::Input group-->
+
+                    <!--begin::Actions-->
+                    <div class="text-center">
+                        <button type="reset" class="btn btn-light me-3">Cancella</button>
+                        <button type="submit" class="btn btn-primary">
+                            <span class="indicator-label">
+                                <i class="ki-duotone ki-send fs-2 me-2">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                                Invia Feedback
+                            </span>
+                        </button>
+                    </div>
+                    <!--end::Actions-->
+                </form>
+                <!--end::Form-->
+            </div>
+            <!--end::Card body-->
+        </div>
+        <!--end::Card-->
+    </div>
+    <!--end::Container-->
+</div>
+<!--end::Content-->
+{% endblock %}
+
+{% block page_title %}Invia Feedback{% endblock %}
+
+{% block breadcrumbs %}
+<!--begin::Item-->
+<li class="breadcrumb-item">
+    <span class="bullet bg-gray-500 w-5px h-2px"></span>
+</li>
+<!--end::Item-->
+<!--begin::Item-->
+<li class="breadcrumb-item text-muted">Feedback</li>
+<!--end::Item-->
+{% endblock %}

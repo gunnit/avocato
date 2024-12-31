@@ -115,10 +115,10 @@
             {% endif %}
         </span>
     </div>
-    <div class="d-flex flex-column">
-        <span class="text-gray-800 fw-bold">{{ doc.title }}</span>
-        <span class="text-gray-400 fs-7">{{ doc.description|truncatechars:50 }}</span>
-    </div>
+<div class="d-flex flex-column">
+    <a href="{% url 'documentary_evidence_detail' caso.id doc.id %}" class="text-gray-800 fw-bold text-hover-primary">{{ doc.title }}</a>
+    <span class="text-gray-400 fs-7">{{ doc.description|truncatechars:50 }}</span>
+</div>
 </div>
                         </td>
                         <td>

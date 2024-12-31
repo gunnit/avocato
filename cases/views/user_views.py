@@ -11,6 +11,22 @@ def profile(request):
     """
     # Add studio to context for sidebar logo
     studio = StudioLegale.objects.first()
+    
+    if request.method == 'POST':
+        # Handle form submission
+        user = request.user
+        user.first_name = request.POST.get('first_name', user.first_name)
+        user.last_name = request.POST.get('last_name', user.last_name)
+        user.email = request.POST.get('email', user.email)
+        user.save()
+        
+        # Update profile
+        profile = user.profile
+        profile.phone = request.POST.get('phone', '')
+        profile.save()
+        
+        messages.success(request, 'Profilo aggiornato con successo.')
+        
     return render(request, 'cases/profile.html', {'studio': studio})
 
 @login_required

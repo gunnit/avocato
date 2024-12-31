@@ -55,6 +55,9 @@
                     
                     <div class="fw-bold mt-5">Account Creato</div>
                     <div class="text-gray-600">{{ user.date_joined|date:"d/m/Y" }}</div>
+
+                    <div class="fw-bold mt-5">Data Modifica</div>
+                    <div class="text-gray-600">{{ user.profile.data_modifica|date:"d/m/Y H:i" }}</div>
                 </div>
                 <!--end::Details-->
             </div>
@@ -87,10 +90,10 @@
                         <div class="col-lg-8">
                             <div class="row">
                                 <div class="col-lg-6 fv-row">
-                                    <input type="text" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Nome" value="{{ user.first_name }}" />
+                                    <input type="text" name="first_name" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="Nome" value="{{ user.first_name }}" />
                                 </div>
                                 <div class="col-lg-6 fv-row">
-                                    <input type="text" class="form-control form-control-lg form-control-solid" placeholder="Cognome" value="{{ user.last_name }}" />
+                                    <input type="text" name="last_name" class="form-control form-control-lg form-control-solid" placeholder="Cognome" value="{{ user.last_name }}" />
                                 </div>
                             </div>
                         </div>
@@ -101,7 +104,7 @@
                     <div class="row mb-6">
                         <label class="col-lg-4 col-form-label required fw-semibold fs-6">Email</label>
                         <div class="col-lg-8 fv-row">
-                            <input type="email" class="form-control form-control-lg form-control-solid" placeholder="Email" value="{{ user.email }}" />
+                            <input type="email" name="email" class="form-control form-control-lg form-control-solid" placeholder="Email" value="{{ user.email }}" />
                         </div>
                     </div>
                     <!--end::Input group-->
@@ -110,7 +113,7 @@
                     <div class="row mb-6">
                         <label class="col-lg-4 col-form-label fw-semibold fs-6">Telefono</label>
                         <div class="col-lg-8 fv-row">
-                            <input type="tel" class="form-control form-control-lg form-control-solid" placeholder="Telefono" />
+                            <input type="tel" name="phone" class="form-control form-control-lg form-control-solid" placeholder="Telefono" value="{{ user.profile.phone|default:'' }}" />
                         </div>
                     </div>
                     <!--end::Input group-->

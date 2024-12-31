@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Caso, ChatMessage, DocumentaryEvidence
+from .models import Caso, ChatMessage, DocumentaryEvidence, Feedback, UserProfile
 
 @admin.register(Caso)
 class CasoAdmin(admin.ModelAdmin):
@@ -19,3 +19,17 @@ class DocumentaryEvidenceAdmin(admin.ModelAdmin):
     list_filter = ('authentication_status', 'date_added')
     search_fields = ('title', 'description')
     ordering = ('caso', 'exhibit_number')
+
+@admin.register(Feedback)
+class FeedbackAdmin(admin.ModelAdmin):
+    list_display = ('oggetto', 'utente', 'data_creazione')
+    list_filter = ('data_creazione', 'utente')
+    search_fields = ('oggetto', 'messaggio', 'utente__username')
+    ordering = ('-data_creazione',)
+
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'phone', 'data_modifica')
+    search_fields = ('user__username', 'user__email', 'phone')
+    list_filter = ('data_modifica',)
+    ordering = ('-data_modifica',)

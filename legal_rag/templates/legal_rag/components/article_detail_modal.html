@@ -1,38 +1,203 @@
 <!-- Article Detail Modal -->
 <div class="modal fade" id="articleDetailModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="articleDetailTitle">Dettaglio Articolo</h3>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content shadow-lg border-0">
+            <!-- Modal Header with Gradient -->
+            <div class="modal-header bg-gradient py-4">
+                <h3 class="modal-title fs-2 text-white" id="articleDetailTitle">
+                    <i class="fas fa-book-open me-2"></i>
+                    Dettaglio Articolo
+                </h3>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div class="d-flex flex-column gap-5">
-                    <div class="article-metadata">
-                        <div class="d-flex flex-wrap gap-5">
-                            <div class="d-flex flex-column gap-1">
-                                <span class="text-muted fs-7">Libro</span>
-                                <span class="fw-bold" id="articleDetailBook"></span>
+
+            <div class="modal-body p-0">
+                <!-- Article Metadata Card -->
+                <div class="card shadow-none border-0 rounded-0 mb-0">
+                    <div class="card-body bg-light-primary p-8">
+                        <div class="d-flex flex-wrap gap-8 justify-content-around">
+                            <div class="metadata-item">
+                                <span class="metadata-label">
+                                    <i class="fas fa-book text-primary me-2"></i>Libro
+                                </span>
+                                <span class="metadata-value" id="articleDetailBook"></span>
                             </div>
-                            <div class="d-flex flex-column gap-1">
-                                <span class="text-muted fs-7">Titolo</span>
-                                <span class="fw-bold" id="articleDetailTitleSection"></span>
+                            <div class="metadata-item">
+                                <span class="metadata-label">
+                                    <i class="fas fa-bookmark text-primary me-2"></i>Titolo
+                                </span>
+                                <span class="metadata-value" id="articleDetailTitleSection"></span>
                             </div>
-                            <div class="d-flex flex-column gap-1">
-                                <span class="text-muted fs-7">Sezione</span>
-                                <span class="fw-bold" id="articleDetailSection"></span>
+                            <div class="metadata-item">
+                                <span class="metadata-label">
+                                    <i class="fas fa-layer-group text-primary me-2"></i>Sezione
+                                </span>
+                                <span class="metadata-value" id="articleDetailSection"></span>
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <!-- Article Content with Enhanced Typography -->
+                <div class="p-8">
                     <div class="article-content">
-                        <h4 class="mb-4" id="articleDetailHeading"></h4>
-                        <div class="fs-6" id="articleDetailContent"></div>
+                        <h2 class="article-heading" id="articleDetailHeading"></h2>
+                        <div class="article-text-container" id="articleDetailContent"></div>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Chiudi</button>
+
+            <!-- Enhanced Footer -->
+            <div class="modal-footer bg-light py-4">
+                <button type="button" class="btn btn-primary btn-lg px-6" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Chiudi
+                </button>
             </div>
-        </div>
-    </div>
-</div>
+<style>
+/* Enhanced Modal Styles */
+.modal-xl {
+    max-width: 1200px;
+}
+
+.bg-gradient {
+    background: linear-gradient(135deg, #009ef7 0%, #0077b6 100%);
+}
+
+.bg-light-primary {
+    background-color: rgba(0, 158, 247, 0.05);
+    border-bottom: 1px solid rgba(0, 158, 247, 0.1);
+}
+
+/* Metadata Styles */
+.metadata-item {
+    flex: 1;
+    min-width: 200px;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+}
+
+.metadata-item:hover {
+    transform: translateY(-2px);
+}
+
+.metadata-label {
+    display: block;
+    color: #6c757d;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.metadata-value {
+    display: block;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #009ef7;
+}
+
+/* Enhanced Typography */
+.article-heading {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1e1e1e;
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(0, 158, 247, 0.1);
+}
+
+.article-text-container {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.05);
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 1.15rem;
+    line-height: 1.8;
+    color: #2c3e50;
+}
+
+.article-text-container p {
+    margin-bottom: 1.5rem;
+    text-align: justify;
+}
+
+.article-text-container strong {
+    color: #009ef7;
+    font-weight: 600;
+}
+
+/* Spacing Utilities */
+.gap-8 {
+    gap: 2rem !important;
+}
+
+.p-8 {
+    padding: 2rem !important;
+}
+
+/* Enhanced Button Styles */
+.btn-primary {
+    background: linear-gradient(135deg, #009ef7 0%, #0077b6 100%);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 158, 247, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 991.98px) {
+    .modal-xl {
+        max-width: 95%;
+        margin: 0.5rem auto;
+    }
+
+    .metadata-item {
+        min-width: 150px;
+    }
+
+    .gap-8 {
+        gap: 1rem !important;
+    }
+
+    .p-8 {
+        padding: 1.5rem !important;
+    }
+
+    .article-heading {
+        font-size: 1.75rem;
+    }
+
+    .article-text-container {
+        font-size: 1.1rem;
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .metadata-item {
+        min-width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .article-heading {
+        font-size: 1.5rem;
+    }
+
+    .article-text-container {
+        font-size: 1rem;
+        line-height: 1.6;
+        padding: 1rem;
+    }
+}
+</style>

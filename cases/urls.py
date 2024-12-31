@@ -26,6 +26,7 @@ from .views.case_views import (
     saved_searches
 )
 from .views.chat_views import chat_caso
+from .views.feedback import feedback_form
 
 urlpatterns = [
     # Landing page
@@ -56,4 +57,7 @@ urlpatterns = [
     # User URLs
     path('profile/', profile, name='profile'),
     path('configurazione-studio/', configurazione_studio, name='configurazione_studio'),
+    
+    # Feedback URL
+    path('feedback/', feedback_form, name='feedback_form'),
 ]
