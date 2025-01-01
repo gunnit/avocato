@@ -1,5 +1,6 @@
-from pathlib import Path
 import os
+from pathlib import Path
+
 import environ
 
 env = environ.Env()
@@ -9,8 +10,8 @@ environ.Env.read_env()
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # API Keys
-OPENAI_API_KEY = env('OPENAI_API_KEY')
-SERPER_API_KEY = env('SERPER_API_KEY')
+OPENAI_API_KEY = env('OPENAI_API_KEY', default="")
+SERPER_API_KEY = env('SERPER_API_KEY', default="")
 
 # Make API keys available to os.environ
 os.environ['SERPER_API_KEY'] = SERPER_API_KEY
