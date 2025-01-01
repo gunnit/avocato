@@ -5,12 +5,11 @@ from crewai_tools import SerperDevTool
 import os
 
 class SearchResult(BaseModel):
-    """Model for structured search results"""
-    query: str
-    results: list[Dict[str, str]]
-    source: str
+    """Model for search results that accepts any dictionary structure"""
+    result: Dict[str, Any]  # Accepts the entire crew AI output as a dictionary
 
 class LegalSearchCrew:
+
     """A simplified crew for searching legal resources"""
 
     def researcher(self) -> Agent:
@@ -95,11 +94,11 @@ class LegalSearchCrew:
             print(f"Raw results to parse: {raw_results}")
             
             # If raw_results is already a dictionary with results
-            if isinstance(raw_results, dict) and 'results' in raw_results:
+            if isinstance(raw_results, dict):
                 print("Results already in dictionary format")
                 return {
                     'query': query,
-                    'results': raw_results['results'],
+                    'results': raw_results.get('organic', []),
                     'source': 'giurisprudenzapenale.com'
                 }
             
@@ -108,11 +107,11 @@ class LegalSearchCrew:
                 try:
                     import json
                     parsed = json.loads(raw_results)
-                    if isinstance(parsed, dict) and 'results' in parsed:
+                    if isinstance(parsed, dict):
                         print("Successfully parsed JSON string")
                         return {
                             'query': query,
-                            'results': parsed['results'],
+                            'results': parsed.get('organic', []),
                             'source': 'giurisprudenzapenale.com'
                         }
                 except json.JSONDecodeError:
@@ -125,19 +124,17 @@ class LegalSearchCrew:
             
             for line in lines:
                 if line.startswith('Title: '):
-                    if current_result and all(k in current_result for k in ['title', 'url', 'snippet']):
-                        if 'giurisprudenzapenale.com' in current_result['url']:
-                            results.append(current_result.copy())
+                    if current_result:
+                        results.append(current_result.copy())
                     current_result = {'title': line[7:]}
                 elif line.startswith('Link: '):
                     current_result['url'] = line[6:]
                 elif line.startswith('Snippet: '):
                     current_result['snippet'] = line[9:]
             
-            # Add the last result if complete and from correct domain
-            if current_result and all(k in current_result for k in ['title', 'url', 'snippet']):
-                if 'giurisprudenzapenale.com' in current_result['url']:
-                    results.append(current_result)
+            # Add the last result if it exists
+            if current_result:
+                results.append(current_result)
             
             print(f"Parsed {len(results)} results")
             for result in results:
@@ -175,7 +172,18 @@ class LegalSearchCrew:
                 - description: Case description
                 
         Returns:
-            Dictionary containing search results
+            Dictionary containing search results in the format:
+            {
+                "results_by_source": {
+                    "source_name": [
+                        {
+                            "title": "result title",
+                            "url": "result url",
+                            "snippet": "result snippet"
+                        }
+                    ]
+                }
+            }
         """
         print("Starting legal search with case details:", case_details)
         
@@ -189,7 +197,7 @@ class LegalSearchCrew:
         search_input = {
             "title": case_details.get("title", ""),
             "description": case_details.get("description", ""),
-            "search_query": query  # Pass the constructed query to the agent
+            "search_query": query
         }
         
         print(f"Executing search with query: {query}")
@@ -197,23 +205,42 @@ class LegalSearchCrew:
         # Execute the crew and get results
         result = self.crew().kickoff(inputs=search_input)
         
-        print(f"Got crew result: {result}")
+        print(f"Raw crew result type: {type(result)}")
+        print(f"Raw crew result attributes: {dir(result)}")
+        print(f"Raw crew result content: {result}")
         
         # Parse the results
+        parsed_results = {}
         if hasattr(result, 'json_dict'):
             print("Using JSON dict results")
-            print(f"JSON dict results: {result.json_dict}")
-            return result.json_dict
+            parsed_results = result.json_dict.get('result', {})
+            print(f"JSON dict results: {parsed_results}")
         elif hasattr(result, 'raw'):
             print("Parsing raw results")
-            return self._parse_serper_results(result.raw, query)
+            parsed_results = self._parse_serper_results(result.raw, query)
+            print(f"Parsed results: {parsed_results}")
+        else:
+            print("No valid results found, using empty results")
+            parsed_results = {
+                'query': query,
+                'results': [],
+                'source': 'giurisprudenzapenale.com'
+            }
         
-        print("No valid results found, returning empty results")
-        print(f"Result type: {type(result)}")
-        print(f"Result attributes: {dir(result)}")
-        # Fallback to empty results if parsing fails
-        return {
-            'query': query,
-            'results': [],
-            'source': 'giurisprudenzapenale.com'
+        # Format results for database
+        formatted_results = {
+            "results_by_source": {
+                parsed_results.get('source', 'giurisprudenzapenale.com'): [
+                    {
+                        "title": r.get('title', ''),
+                        "url": r.get('url', ''),
+                        "snippet": r.get('snippet', '')
+                    }
+                    for r in parsed_results.get('results', [])
+                ]
+            }
         }
+        
+        print(f"Formatted results for database: {formatted_results}")
+        print(f"Number of results found: {len(formatted_results['results_by_source'].get('giurisprudenzapenale.com', []))}")
+        return formatted_results
