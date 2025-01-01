@@ -11,7 +11,15 @@ ALLOWED_HOSTS = [
     'avocato.azurewebsites.net',
     'avocato-fvhmgsdxgtcbdxhz.germanywestcentral-01.azurewebsites.net',
     '.azurewebsites.net',
+    'themis.pugliai.com',
     os.environ.get('WEBSITE_HOSTNAME', 'localhost'),  # Azure App Service hostname
+]
+
+# CSRF settings
+CSRF_TRUSTED_ORIGINS = [
+    'https://themis.pugliai.com',
+    'https://avocato.azurewebsites.net',
+    'https://avocato-fvhmgsdxgtcbdxhz.germanywestcentral-01.azurewebsites.net'
 ]
 
 # Add WhiteNoise to INSTALLED_APPS before django.contrib.staticfiles
