@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Assistente Legale - Codice Penale Italiano</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Assistente Legale - Codice Penale Italiano</h1>
+        <p>Assistente AI specializzato in diritto penale italiano</p>
+    </div>
+    
+    <div id="status" class="status disconnected">Disconnesso</div>
+    
+    <div class="controls">
+        <button id="startBtn">Inizia Consulenza</button>
+        <button id="stopBtn" disabled>Termina Consulenza</button>
+    </div>
+
+    <div class="quick-queries">
+        <button class="query-btn" onclick="useQuery('Puoi spiegare l\'Articolo 575 del Codice Penale riguardo l\'omicidio?')">Articolo 575 (Omicidio)</button>
+        <button class="query-btn" onclick="useQuery('Quali sono i diversi tipi di furto nel Codice Penale?')">Tipi di Furto</button>
+        <button class="query-btn" onclick="useQuery('Spiega il concetto di legittima difesa nel diritto italiano.')">Legittima Difesa</button>
+        <button class="query-btn" onclick="useQuery('Quali sono le circostanze che possono aggravare o attenuare un reato?')">Circostanze Aggravanti/Attenuanti</button>
+    </div>
+
+    <div id="conversation"></div>
+
+    <div class="controls">
+        <textarea id="textInput" rows="3" style="width: 100%" placeholder="Fai una domanda sul diritto penale italiano..."></textarea>
+        <button id="sendBtn" disabled>Invia Domanda</button>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
