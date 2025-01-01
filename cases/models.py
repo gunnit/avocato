@@ -33,6 +33,7 @@ class Caso(models.Model):
     descrizione = models.TextField()
     data_creazione = models.DateTimeField(auto_now_add=True)
     data_modifica = models.DateTimeField(auto_now=True)
+    analisi_legale = models.TextField(blank=True)
     analisi_ai = models.TextField(blank=True)
     riferimenti_legali = models.TextField(blank=True)
     stato = models.CharField(max_length=50)
